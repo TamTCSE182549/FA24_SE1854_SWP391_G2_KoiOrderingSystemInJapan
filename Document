@@ -15,3 +15,10 @@ Phần mềm quản lý dịch vụ mua cá Koi tại Nhật của công ty
 - Quản lý hồ sơ khách hàng, lịch sử đơn đặt dịch vụ.
 - Dashboard & Report.
 Link tham khảo: https://www.KoiKoimatsuda.jp/en/index.php
+Table:
+          client:
+                    Customer
+                    Các trang trại
+                    các loại cá - có tại trang trại
+                    các chuyến đi
+                    
