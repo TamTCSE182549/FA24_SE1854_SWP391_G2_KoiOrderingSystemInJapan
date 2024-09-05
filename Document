@@ -17,18 +17,21 @@ Phần mềm quản lý dịch vụ mua cá Koi tại Nhật của công ty
 Link tham khảo: https://www.KoiKoimatsuda.jp/en/index.php
 Table:
           client:
-                    Customer
-                    Các trang trại
-                    các loại cá - có tại trang trại - thông tin cá
-                    các chuyến đi
-                    * book 
+                    Tour Farm
+                    book tour visit farm
                     feedback, rating
-                    
-          admin:
+          admin:                    
                     management booking
                     management payment
                     ServiceProcess
                     management feedback, rating
                     management customer
-                    history booking
-                    
+                    manage history booking
+          data:
+                    Account Customer
+                    Customer Info
+                    Staff Info
+                    Role for Staff
+                    Type Fish Info
+                    KOI Fish Farm - Price - Size
+                    Booking Bill
