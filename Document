@@ -3,7 +3,13 @@ Phần mềm quản lý dịch vụ mua cá Koi tại Nhật của công ty
 - Chức năng tra cứu các chuyến đi tham quan các trang trại cá Koi tại Nhật theo các tiêu chí: trang trại, giống cá, mức giá, thời gian.
 - Chức năng cho phép đặt dịch vụ mua cá Koi tại Nhật theo chuyến đi có sẵn hoặc theo yêu cầu cá nhân của khách hàng.
 - Quản lý quá trình thực hiện dịch vụ mua cá Koi tại Nhật.
-          << Khách hàng đặt dịch vụ --> Nhân viên kinh doanh chốt lộ trình phù hợp với khách hàng --> Nhân viên kinh doanh gửi báo giá cho quản lý phê duyệt --> Quản lý phê duyệt báo giá --> Nhân viên kinh doanh gửi báo giá cho khách hàng --> Khách hàng xác nhận báo giá và thanh toán --> Nhân viên tư vấn gửi thông tin chi tiết chuyến đi cho khách hàng --> Nhân viên tư vấn thực hiện checkin cho khách hàng tại sân bay --> Nhân viên tư vấn hỗ trợ chốt deal, ghi nhận các đơn hàng mua cá Koi và khoản đặt cọc của khách hàng tại các trang trại Nhật --> Nhân viên tư vấn cập nhật ngày giao cá Koi khi kết thúc chuyến đi --> Nhân viên giao hàng giao cá Koi tới khách hàng và nhận khoản tiền thanh toán còn lại >>
+          << Khách hàng đặt dịch vụ --> Nhân viên kinh doanh chốt lộ trình phù hợp với khách hàng --> 
+          Nhân viên kinh doanh gửi báo giá cho quản lý phê duyệt --> Quản lý phê duyệt báo giá --> 
+          Nhân viên kinh doanh gửi báo giá cho khách hàng --> Khách hàng xác nhận báo giá và thanh toán --> 
+          Nhân viên tư vấn gửi thông tin chi tiết chuyến đi cho khách hàng --> Nhân viên tư vấn thực hiện checkin cho khách hàng tại sân bay --> 
+          Nhân viên tư vấn hỗ trợ chốt deal, ghi nhận các đơn hàng mua cá Koi và khoản đặt cọc của khách hàng tại các trang trại Nhật --> 
+          Nhân viên tư vấn cập nhật ngày giao cá Koi khi kết thúc chuyến đi --> 
+          Nhân viên giao hàng giao cá Koi tới khách hàng và nhận khoản tiền thanh toán còn lại >>
 - Quản lý chính sách thanh toán, hủy hoặc trả đơn dịch vụ mua cá Koi.
 - Quản lý rating, feedback.
 - Quản lý hồ sơ khách hàng, lịch sử đơn đặt dịch vụ.
