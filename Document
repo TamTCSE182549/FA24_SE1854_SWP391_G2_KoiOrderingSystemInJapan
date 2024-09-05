@@ -17,9 +17,9 @@ Phần mềm quản lý dịch vụ mua cá Koi tại Nhật của công ty
 Link tham khảo: https://www.KoiKoimatsuda.jp/en/index.php
 Table:
           client:
-                    Tour Farm
+                    Choose Tour Farm
                     book tour visit farm
-                    feedback, rating
+                    Send feedback, rating
           admin:                    
                     management booking
                     management payment
@@ -32,6 +32,10 @@ Table:
                     Customer Info
                     Staff Info
                     Role for Staff
-                    Type Fish Info
-                    KOI Fish Farm - Price - Size
+                    Farm Info
+                    Fish Info
+                    KOI Fish - Price - Size
                     Booking Bill
+                    History rating/feedback
+                    Service of Koi Farm
+                    Type of Animal - mở rộng phần các loại động vát có thể bán
