@@ -21,4 +21,14 @@ Table:
                     Các trang trại
                     các loại cá - có tại trang trại - thông tin cá
                     các chuyến đi
+                    * book 
+                    feedback, rating
+                    
+          admin:
+                    management booking
+                    management payment
+                    ServiceProcess
+                    management feedback, rating
+                    management customer
+                    history booking
                     
