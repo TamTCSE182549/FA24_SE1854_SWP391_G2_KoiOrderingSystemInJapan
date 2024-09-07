@@ -23,33 +23,35 @@ Phân tích yêu cầu phần mềm quản lý dịch vụ mua cá Koi tại Nh�
 Trang chủ giới thiệu thông tin:
 1.Mô tả: Hiển thị thông tin về các trang trại cá Koi tại Nhật và các giống Koi nổi tiếng.
 2.Yêu cầu chức năng:
-1.Trang chủ cần có giao diện giới thiệu chi tiết về từng trang trại, giống cá.
-2.Phân loại trang trại và giống cá Koi theo vùng miền, đặc điểm.
-3.Hình ảnh minh họa và thông tin mô tả giống cá Koi.
+          1.Trang chủ cần có giao diện giới thiệu chi tiết về từng trang trại, giống cá.
+          2.Phân loại trang trại và giống cá Koi theo vùng miền, đặc điểm.
+          3.Hình ảnh minh họa và thông tin mô tả giống cá Koi.
 
 Chức năng tra cứu chuyến đi tham quan:
 1.Mô tả: Người dùng có thể tra cứu chuyến tham quan trang trại cá Koi theo tiêu chí.
 2.Yêu cầu chức năng:
-1.Bộ lọc theo: Trang trại, Giống cá, Mức giá, Thời gian.
-2.Kết quả trả về gồm: Chi tiết chuyến đi, lịch trình, chi phí, yêu cầu đặc biệt.
-3.Giao diện tra cứu dễ dùng và hiển thị đầy đủ các chuyến đi khả dụng.
+          1.Bộ lọc theo: Trang trại, Giống cá, Mức giá, Thời gian.
+          2.Kết quả trả về gồm: Chi tiết chuyến đi, lịch trình, chi phí, yêu cầu đặc biệt.
+          3.Giao diện tra cứu dễ dùng và hiển thị đầy đủ các chuyến đi khả dụng.
+
 Chức năng đặt dịch vụ mua cá Koi:
 1.Mô tả: Người dùng đặt dịch vụ mua cá Koi qua chuyến tham quan có sẵn hoặc yêu cầu riêng.
 2.Yêu cầu chức năng:
-1.Giao diện cho phép chọn chuyến đi có sẵn hoặc tạo yêu cầu riêng (chọn trang trại, giống cá).
-2.Thông báo cho khách hàng khi đơn đặt thành công.
+          1.Giao diện cho phép chọn chuyến đi có sẵn hoặc tạo yêu cầu riêng (chọn trang trại, giống cá).
+          2.Thông báo cho khách hàng khi đơn đặt thành công.
+
 Quản lý quá trình thực hiện dịch vụ mua cá Koi:
 1.Mô tả: Hệ thống quản lý quy trình đặt dịch vụ từ lúc khách hàng yêu cầu đến khi cá Koi được giao.
 2.Yêu cầu chức năng:
-Quy trình xử lý đơn hàng:
-1.Đặt dịch vụ: Nhập thông tin yêu cầu của khách hàng.
-2.Nhân viên chốt lộ trình: Hệ thống hỗ trợ quản lý các lộ trình và trao đổi với khách.
-3.Báo giá: Hệ thống gửi báo giá, quản lý phê duyệt và giao dịch.
-4.Xác nhận & thanh toán: Khách hàng xác nhận báo giá và thanh toán.
-5.Thực hiện chuyến đi: Nhân viên check-in và cập nhật tình trạng.
-6.Chốt đơn hàng: Hỗ trợ giao dịch tại trang trại, ghi nhận đặt cọc.
-7.Cập nhật giao cá: Cập nhật ngày giao và tình trạng cá Koi.
-8.Giao hàng: Quản lý quá trình giao và thanh toán cuối.
+          Quy trình xử lý đơn hàng:
+                    1.Đặt dịch vụ: Nhập thông tin yêu cầu của khách hàng.
+                    2.Nhân viên chốt lộ trình: Hệ thống hỗ trợ quản lý các lộ trình và trao đổi với khách.
+                    3.Báo giá: Hệ thống gửi báo giá, quản lý phê duyệt và giao dịch.
+                    4.Xác nhận & thanh toán: Khách hàng xác nhận báo giá và thanh toán.
+                    5.Thực hiện chuyến đi: Nhân viên check-in và cập nhật tình trạng.
+                    6.Chốt đơn hàng: Hỗ trợ giao dịch tại trang trại, ghi nhận đặt cọc.
+                    7.Cập nhật giao cá: Cập nhật ngày giao và tình trạng cá Koi.
+                    8.Giao hàng: Quản lý quá trình giao và thanh toán cuối.
 
 Quản lý chính sách thanh toán, hủy hoặc trả đơn:
 
