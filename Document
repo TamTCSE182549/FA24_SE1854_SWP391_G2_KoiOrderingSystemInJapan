@@ -54,27 +54,25 @@ Quản lý quá trình thực hiện dịch vụ mua cá Koi:
                     8.Giao hàng: Quản lý quá trình giao và thanh toán cuối.
 
 Quản lý chính sách thanh toán, hủy hoặc trả đơn:
-
 Yêu cầu chức năng:
-1.Giao diện cho khách hàng và nhân viên quản lý việc thanh toán, chính sách hủy bỏ.
-1.Xử lý các yêu cầu hủy và trả đơn, hoàn tiền theo quy định.
+          1.Giao diện cho khách hàng và nhân viên quản lý việc thanh toán, chính sách hủy bỏ.
+          2.Xử lý các yêu cầu hủy và trả đơn, hoàn tiền theo quy định.
 
 Quản lý rating, feedback:
-
 1.Yêu cầu chức năng:
-1.Hệ thống cho phép khách hàng đánh giá và phản hồi về dịch vụ.
-2.Tổng hợp và hiển thị điểm đánh giá chung cho từng chuyến đi/trang trại.
+          1.Hệ thống cho phép khách hàng đánh giá và phản hồi về dịch vụ.
+          2.Tổng hợp và hiển thị điểm đánh giá chung cho từng chuyến đi/trang trại.
 
 Quản lý hồ sơ khách hàng, lịch sử đặt dịch vụ:
 1.Yêu cầu chức năng:
-1.Hồ sơ khách hàng bao gồm thông tin cá nhân, lịch sử đặt dịch vụ.
-2.Tính năng lưu trữ lịch sử và chi tiết các đơn hàng đã thực hiện.
+          1.Hồ sơ khách hàng bao gồm thông tin cá nhân, lịch sử đặt dịch vụ.
+          2.Tính năng lưu trữ lịch sử và chi tiết các đơn hàng đã thực hiện.
 
 Dashboard & Report:
 1.Mô tả: Giao diện tổng quan cho quản lý theo dõi và báo cáo tình hình hoạt động.
-2.Yêu cầu chức năng:
-1.Báo cáo doanh thu, lịch sử dịch vụ, tỉ lệ hài lòng của khách hàng.
-2.Thống kê các chỉ số chính như số lượng đơn đặt, số chuyến đi thành công, doanh thu theo từng kỳ.
+          2.Yêu cầu chức năng:
+                    1.Báo cáo doanh thu, lịch sử dịch vụ, tỉ lệ hài lòng của khách hàng.
+                    2.Thống kê các chỉ số chính như số lượng đơn đặt, số chuyến đi thành công, doanh thu theo từng kỳ.
 Phân loại yêu cầu:
 Chức năng: Tìm kiếm chuyến đi, đặt dịch vụ, quản lý quy trình, rating, feedback.
 Phi chức năng: Giao diện thân thiện, dễ sử dụng, bảo mật dữ liệu khách hàng, hiệu suất xử lý.
