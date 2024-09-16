@@ -34,7 +34,7 @@ Chức năng tra cứu chuyến đi tham quan:
           2.Kết quả trả về gồm: Chi tiết chuyến đi, lịch trình, chi phí, yêu cầu đặc biệt.
           3.Giao diện tra cứu dễ dùng và hiển thị đầy đủ các chuyến đi khả dụng.
 
-Chức năng đặt dịch vụ mua cá Koi:
+Chức năng đặt dịch vụ hỗ trợ mua cá Koi:
 1.Mô tả: Người dùng đặt dịch vụ mua cá Koi qua chuyến tham quan có sẵn hoặc yêu cầu riêng.
 2.Yêu cầu chức năng:
           1.Giao diện cho phép chọn chuyến đi có sẵn hoặc tạo yêu cầu riêng (chọn trang trại, giống cá).
