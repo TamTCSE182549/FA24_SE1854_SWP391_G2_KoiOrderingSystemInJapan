@@ -93,11 +93,9 @@ Table:
           data:
                     Account Customer
                     Customer Info
-
                     Account Staff
                     Staff Info
                     Role for Staff
-
                     Farm Info
                     Fish Info
                     KOI Fish - Price - Size
