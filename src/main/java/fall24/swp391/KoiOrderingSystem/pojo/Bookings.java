@@ -40,6 +40,7 @@ public class Bookings {
     @Column(name = "payment_method")
     private String payment_method;
 
+    //here mapping quotation table
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "quotation_id")
     private Quotations quotations;
