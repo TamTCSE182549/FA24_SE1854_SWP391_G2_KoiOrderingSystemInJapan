@@ -11,13 +11,18 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Table(name = "account")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Account extends BaseEntity{
+public class Account extends BaseEntity implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -25,10 +30,6 @@ public class Account extends BaseEntity{
     @Email(message = "Email not valid")
     @Column(unique = true)
     private String email;
-
-    @Pattern(regexp = "(84|0[35789])+(\\d{8})", message = "Phone invalid")
-    @Column(name = "phone_number",unique = true)
-    private String phone;
 
     @NotBlank(message = "password can not blank")
     @Size(min = 6,message = "Password must be at least 6 characters!")
@@ -40,4 +41,34 @@ public class Account extends BaseEntity{
     @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of();
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }

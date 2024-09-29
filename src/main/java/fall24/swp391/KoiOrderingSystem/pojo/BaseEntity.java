@@ -30,17 +30,14 @@ public class BaseEntity
 
     @PrePersist
     protected void onCreate(){
-
-        createdAt = LocalDateTime.now();
-        updatedAt = LocalDateTime.now();
-        DateTimeFormatter createdAt = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-        DateTimeFormatter updatedAt = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        createdAt = LocalDateTime.parse(LocalDateTime.now().format(formatter));  // formatted date-time string
+        updatedAt = LocalDateTime.parse(LocalDateTime.now().format(formatter));
     }
     @PreUpdate
     protected void onUpdate(){
-        updatedAt = LocalDateTime.now();
-        DateTimeFormatter updatedAt = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        updatedAt = LocalDateTime.parse(LocalDateTime.now().format(formatter));
     }
 
 }
