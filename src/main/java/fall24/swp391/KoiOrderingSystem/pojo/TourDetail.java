@@ -15,7 +15,7 @@ public class TourDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private Long id;
     
     private Tours tours;
 
