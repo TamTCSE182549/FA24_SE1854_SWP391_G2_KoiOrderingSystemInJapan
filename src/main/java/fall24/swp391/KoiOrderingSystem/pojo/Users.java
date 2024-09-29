@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(name = "first_name",length = 50)
     private String fisrtName;
@@ -30,9 +30,9 @@ public class Users {
 
     private String address;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL )
     @JoinColumn(name = "acc_id")
-    private Accounts account;
+    private Account account;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
