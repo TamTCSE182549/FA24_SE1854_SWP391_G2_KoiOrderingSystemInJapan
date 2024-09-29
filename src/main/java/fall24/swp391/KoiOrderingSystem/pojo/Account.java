@@ -6,8 +6,18 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-public class Account {
+@Entity
+@Table(name = "account")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class Account extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -16,7 +26,7 @@ public class Account {
     @Column(unique = true)
     private String email;
 
-    @Pattern(regexp = "(84|0[3|5|7|8|9])+(\\d{8})",message = "Phone invalid")
+    @Pattern(regexp = "(84|0[35789])+(\\d{8})", message = "Phone invalid")
     @Column(name = "phone_number",unique = true)
     private String phone;
 

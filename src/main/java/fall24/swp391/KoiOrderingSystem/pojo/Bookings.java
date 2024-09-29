@@ -20,10 +20,11 @@ public class Bookings {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private Long id;
 
-    @Column(name = "account_id")
-    private int account_id;
+    @ManyToOne
+    @JoinColumn(name = "account_id")
+    private Account account;
 
     @Column(name = "booking_type_id")
     private BookingType booking_type;
@@ -49,22 +50,11 @@ public class Bookings {
     @OneToMany(mappedBy = "booking_id", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     private List<BookingTourDetail> bookingTourDetails;
 
-    public void addBookingDetail(BookingTourDetail bookingTourDetail){
-        if(bookingTourDetails == null){
+    public void addBookingDetail(BookingTourDetail bookingTourDetail) {
+        if (bookingTourDetails == null) {
             bookingTourDetails = new ArrayList<>();
         }
         bookingTourDetails.add(bookingTourDetail);
         bookingTourDetail.setBooking(this);
-    }
-
-    public Bookings(int id, int account_id, BookingType booking_type, float total_amount, String payment_status, String payment_method, List<BookingTourDetail> bookingTourDetails) {
-        this.id = id;
-        this.account_id = account_id;
-        this.booking_type = booking_type;
-        this.booking_date = LocalDateTime.parse(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-        this.total_amount = total_amount;
-        this.payment_status = payment_status;
-        this.payment_method = payment_method;
-        this.bookingTourDetails = bookingTourDetails;
     }
 }
