@@ -8,9 +8,9 @@ import fall24.swp391.KoiOrderingSystem.pojo.Account;
 import java.util.List;
 
 public interface IAuthenticationService {
-    public AccountResponse register(AccountRequest accountRequest) throws Exception;
+    public AccountResponse register(RegisterRequest registerRequest) throws Exception;
 
-    public AccountResponse login(RegisterRequest registerRequest);
+    public AccountResponse login(AccountRequest accountRequest);
 
     public List<Account> getAllAccount();
 }

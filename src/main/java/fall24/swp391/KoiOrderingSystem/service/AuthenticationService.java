@@ -46,9 +46,9 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
     Token getToken;
 
     @Override
-    public AccountResponse register(AccountRequest accountRequest) throws Exception {
-        Account account = modelMapper.map(accountRequest,Account.class);
-        User user = modelMapper.map(accountRequest,User.class);
+    public AccountResponse register(RegisterRequest registerRequest) throws Exception {
+        Account account = modelMapper.map(registerRequest,Account.class);
+        User user = modelMapper.map(registerRequest,User.class);
        try {
            account.setPassword(passwordEncoder.encode(account.getPassword()));
            Account newAccount = accountRepository.save(account);
@@ -63,10 +63,10 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
     }
 
     @Override
-    public AccountResponse login(RegisterRequest registerRequest) {
+    public AccountResponse login(AccountRequest accountRequest) {
         try {
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                    registerRequest.getEmail(),registerRequest.getPassword()
+                    accountRequest.getEmail(),accountRequest.getPassword()
             ));
             Account account = (Account) authentication.getPrincipal();
             AccountResponse accountResponse = modelMapper.map(account,AccountResponse.class);

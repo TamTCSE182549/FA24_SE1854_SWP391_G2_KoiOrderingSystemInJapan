@@ -20,6 +20,7 @@ public class Token {
     @Autowired
     IAccountRepository accountRepository;
 
+    // Tạo chìa khóa để xác thực token
     private SecretKey getSignInKey(){
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
         return Keys.hmacShaKeyFor(keyBytes);
@@ -40,10 +41,8 @@ public class Token {
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
-        long id = Long.parseLong(claims.getSubject());
+        Long id = Long.parseLong(claims.getSubject());
         return accountRepository.findAccountById(id);
-
-
     }
 
 }

@@ -29,6 +29,7 @@ public class Filter extends OncePerRequestFilter {
     @Autowired
     @Qualifier("handlerExceptionResolver")
     HandlerExceptionResolver resolver;
+
     private final List<String> AUTH_PERMISSION = List.of(
             "/swagger-ui/**",
             "/v3/api-docs/**",
@@ -43,6 +44,14 @@ public class Filter extends OncePerRequestFilter {
         //neu gap api tren list cho phep truy cap neu ko check token
         return AUTH_PERMISSION.stream().anyMatch(pattern -> pathMatcher.match(pattern,uri));
     }
+    public String getToken(HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return null; // Kiểm tra xem header có tồn tại và bắt đầu bằng "Bearer " không
+        }
+        return authHeader.substring(7); // Trích xuất token (bỏ tiền tố "Bearer ")
+    }
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 //
@@ -82,13 +91,6 @@ public class Filter extends OncePerRequestFilter {
 
 
 
-    }
-    public String getToken(HttpServletRequest request) {
-        String authHeader = request.getHeader("Authorization");
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            return null; // Kiểm tra xem header có tồn tại và bắt đầu bằng "Bearer " không
-        }
-        return authHeader.substring(7); // Trích xuất token (bỏ tiền tố "Bearer ")
     }
 
 }
