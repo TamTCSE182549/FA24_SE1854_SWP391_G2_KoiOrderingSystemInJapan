@@ -14,11 +14,12 @@ import java.time.format.DateTimeFormatter;
 @MappedSuperclass
 public class BaseEntity
 {
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    private LocalDateTime createdDate;
 
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    private LocalDateTime updatedDate;
 
     @ManyToOne
     @JoinColumn(name = "created_by")
@@ -30,17 +31,12 @@ public class BaseEntity
 
     @PrePersist
     protected void onCreate(){
-
-        createdAt = LocalDateTime.now();
-        updatedAt = LocalDateTime.now();
-        DateTimeFormatter createdAt = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-        DateTimeFormatter updatedAt = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-
+        createdDate = LocalDateTime.parse(LocalDateTime.now().format(formatter));  // formatted date-time string
+        updatedDate = LocalDateTime.parse(LocalDateTime.now().format(formatter));
     }
     @PreUpdate
     protected void onUpdate(){
-        updatedAt = LocalDateTime.now();
-        DateTimeFormatter updatedAt = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+        updatedDate = LocalDateTime.parse(LocalDateTime.now().format(formatter));
     }
 
 }
