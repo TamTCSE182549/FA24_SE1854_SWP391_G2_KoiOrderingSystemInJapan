@@ -1,4 +1,4 @@
-package fall24.swp391.KoiOrderingSystem.repository;
+package fall24.swp391.KoiOrderingSystem.repo;
 
 import fall24.swp391.KoiOrderingSystem.pojo.Account;
 import org.springframework.data.jpa.repository.JpaRepository;

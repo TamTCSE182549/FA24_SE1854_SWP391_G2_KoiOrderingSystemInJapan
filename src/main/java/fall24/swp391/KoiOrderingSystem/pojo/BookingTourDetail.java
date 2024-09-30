@@ -18,7 +18,7 @@ public class BookingTourDetail {
     private int id;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
-    @JoinColumn(name = "booking_id")
+    @JoinColumn(name = "booking_id") //name same foreign key mapping
     private Bookings booking;
 
     @Column(name = "tour_id")

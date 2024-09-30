@@ -1,5 +1,6 @@
 package fall24.swp391.KoiOrderingSystem.pojo;
 
+import fall24.swp391.KoiOrderingSystem.enums.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,19 +28,20 @@ public class Bookings {
     private Account account;
 
     @Column(name = "booking_type_id")
-    private BookingType booking_type;
+    private BookingType bookingType;
 
     @Column(name = "booking_date")
-    private LocalDateTime booking_date = LocalDateTime.parse(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+    private LocalDateTime bookingDate = LocalDateTime.parse(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 
     @Column(name = "total_amount")
-    private float total_amount;
+    private float totalAmount;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "payment_status")
-    private String payment_status;
+    private PaymentStatus paymentStatus;
 
     @Column(name = "payment_method")
-    private String payment_method;
+    private String paymentMethod;
 
     //here mapping quotation table
     @OneToOne(cascade = CascadeType.ALL)
@@ -47,7 +49,7 @@ public class Bookings {
     private Quotations quotations;
 
     //mapped By same name with ManyToOne annotation
-    @OneToMany(mappedBy = "booking_id", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    @OneToMany(mappedBy = "booking", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     private List<BookingTourDetail> bookingTourDetails;
 
     public void addBookingDetail(BookingTourDetail bookingTourDetail) {
