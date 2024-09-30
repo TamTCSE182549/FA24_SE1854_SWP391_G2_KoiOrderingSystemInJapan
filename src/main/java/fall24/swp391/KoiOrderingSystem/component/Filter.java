@@ -1,11 +1,9 @@
-package fall24.swp391.KoiOrderingSystem.config;
+package fall24.swp391.KoiOrderingSystem.component;
 
-import fall24.swp391.KoiOrderingSystem.component.Token;
 import fall24.swp391.KoiOrderingSystem.exception.AuthException;
 import fall24.swp391.KoiOrderingSystem.pojo.Account;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
-import jakarta.persistence.Table;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,13 +13,14 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
 import java.util.List;
-
+@Component
 public class Filter extends OncePerRequestFilter {
 
     @Autowired

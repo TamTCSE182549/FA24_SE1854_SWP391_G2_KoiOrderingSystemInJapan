@@ -1,5 +1,6 @@
 package fall24.swp391.KoiOrderingSystem.config;
 
+import fall24.swp391.KoiOrderingSystem.component.Filter;
 import fall24.swp391.KoiOrderingSystem.service.AuthenticationService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
