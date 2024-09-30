@@ -6,11 +6,14 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Getter
 @Setter
 @Entity
-public class Users {
+public class User {
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -35,18 +38,18 @@ public class Users {
     private Account account;
 
     @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    private LocalDateTime createdDate;
 
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    private LocalDateTime updatedDate;
 
     @PrePersist
     protected void onCreate(){
-        createdAt = LocalDateTime.now();
-        updatedAt = LocalDateTime.now();
+        createdDate = LocalDateTime.parse(LocalDateTime.now().format(formatter));  // formatted date-time string
+        updatedDate = LocalDateTime.parse(LocalDateTime.now().format(formatter));
     }
     @PreUpdate
     protected void onUpdate(){
-        updatedAt = LocalDateTime.now();
+        updatedDate = LocalDateTime.parse(LocalDateTime.now().format(formatter));
     }
 }
