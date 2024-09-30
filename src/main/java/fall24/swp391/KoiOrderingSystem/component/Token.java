@@ -1,7 +1,7 @@
 package fall24.swp391.KoiOrderingSystem.component;
 
 import fall24.swp391.KoiOrderingSystem.pojo.Account;
-import fall24.swp391.KoiOrderingSystem.repository.IAccountRepository;
+import fall24.swp391.KoiOrderingSystem.repo.IAccountRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -15,7 +15,8 @@ import java.util.Date;
 @Service
 public class Token {
     // chia khoa de xac nhan token
-    public final String SECRET_KEY = "fb64a681139d1586b6f2004d18159afd57c8c79136d7490630407c";
+//    public final String SECRET_KEY = "fb64a681139d1586b6f2004d18159afd57c8c79136d7490630407c";
+    public final String SECRET_KEY = "fb64a681139d1586b6f2004d18159afd57c8c79136d7490630407casqwserkwqq";
 
     @Autowired
     IAccountRepository accountRepository;
