@@ -15,7 +15,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Kois {
+public class Kois extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,18 +40,6 @@ public class Kois {
 
     @Column(name = "koi_image")
     private String koiImage;
-
-    @Column(name = "created_by")
-    private int createdBy;
-
-    @Column(name = "updated_by")
-    private int updatedBy;
-
-    @Column(name = "created_date")
-    private LocalDateTime createdDate = LocalDateTime.parse(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-
-    @Column(name = "updated_date")
-    private LocalDateTime updatedDate = LocalDateTime.parse(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));;
 
     @Column(name = "is_active")
     private boolean isActive;
