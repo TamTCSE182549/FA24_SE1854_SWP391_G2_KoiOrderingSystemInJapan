@@ -21,8 +21,9 @@ public class BookingTourDetail {
     @JoinColumn(name = "booking_id") //name same foreign key mapping
     private Bookings booking;
 
-    @Column(name = "tour_id")
-    private int tourId;
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    @JoinColumn(name = "tour_id")
+    private Tours tourId;
 
     @Column(name = "participant")
     private int participant;
