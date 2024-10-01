@@ -39,7 +39,7 @@ public class Deposit {
     private String shippingAddress;
 
     @Column(name = "shipping_fee")
-    private  float shippingFee;
+    private float shippingFee;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "booking_id")
