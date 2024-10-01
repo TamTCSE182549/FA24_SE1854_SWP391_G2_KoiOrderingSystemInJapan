@@ -12,31 +12,29 @@ import java.time.format.DateTimeFormatter;
 @AllArgsConstructor
 @NoArgsConstructor
 @MappedSuperclass
-public class BaseEntity
-{
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+public class BaseEntity {
+
     @Column(name = "created_at")
     private LocalDateTime createdDate;
 
     @Column(name = "updated_at")
     private LocalDateTime updatedDate;
 
-    @ManyToOne
-    @JoinColumn(name = "created_by")
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    @JoinColumn(name = "created_by", nullable = false)
     private Account createdBy;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "updated_by")
     private Account updatedBy;
 
     @PrePersist
     protected void onCreate(){
-        createdDate = LocalDateTime.parse(LocalDateTime.now().format(formatter));  // formatted date-time string
-        updatedDate = LocalDateTime.parse(LocalDateTime.now().format(formatter));
+        createdDate = LocalDateTime.now();
+        updatedDate = LocalDateTime.now();
     }
     @PreUpdate
     protected void onUpdate(){
-        updatedDate = LocalDateTime.parse(LocalDateTime.now().format(formatter));
+        updatedDate = LocalDateTime.now();
     }
-
 }

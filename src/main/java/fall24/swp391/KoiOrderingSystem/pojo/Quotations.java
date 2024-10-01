@@ -20,9 +20,9 @@ public class Quotations {
     @Column(name = "id")
     private int id;
 
-    @OneToOne(mappedBy = "booking_id", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "booking_id")
-    private Bookings bookings;
+    private Bookings booking;
 
     @Column(name = "amount")
     private float amount;
@@ -34,6 +34,6 @@ public class Quotations {
     private int approveBy;
 
     @Column(name = "approve_time")
-    private LocalDateTime approveTime = LocalDateTime.parse(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+    private LocalDateTime approveTime;
 
 }

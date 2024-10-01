@@ -4,34 +4,36 @@ import fall24.swp391.KoiOrderingSystem.enums.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @Entity
 @Table(name = "bookings")
-public class Bookings {
+public class Bookings extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "account_id")
     private Account account;
 
-    @Column(name = "booking_type_id")
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    @JoinColumn(name = "booking_type_id")
     private BookingType bookingType;
 
     @Column(name = "booking_date")
-    private LocalDateTime bookingDate = LocalDateTime.parse(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+    private LocalDateTime bookingDate;
 
     @Column(name = "total_amount")
     private float totalAmount;
@@ -44,9 +46,8 @@ public class Bookings {
     private String paymentMethod;
 
     //here mapping quotation table
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "quotation_id")
-    private Quotations quotations;
+    @OneToMany(mappedBy = "booking", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    private List<Quotations> quotations;
 
     //mapped By same name with ManyToOne annotation
     @OneToMany(mappedBy = "booking", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})

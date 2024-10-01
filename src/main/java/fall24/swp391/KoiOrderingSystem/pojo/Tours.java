@@ -3,17 +3,19 @@ package fall24.swp391.KoiOrderingSystem.pojo;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.Set;
 
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @Entity
 @Table(name = "tours")
-public class Tours {
+public class Tours extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,19 +40,16 @@ public class Tours {
     @Column(name = "end_time")
     private LocalDateTime endTime;
 
-    @Column(name = "tour_img")
+    @Column(name = "tour_image")
     private String tourImg;
 
-    @Column(name = "create_by")
-    private int createBy;
+    @Column(name = "status")
+    private String status;
 
-    @Column(name = "create_date")
-    private LocalDateTime createDate = LocalDateTime.parse(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+    @OneToMany(mappedBy = "tourId", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    private Set<BookingTourDetail> bookingTourDetails;
 
-    @Column(name = "update_by")
-    private int updateBy;
-
-    @Column(name = "update_date")
-    private LocalDateTime updateDate;
+    @OneToMany(mappedBy = "tour", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    private Set<TourDetail> tourDetails;
 
 }

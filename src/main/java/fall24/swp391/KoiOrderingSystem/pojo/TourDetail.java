@@ -16,10 +16,15 @@ public class TourDetail {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-    
-    private Tours tours;
 
-    private int farm;
+    @ManyToOne
+    @JoinColumn(name = "tour_id")
+    private Tours tour;
 
+    @ManyToOne
+    @JoinColumn(name = "farm_id")
+    private KoiFarms farm;
+
+    @Column(name = "description")
     private String description;
 }
