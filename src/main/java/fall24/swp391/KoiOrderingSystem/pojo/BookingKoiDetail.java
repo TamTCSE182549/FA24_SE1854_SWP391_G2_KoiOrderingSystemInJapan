@@ -13,18 +13,18 @@ import lombok.NoArgsConstructor;
 @Table(name = "booking_koi_detail")
 public class BookingKoiDetail {
 
-    @JoinColumn(name = "koi_id")
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
-    private Kois kois;
-
-    @JoinColumn(name = "booking_id")
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
-    private Bookings bookings;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
+
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    @JoinColumn(name = "koi_id")
+    private Kois koi;
+
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    @JoinColumn(name = "booking_id")
+    private Bookings booking;
 
     @Column(name = "quantity")
     private int quantity;
