@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -32,7 +33,7 @@ public class KoiFarms {
     @Column(name = "farmAddress")
     private String farmAddress;
 
-    @Column(name = "farmImage")
+    @Column(name = "farmImage", columnDefinition = "TEXT")
     private String farmImage;
 
     @Column(name = "website")
@@ -43,4 +44,10 @@ public class KoiFarms {
 
     @OneToMany(mappedBy = "farm", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     private Set<TourDetail> tourDetails;
+
+    @OneToMany(mappedBy = "koiFarm", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    private List<KoiFarmImage> koiFarmImages;
+
+    @OneToMany(mappedBy = "koiFarm", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    private List<KoiOfFarm> koiOfFarms;
 }
