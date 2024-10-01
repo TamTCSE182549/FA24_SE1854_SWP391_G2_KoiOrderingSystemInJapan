@@ -12,18 +12,15 @@ import lombok.NoArgsConstructor;
 @Table(name = "koi_farm_image")
 public class KoiFarmImage {
 
-//    @JoinColumn(name = "id")
-//    @ManyToOne
-//    private KoiFarms koiFarms;
+    @JoinColumn(name = "koi_farm_id")
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    private KoiFarms koiFarms;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "koi_farm_id")
-    private Long koiFarmId;
-
-    @Column(name = "image_url")
+    @Column(name = "image_url", columnDefinition = "TEXT")
     private String imageUrl;
 }
