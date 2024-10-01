@@ -1,4 +1,4 @@
 package fall24.swp391.KoiOrderingSystem.service;
 
-public interface IKoiOfFarm {
+public interface IKoiOfFarmService {
 }
