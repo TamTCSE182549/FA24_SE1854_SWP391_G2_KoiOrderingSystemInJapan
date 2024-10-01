@@ -12,14 +12,13 @@ import java.time.format.DateTimeFormatter;
 @Setter
 @Entity
 public class User {
-    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "first_name",length = 50)
-    private String fisrtName;
+    private String firstName;
 
     @Column(name = "last_name",length = 50)
     private String lastName;
@@ -45,11 +44,11 @@ public class User {
 
     @PrePersist
     protected void onCreate(){
-        createdDate = LocalDateTime.parse(LocalDateTime.now().format(formatter));  // formatted date-time string
-        updatedDate = LocalDateTime.parse(LocalDateTime.now().format(formatter));
+        createdDate = LocalDateTime.now();  // formatted date-time string
+        updatedDate = LocalDateTime.now();
     }
     @PreUpdate
     protected void onUpdate(){
-        updatedDate = LocalDateTime.parse(LocalDateTime.now().format(formatter));
+        updatedDate = LocalDateTime.now();
     }
 }

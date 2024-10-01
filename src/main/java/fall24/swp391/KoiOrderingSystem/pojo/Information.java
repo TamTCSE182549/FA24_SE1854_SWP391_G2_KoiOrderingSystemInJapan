@@ -3,10 +3,12 @@ package fall24.swp391.KoiOrderingSystem.pojo;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
-@Table(name = "Infomation")
+@Table(name = "Information")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,7 +17,6 @@ public class Information extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "type_id")
@@ -26,7 +27,4 @@ public class Information extends BaseEntity{
 
     @Column(name = "description")
     private String description;
-
-
-
 }

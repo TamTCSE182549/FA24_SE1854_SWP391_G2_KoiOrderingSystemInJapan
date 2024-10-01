@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
@@ -53,11 +54,14 @@ public class Bookings extends BaseEntity{
     @OneToMany(mappedBy = "booking", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     private List<BookingTourDetail> bookingTourDetails;
 
-    public void addBookingDetail(BookingTourDetail bookingTourDetail) {
-        if (bookingTourDetails == null) {
-            bookingTourDetails = new ArrayList<>();
-        }
-        bookingTourDetails.add(bookingTourDetail);
-        bookingTourDetail.setBooking(this);
-    }
+    @OneToMany(mappedBy = "booking", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    private Set<Deposit> deposits;
+
+//    public void addBookingDetail(BookingTourDetail bookingTourDetail) {
+//        if (bookingTourDetails == null) {
+//            bookingTourDetails = new ArrayList<>();
+//        }
+//        bookingTourDetails.add(bookingTourDetail);
+//        bookingTourDetail.setBooking(this);
+//    }
 }
