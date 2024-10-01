@@ -40,9 +40,16 @@ public class Tours extends BaseEntity{
     @Column(name = "end_time")
     private LocalDateTime endTime;
 
-    @Column(name = "tour_img")
+    @Column(name = "tour_image")
     private String tourImg;
+
+    @Column(name = "status")
+    private String status;
 
     @OneToMany(mappedBy = "tourId", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     private Set<BookingTourDetail> bookingTourDetails;
+
+    @OneToMany(mappedBy = "tour", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    private Set<TourDetail> tourDetails;
+
 }
