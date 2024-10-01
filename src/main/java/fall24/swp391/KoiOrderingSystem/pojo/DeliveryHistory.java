@@ -27,7 +27,7 @@ public class DeliveryHistory {
     private String healthKoiDescription;
 
     @Column(name = "created_at")
-    private LocalDateTime createdDate =  LocalDateTime.parse(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))) ;
+    private LocalDateTime createdDate =  LocalDateTime.now();
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "booking_id")
