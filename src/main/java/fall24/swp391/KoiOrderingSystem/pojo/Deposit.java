@@ -26,7 +26,7 @@ public class Deposit {
     @Column(name = "deposit_date")
     private Date depositDate;
 
-    @Column(name = "deposit_amount")
+    @Column(name = "remain_amount")
     private float remainAmount;
 
     @Column(name = "deposit_status")
