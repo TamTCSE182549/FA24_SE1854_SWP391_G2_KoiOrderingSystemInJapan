@@ -34,6 +34,6 @@ public class Quotations {
     private int approveBy;
 
     @Column(name = "approve_time")
-    private LocalDateTime approveTime = LocalDateTime.now();
+    private LocalDateTime approveTime;
 
 }
