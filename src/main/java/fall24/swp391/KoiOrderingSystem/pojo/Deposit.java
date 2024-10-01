@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -16,24 +17,23 @@ public class Deposit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "Id")
+    @Column(name = "id")
     private Long id;
 
     @Column(name = "deposit_amount")
     private float depositAmount;
 
+    @Column(name = "remain_amount")
+    private float remainAmount;
 
     @Column(name = "deposit_date")
-    private Date depositDate;
-
-    @Column(name = "deposit_amount")
-    private float remainAmount;
+    private LocalDateTime depositDate;
 
     @Column(name = "deposit_status")
     private String depositStatus;
 
     @Column(name = "delivery_expected_date")
-    private Date deliveryExpectedDate;
+    private LocalDateTime deliveryExpectedDate;
 
     @Column(name = "shipping_address")
     private String shippingAddress;
@@ -44,6 +44,5 @@ public class Deposit {
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "booking_id")
     private Bookings booking;
-    // thiếu onetomany ở bảng booking
 
 }
