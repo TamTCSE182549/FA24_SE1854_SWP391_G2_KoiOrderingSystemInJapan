@@ -57,6 +57,9 @@ public class Bookings extends BaseEntity{
     @OneToMany(mappedBy = "booking", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     private Set<Deposit> deposits;
 
+    @OneToMany(mappedBy = "booking", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    private Set<Checkin> checkins;
+
 //    public void addBookingDetail(BookingTourDetail bookingTourDetail) {
 //        if (bookingTourDetails == null) {
 //            bookingTourDetails = new ArrayList<>();

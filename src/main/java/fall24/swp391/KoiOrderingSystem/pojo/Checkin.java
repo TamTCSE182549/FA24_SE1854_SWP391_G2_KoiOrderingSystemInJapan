@@ -45,5 +45,9 @@ public class Checkin extends BaseEntity{
 
     private String status;
 
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    @JoinColumn(name = "booking_id") //name same foreign key mapping
+    private Bookings booking;
+
 
 }
