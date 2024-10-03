@@ -1,4 +1,4 @@
-package fall24.swp391.KoiOrderingSystem.model;
+package fall24.swp391.KoiOrderingSystem.model.response;
 
 import lombok.Data;
 

@@ -35,7 +35,8 @@ public class Filter extends OncePerRequestFilter {
             "/v3/api-docs/**",
             "/swagger-resources/**",
             "/api/login",
-            "/api/register"
+            "/api/register",
+            "/api/forgot-password"
     );
 
     public boolean checkIsPublicAPI(String uri){
@@ -70,7 +71,7 @@ public class Filter extends OncePerRequestFilter {
             //check xem token co dung hay ko => lay thong tin account tu token
             Account account = new Account();
             try {
-                tokenService.getAccountByToken(token);
+                account = tokenService.getAccountByToken(token);
             } catch (ExpiredJwtException e){
                 //token het han
                 resolver.resolveException(request,response,null,new AuthException("Expired token!"));
