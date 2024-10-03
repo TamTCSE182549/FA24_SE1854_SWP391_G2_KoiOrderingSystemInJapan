@@ -2,6 +2,7 @@ package fall24.swp391.KoiOrderingSystem.pojo;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import fall24.swp391.KoiOrderingSystem.enums.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
