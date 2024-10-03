@@ -1,6 +1,9 @@
 package fall24.swp391.KoiOrderingSystem.controller;
 
+import fall24.swp391.KoiOrderingSystem.component.Token;
+import fall24.swp391.KoiOrderingSystem.pojo.Account;
 import fall24.swp391.KoiOrderingSystem.pojo.Bookings;
+import fall24.swp391.KoiOrderingSystem.service.IAuthenticationService;
 import fall24.swp391.KoiOrderingSystem.service.IBookingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,15 +18,18 @@ import java.util.Optional;
 @RequestMapping("/api/bookings")
 public class BookingController {
 
-//    @Autowired
-//    private IBookingService bookingService;
+    @Autowired
+    private IBookingService bookingService;
+
+    @Autowired
+    private IAuthenticationService iAuthenticationService;
 //
 //    // Create a new booking
-//    @PostMapping
-//    public ResponseEntity<Bookings> createBooking(@RequestBody Bookings booking) {
-//        Bookings createdBooking = bookingService.createBooking(booking);
-//        return new ResponseEntity<>(createdBooking, HttpStatus.CREATED);
-//    }
+    @PostMapping
+    public ResponseEntity<Bookings> createBooking(@RequestBody Bookings booking) {
+        Bookings createdBooking = bookingService.createBooking(booking);
+        return new ResponseEntity<>(createdBooking, HttpStatus.CREATED);
+    }
 //
 //    // Get a booking by ID
 //    @GetMapping("/{id}")
@@ -33,12 +39,13 @@ public class BookingController {
 //                .orElseGet(() -> ResponseEntity.notFound().build());
 //    }
 //
-//    // Get all bookings
-//    @GetMapping
-//    public ResponseEntity<List<Bookings>> getAllBookings() {
-//        List<Bookings> bookings = bookingService.getAllBookings();
-//        return ResponseEntity.ok(bookings);
-//    }
+    // Get all bookings
+    @GetMapping
+    public ResponseEntity<List<Bookings>> getTourBookings() {
+        Token token = new Token();
+        List<Bookings> bookings = bookingService.getTourBooking(token.getAccountByToken("").getId());
+        return ResponseEntity.ok(bookings);
+    }
 //
 //    // Update an existing booking
 //    @PutMapping("/{id}")

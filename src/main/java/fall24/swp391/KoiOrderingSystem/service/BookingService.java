@@ -22,13 +22,9 @@ public class BookingService implements IBookingService{
     }
 
     @Override
-    public Optional<Bookings> getBookingById(Long id) {
-        return bookingRepository.findById(id);
-    }
-
-    @Override
-    public List<Bookings> getAllBookings() {
-        return bookingRepository.findAll();
+    public List<Bookings> getTourBooking(Long accountID) {
+        List<Bookings> bookingsList = bookingRepository.listTourBooking(accountID);
+        return bookingRepository.listTourBooking(accountID);
     }
 
     @Override
