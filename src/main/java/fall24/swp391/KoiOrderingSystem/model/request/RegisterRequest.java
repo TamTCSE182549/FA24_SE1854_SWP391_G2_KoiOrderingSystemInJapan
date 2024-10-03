@@ -1,15 +1,12 @@
-package fall24.swp391.KoiOrderingSystem.model;
+package fall24.swp391.KoiOrderingSystem.model.request;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
-import java.time.LocalDateTime;
 @Data
 
 public class RegisterRequest {
@@ -22,7 +19,7 @@ public class RegisterRequest {
     private String password;
 
     @Column(length = 50)
-    private String fisrtName;
+    private String firstName;
 
     @Column(length = 50)
     private String lastName;

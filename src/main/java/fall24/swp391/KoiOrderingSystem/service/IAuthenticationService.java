@@ -1,8 +1,8 @@
 package fall24.swp391.KoiOrderingSystem.service;
 
-import fall24.swp391.KoiOrderingSystem.model.AccountRequest;
-import fall24.swp391.KoiOrderingSystem.model.AccountResponse;
-import fall24.swp391.KoiOrderingSystem.model.RegisterRequest;
+import fall24.swp391.KoiOrderingSystem.model.request.AccountRequest;
+import fall24.swp391.KoiOrderingSystem.model.response.AccountResponse;
+import fall24.swp391.KoiOrderingSystem.model.request.RegisterRequest;
 import fall24.swp391.KoiOrderingSystem.pojo.Account;
 
 import java.util.List;
