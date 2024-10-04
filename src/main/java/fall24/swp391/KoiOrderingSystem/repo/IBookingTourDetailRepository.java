@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface IBookingTourDetailRepository extends JpaRepository<BookingTourDetail, Long> {
 
-    @Query("select btd.* from booking_tour_detail btd where booking_id = ?1")
-    BookingTourDetail showDetail(Long bookingID);
+    @Query(value = "select btd.* from booking_tour_detail as btd where booking_id = ?1", nativeQuery = true)
+    BookingTourDetail showDetailOfBookingID(Long bookingID);
 }
