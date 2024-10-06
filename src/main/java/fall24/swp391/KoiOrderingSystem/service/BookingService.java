@@ -5,6 +5,8 @@ import fall24.swp391.KoiOrderingSystem.pojo.Bookings;
 import fall24.swp391.KoiOrderingSystem.repo.IBookingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.Optional;
@@ -38,11 +40,10 @@ public class BookingService implements IBookingService{
                     bookingToUpdate.getPaymentStatus() != PaymentStatus.cancelled) {
                 bookingToUpdate.setPaymentStatus(bookingDetails.getPaymentStatus());
             }
-
-            // Set other fields as needed (e.g., totalAmount, bookingType, etc.)
-            // bookingToUpdate.setTotalAmount(bookingDetails.getTotalAmount());
-            // Add other updates as necessary
-
+            bookingToUpdate.setPaymentMethod(bookingToUpdate.getPaymentMethod());
+            bookingToUpdate.setDiscountAmount(bookingDetails.getDiscountAmount());
+            bookingToUpdate.setVat(bookingDetails.getVat());
+            bookingToUpdate.setVatAmount(bookingToUpdate.getVat() * bookingToUpdate.getTotalAmount());
             return bookingRepository.save(bookingToUpdate);
         }
         return null; // Or throw an exception

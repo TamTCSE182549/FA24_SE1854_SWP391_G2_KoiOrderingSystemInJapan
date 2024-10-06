@@ -1,7 +1,6 @@
 package fall24.swp391.KoiOrderingSystem.controller;
 
 import fall24.swp391.KoiOrderingSystem.component.Token;
-import fall24.swp391.KoiOrderingSystem.pojo.Account;
 import fall24.swp391.KoiOrderingSystem.pojo.Bookings;
 import fall24.swp391.KoiOrderingSystem.service.IAuthenticationService;
 import fall24.swp391.KoiOrderingSystem.service.IBookingService;
@@ -11,11 +10,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
-@RequestMapping("/api/bookings")
+@RequestMapping("/bookings")
 public class BookingController {
 
     @Autowired
