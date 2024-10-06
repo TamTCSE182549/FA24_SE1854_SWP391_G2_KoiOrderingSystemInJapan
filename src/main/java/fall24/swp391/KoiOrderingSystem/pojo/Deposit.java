@@ -1,5 +1,6 @@
 package fall24.swp391.KoiOrderingSystem.pojo;
 
+import fall24.swp391.KoiOrderingSystem.enums.DepositStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -29,8 +30,10 @@ public class Deposit {
     @Column(name = "deposit_date")
     private LocalDateTime depositDate;
 
+
+    @Enumerated(EnumType.STRING)
     @Column(name = "deposit_status")
-    private String depositStatus;
+    private DepositStatus depositStatus;
 
     @Column(name = "delivery_expected_date")
     private LocalDateTime deliveryExpectedDate;
@@ -40,6 +43,7 @@ public class Deposit {
 
     @Column(name = "shipping_fee")
     private float shippingFee;
+
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "booking_id")
