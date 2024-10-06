@@ -23,7 +23,11 @@ public class ValidationHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleValidation(Exception exception){
-        return new ResponseEntity<>(exception.getMessage(),HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>("Error System: " + exception.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler(NotUpdateException.class)
+    public ResponseEntity<?> handleUpdateException(Exception exception){
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
+    }
 }

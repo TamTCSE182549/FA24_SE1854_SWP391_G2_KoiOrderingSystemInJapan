@@ -1,24 +1,49 @@
 package fall24.swp391.KoiOrderingSystem.service;
 
+import fall24.swp391.KoiOrderingSystem.exception.NotUpdateException;
 import fall24.swp391.KoiOrderingSystem.pojo.Tours;
 import fall24.swp391.KoiOrderingSystem.repo.ITourRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class TourService implements ITourService{
 
+    @Autowired
     private ITourRepository iTourRepository;
 
     @Override
-    public Tours createTour(Tours tours){
-        return iTourRepository.save(tours);
+    public void createTour(Tours tours){
+        iTourRepository.save(tours);
     }
 
     @Override
-    public boolean updateTour(Long id, Tours tours) {
-        return false;
+    public List<Tours> tourList(){
+        return iTourRepository.findAll();
+    }
+
+    @Override
+    public void updateTour(Long id, Tours tours) {
+        Optional<Tours> existTourOptional = iTourRepository.findById(id);
+        if (existTourOptional.isPresent()) {
+            Tours existTour = existTourOptional.get();
+            try {
+                existTour.setUnitPrice(tours.getUnitPrice());
+                existTour.setMaxParticipants(tours.getMaxParticipants());
+                existTour.setStartTime(tours.getStartTime());
+                existTour.setEndTime(tours.getEndTime());
+                existTour.setTourImg(tours.getTourImg());
+                existTour.setStatus(tours.getStatus());
+                iTourRepository.save(existTour);
+            } catch (Exception e) {
+                throw new NotUpdateException("Update details failed");
+            }
+        } else {
+            throw new NotUpdateException("Tour with ID " + id + " does not exist.");
+        }
     }
 
     @Override
