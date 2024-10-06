@@ -36,6 +36,15 @@ public class Bookings {
     @Column(name = "total_amount")
     private float totalAmount;
 
+    @Column(name = "discount_amount")
+    private float discountAmount;
+
+    @Column(name = "VAT")
+    private float vat;
+
+    @Column(name = "VAT_amount")
+    private float vatAmount;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "payment_status")
     private PaymentStatus paymentStatus;
