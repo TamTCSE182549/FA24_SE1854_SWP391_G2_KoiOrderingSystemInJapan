@@ -2,6 +2,7 @@ package fall24.swp391.KoiOrderingSystem.controller;
 
 import fall24.swp391.KoiOrderingSystem.component.Token;
 import fall24.swp391.KoiOrderingSystem.pojo.Bookings;
+import fall24.swp391.KoiOrderingSystem.service.AuthenticationService;
 import fall24.swp391.KoiOrderingSystem.service.IAuthenticationService;
 import fall24.swp391.KoiOrderingSystem.service.IBookingService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,26 +39,23 @@ public class BookingController {
 //    }
 //
     // Get all bookings
-    @GetMapping
-    public ResponseEntity<List<Bookings>> getTourBookings() {
-        Token token = new Token();
-        List<Bookings> bookings = bookingService.getTourBooking(token.getAccountByToken("").getId());
+    @GetMapping("/list/{accountID}")
+    public ResponseEntity<List<Bookings>> getTourBookings(@PathVariable Long accountID) {
+        List<Bookings> bookings = bookingService.getTourBooking(accountID);
         return ResponseEntity.ok(bookings);
     }
-//
-//    // Update an existing booking
-//    @PutMapping("/{id}")
-//    public ResponseEntity<Bookings> updateBooking(@PathVariable Long id, @RequestBody Bookings bookingDetails) {
-//        Bookings updatedBooking = bookingService.updateBooking(id, bookingDetails);
-//        return updatedBooking != null ? ResponseEntity.ok(updatedBooking)
-//                : ResponseEntity.notFound().build();
-//    }
-//
-//    // Delete a booking by ID
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<Boolean> deleteBooking(@PathVariable Long id) {
-//        boolean deleted = bookingService.deleteBooking(id);
-//        return deleted ? ResponseEntity.ok(true)
-//                : ResponseEntity.notFound().build();
-//    }
+
+    // Update an existing booking
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateBooking(@PathVariable Long id, @RequestBody Bookings bookingDetails) {
+        bookingService.updateBooking(id, bookingDetails);
+        return new ResponseEntity<>("Update Complete", HttpStatus.OK);
+    }
+
+    // Delete a booking by ID
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Bookings> deleteBooking(@PathVariable Long id) {
+        Bookings bookings = bookingService.deleteBooking(id);
+        return new ResponseEntity<>(bookings, HttpStatus.OK);
+    }
 }

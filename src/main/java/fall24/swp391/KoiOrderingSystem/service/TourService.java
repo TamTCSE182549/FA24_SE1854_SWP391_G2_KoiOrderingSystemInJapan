@@ -1,5 +1,7 @@
 package fall24.swp391.KoiOrderingSystem.service;
 
+import fall24.swp391.KoiOrderingSystem.enums.TourStatus;
+import fall24.swp391.KoiOrderingSystem.exception.NotDeleteException;
 import fall24.swp391.KoiOrderingSystem.exception.NotUpdateException;
 import fall24.swp391.KoiOrderingSystem.pojo.Tours;
 import fall24.swp391.KoiOrderingSystem.repo.ITourRepository;
@@ -38,7 +40,7 @@ public class TourService implements ITourService{
                 existTour.setTourImg(tours.getTourImg());
                 existTour.setStatus(tours.getStatus());
                 iTourRepository.save(existTour);
-            } catch (Exception e) {
+            } catch (NotUpdateException e) {
                 throw new NotUpdateException("Update details failed");
             }
         } else {
@@ -47,12 +49,14 @@ public class TourService implements ITourService{
     }
 
     @Override
-    public boolean deleteTour(Long id){
+    public Tours deleteTourById(Long id) {
         Optional<Tours> tours = iTourRepository.findById(id);
         if(tours.isPresent()){
-            iTourRepository.deleteById(id);
-            return true;
+            Tours tourUpdated = tours.get();
+            tourUpdated.setStatus(TourStatus.inactive);
+            return iTourRepository.save(tourUpdated);
+        } else {
+            throw new NotDeleteException("Cannot delete tour");
         }
-        return false;
     }
 }
