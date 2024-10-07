@@ -17,4 +17,10 @@ public interface IBookingService {
 
     // Delete a booking by ID (update status to 'cancelled' and return a boolean)
     Bookings deleteBooking(Long id);
+
+    //Create a payment for a Tour Pending for User
+    Bookings createPaymentTourPending(Bookings booking);
+
+    Bookings cancelledPaymentTour(Bookings booking);
+
 }

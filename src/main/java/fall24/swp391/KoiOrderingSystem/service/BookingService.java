@@ -68,4 +68,26 @@ public class BookingService implements IBookingService{
             throw new NotUpdateException("Error: " + e.getMessage());
         }
     }
+
+    @Override
+    public Bookings createPaymentTourPending(Bookings booking){
+        Bookings savedBooking = createBooking(booking);
+        float totalAmount =savedBooking.getBookingTourDetails().getFirst().getTotalAmount();
+        System.out.println("Total amount to be paid: " + totalAmount);
+        return savedBooking;
+    }
+
+    @Override
+    public Bookings cancelledPaymentTour(Bookings booking) {
+        Optional<Bookings> existingBooking = bookingRepository.findById(booking.getId());
+        if(existingBooking.isPresent()){
+            Bookings bookingToUpdate = existingBooking.get();
+            bookingToUpdate.setPaymentStatus(PaymentStatus.cancelled);
+            bookingRepository.save(bookingToUpdate);
+            return bookingToUpdate;
+        }
+        return null;
+    }
+
+
 }

@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface IKoiFarmImage extends JpaRepository<KoiFarmImage, Integer>{
+public interface IKoiFarmImageRepository extends JpaRepository<KoiFarmImage, Long>{
 }
