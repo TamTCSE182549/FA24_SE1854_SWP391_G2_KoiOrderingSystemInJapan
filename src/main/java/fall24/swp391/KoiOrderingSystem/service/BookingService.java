@@ -5,10 +5,7 @@ import fall24.swp391.KoiOrderingSystem.pojo.Bookings;
 import fall24.swp391.KoiOrderingSystem.repo.IBookingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RequestBody;
 
-import java.awt.print.Book;
 import java.util.List;
 import java.util.Optional;
 
@@ -69,4 +66,18 @@ public class BookingService implements IBookingService{
         System.out.println("Total amount to be paid: " + totalAmount);
         return savedBooking;
     }
+
+    @Override
+    public Bookings cancelledPaymentTour(Bookings booking) {
+        Optional<Bookings> existingBooking = bookingRepository.findById(booking.getId());
+        if(existingBooking.isPresent()){
+            Bookings bookingToUpdate = existingBooking.get();
+            bookingToUpdate.setPaymentStatus(PaymentStatus.cancelled);
+            bookingRepository.save(bookingToUpdate);
+            return bookingToUpdate;
+        }
+        return null;
+    }
+
+
 }

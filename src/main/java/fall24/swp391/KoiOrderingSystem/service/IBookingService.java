@@ -22,4 +22,6 @@ public interface IBookingService {
 
     //Create a payment for a Tour Pending for User
     Bookings createPaymentTourPending(Bookings booking);
+
+    Bookings cancelledPaymentTour(Bookings booking);
 }
