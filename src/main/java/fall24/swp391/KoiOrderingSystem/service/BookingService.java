@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.awt.print.Book;
 import java.util.List;
 import java.util.Optional;
 
@@ -59,5 +60,13 @@ public class BookingService implements IBookingService{
             return true; // Return true indicating successful cancellation
         }
         return false; // Return false if booking was not found
+    }
+
+    @Override
+    public Bookings createPaymentTourPending(Bookings booking){
+        Bookings savedBooking = createBooking(booking);
+        float totalAmount =savedBooking.getBookingTourDetails().getFirst().getTotalAmount();
+        System.out.println("Total amount to be paid: " + totalAmount);
+        return savedBooking;
     }
 }
