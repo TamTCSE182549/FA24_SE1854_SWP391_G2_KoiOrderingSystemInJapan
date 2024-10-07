@@ -12,7 +12,7 @@ public class BookingKoiDetailService implements IBookingKoiDetailService{
     @Autowired
     private IBookingKoiDetailRepository bookingKoiDetailRepository;
 
-
+  
     @Override
     public List<BookingKoiDetail> findAll() {
         return bookingKoiDetailRepository.findAll();

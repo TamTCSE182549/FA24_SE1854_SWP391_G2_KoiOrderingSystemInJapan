@@ -36,16 +36,12 @@ public class TourController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteTour(@PathVariable @NotNull Long id) {
-        boolean check = iTourService.deleteTour(id);
-        if (check) {
-            return new ResponseEntity<>("Delete tour id " + id + " successfully", HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("Delete tour id " + id + " failed", HttpStatus.OK);
-        }
+        Tours tours = iTourService.deleteTourById(id);
+        return new ResponseEntity<>(tours, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateTour(@PathVariable Long id, @RequestBody Tours tours) {
+    public ResponseEntity<?> updateTour(@PathVariable @NotNull Long id, @RequestBody Tours tours) {
         iTourService.updateTour(id, tours);
         return ResponseEntity.ok(tours);
     }

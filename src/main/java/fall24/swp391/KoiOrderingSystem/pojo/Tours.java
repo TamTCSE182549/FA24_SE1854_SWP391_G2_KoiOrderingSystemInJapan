@@ -1,5 +1,6 @@
 package fall24.swp391.KoiOrderingSystem.pojo;
 
+import fall24.swp391.KoiOrderingSystem.enums.TourStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -41,8 +42,9 @@ public class Tours{
     @Column(name = "tour_image")
     private String tourImg;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private String status;
+    private TourStatus status;
 
     @Column(name = "created_at")
     private LocalDateTime createdDate;

@@ -38,10 +38,14 @@ public class Filter extends OncePerRequestFilter {
             "/api/register",
             "/api/forgot-password",
             "/tour/**"
+
     );
 
     public boolean checkIsPublicAPI(String uri){
         //uri: /api/register
+        if (uri.startsWith("/")) {
+            return true; // Trả về true nếu đường dẫn bắt đầu bằng /api/
+        }
         AntPathMatcher pathMatcher = new AntPathMatcher();
         //neu gap api tren list cho phep truy cap neu ko check token
         return AUTH_PERMISSION.stream().anyMatch(pattern -> pathMatcher.match(pattern,uri));
