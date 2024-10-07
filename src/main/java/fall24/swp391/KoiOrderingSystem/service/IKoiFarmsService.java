@@ -5,11 +5,12 @@ import fall24.swp391.KoiOrderingSystem.pojo.KoiFarms;
 import java.util.List;
 
 public interface IKoiFarmsService {
-    List<KoiFarms> findAll();
 
-    KoiFarms findById(Long Id);
+    KoiFarms createKoiFarm(KoiFarms koiFarm);
 
-    KoiFarms save(KoiFarms koiFarms);
+    List<KoiFarms> listKoiFarm();
 
-    void deletebyId(Long Id);
+    KoiFarms updateKoiFarm(Long id, KoiFarms koiFarm);
+
+    KoiFarms deleteKoiFarm(Long id);
 }
