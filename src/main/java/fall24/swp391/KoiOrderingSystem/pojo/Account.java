@@ -40,7 +40,7 @@ public class Account extends TimeEntity implements UserDetails {
     private boolean active;
 
     @Enumerated(EnumType.STRING)
-    Role role;
+    private Role role;
 
     @OneToMany(mappedBy = "account", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     private Set<Bookings> bookings;
