@@ -4,21 +4,18 @@ import fall24.swp391.KoiOrderingSystem.enums.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @Entity
 @Table(name = "bookings")
-public class Bookings extends BaseEntity{
+public class Bookings {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,6 +35,15 @@ public class Bookings extends BaseEntity{
 
     @Column(name = "total_amount")
     private float totalAmount;
+
+    @Column(name = "discount_amount")
+    private float discountAmount;
+
+    @Column(name = "VAT")
+    private float vat;
+
+    @Column(name = "VAT_amount")
+    private float vatAmount;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "payment_status")
@@ -59,6 +65,31 @@ public class Bookings extends BaseEntity{
 
     @OneToMany(mappedBy = "booking", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     private Set<Checkin> checkins;
+
+    @Column(name = "created_at")
+    private LocalDateTime createdDate;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedDate;
+
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    @JoinColumn(name = "created_by")
+    private Account createdBy;
+
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    @JoinColumn(name = "updated_by")
+    private Account updatedBy;
+
+    @PrePersist
+    protected void onCreate(){
+        createdDate = LocalDateTime.now();
+        updatedDate = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate(){
+        updatedDate = LocalDateTime.now();
+    }
 
 //    public void addBookingDetail(BookingTourDetail bookingTourDetail) {
 //        if (bookingTourDetails == null) {
