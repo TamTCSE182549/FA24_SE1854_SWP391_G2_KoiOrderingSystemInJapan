@@ -10,6 +10,8 @@ import java.util.List;
 @Repository
 public interface IBookingRepository extends JpaRepository<Bookings, Long> {
 
+
+
     //list booking type 1
     @Query(value = "select b.* " +
             "from bookings b,  booking_type bt " +
@@ -21,4 +23,6 @@ public interface IBookingRepository extends JpaRepository<Bookings, Long> {
             "from bookings b,  booking_type bt " +
             "where b.account_id = ?1 and b.booking_type_id = bt.id and bt.id = 2", nativeQuery = true)
     List<Bookings> listKoiBooking(Long idAccount);
+   Bookings findBookingsById(Long bookingId);
+
 }
