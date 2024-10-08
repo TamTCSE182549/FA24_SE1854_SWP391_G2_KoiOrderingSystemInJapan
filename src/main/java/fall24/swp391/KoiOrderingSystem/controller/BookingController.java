@@ -1,9 +1,6 @@
 package fall24.swp391.KoiOrderingSystem.controller;
 
-import fall24.swp391.KoiOrderingSystem.component.Token;
 import fall24.swp391.KoiOrderingSystem.pojo.Bookings;
-import fall24.swp391.KoiOrderingSystem.service.AuthenticationService;
-import fall24.swp391.KoiOrderingSystem.service.IAuthenticationService;
 import fall24.swp391.KoiOrderingSystem.service.IBookingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,14 +17,13 @@ public class BookingController {
     @Autowired
     private IBookingService bookingService;
 
-    @Autowired
-    private IAuthenticationService iAuthenticationService;
-//
-//    // Create a new booking
-    @PostMapping
-    public ResponseEntity<Bookings> createBooking(@RequestBody Bookings booking) {
-        Bookings createdBooking = bookingService.createBooking(booking);
-        return new ResponseEntity<>(createdBooking, HttpStatus.CREATED);
+    // Create a new booking
+    @PostMapping("/create/{tourID}")
+    public ResponseEntity<Bookings> createBooking(@PathVariable Long tourID,
+                                                  @RequestBody Bookings booking,
+                                                  @RequestParam int participants) {
+        Bookings createdBooking = bookingService.createTourBooking(tourID, booking, participants);
+        return ResponseEntity.ok(createdBooking);
     }
 //
 //    // Get a booking by ID

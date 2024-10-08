@@ -5,9 +5,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface IBookingTourDetailRepository extends JpaRepository<BookingTourDetail, Long> {
 
     @Query(value = "select btd.* from booking_tour_detail as btd where booking_id = ?1", nativeQuery = true)
-    BookingTourDetail showDetailOfBookingID(Long bookingID);
+    List<BookingTourDetail> showDetailOfBookingID(Long bookingID);
 }

@@ -1,11 +1,13 @@
 package fall24.swp391.KoiOrderingSystem.service;
 
 import fall24.swp391.KoiOrderingSystem.enums.PaymentStatus;
+import fall24.swp391.KoiOrderingSystem.exception.GenericException;
 import fall24.swp391.KoiOrderingSystem.exception.NotDeleteException;
 import fall24.swp391.KoiOrderingSystem.exception.NotUpdateException;
+import fall24.swp391.KoiOrderingSystem.pojo.BookingTourDetail;
 import fall24.swp391.KoiOrderingSystem.pojo.Bookings;
 import fall24.swp391.KoiOrderingSystem.repo.IBookingRepository;
-import org.eclipse.angus.mail.handlers.handler_base;
+import fall24.swp391.KoiOrderingSystem.repo.IBookingTourDetailRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,8 +20,11 @@ public class BookingService implements IBookingService{
     @Autowired
     private IBookingRepository bookingRepository;
 
+    @Autowired
+    private IBookingTourDetailRepository iBookingTourDetailRepository;
+
     @Override
-    public Bookings createBooking(Bookings booking) {
+    public Bookings createTourBooking(Long tourID, Bookings booking, int participants) {
         booking.setPaymentStatus(PaymentStatus.pending); // Set default status to pending
         return bookingRepository.save(booking);
     }
@@ -31,7 +36,7 @@ public class BookingService implements IBookingService{
     }
 
     @Override
-    public void updateBooking(Long id, Bookings bookingUpdateDetail) {
+    public Bookings updateBooking(Long id, Bookings bookingUpdateDetail) {
         try {
             Optional<Bookings> existingBooking = bookingRepository.findById(id);
             if (existingBooking.isPresent()) {
@@ -45,10 +50,20 @@ public class BookingService implements IBookingService{
                 bookingToUpdate.setDiscountAmount(bookingUpdateDetail.getDiscountAmount());
                 bookingToUpdate.setVat(bookingUpdateDetail.getVat());
                 bookingToUpdate.setVatAmount(bookingToUpdate.getVat() * bookingToUpdate.getTotalAmount());
-                bookingRepository.save(bookingToUpdate);
+
+                float totalBookingAmount = 0;
+                List<BookingTourDetail> tourDetailOfBookingID = iBookingTourDetailRepository.showDetailOfBookingID(id);
+                for(BookingTourDetail b : tourDetailOfBookingID){
+                    totalBookingAmount += b.getTotalAmount();
+                }
+                bookingToUpdate.setTotalAmount(totalBookingAmount);
+
+                return bookingRepository.save(bookingToUpdate);
+            } else {
+                throw new NotUpdateException("Update booking id " + id + " failed");
             }
         } catch (NotUpdateException e) {
-            throw new NotUpdateException("Update booking id " + id + "failed");
+            throw new GenericException(e.getMessage());
         }
     }
 
@@ -65,17 +80,17 @@ public class BookingService implements IBookingService{
                 throw new NotDeleteException("Can not DELETE booking " + id);
             }
         } catch (Exception e) {
-            throw new NotUpdateException("Error: " + e.getMessage());
+            throw new GenericException(e.getMessage());
         }
     }
 
-    @Override
-    public Bookings createPaymentTourPending(Bookings booking){
-        Bookings savedBooking = createBooking(booking);
-        float totalAmount =savedBooking.getBookingTourDetails().getFirst().getTotalAmount();
-        System.out.println("Total amount to be paid: " + totalAmount);
-        return savedBooking;
-    }
+//    @Override
+//    public Bookings createPaymentTourPending(Bookings booking){
+//        Bookings savedBooking = createTourBooking(booking);
+//        float totalAmount =savedBooking.getBookingTourDetails().getFirst().getTotalAmount();
+//        System.out.println("Total amount to be paid: " + totalAmount);
+//        return savedBooking;
+//    }
 
     @Override
     public Bookings cancelledPaymentTour(Bookings booking) {
@@ -88,6 +103,4 @@ public class BookingService implements IBookingService{
         }
         return null;
     }
-
-
 }
