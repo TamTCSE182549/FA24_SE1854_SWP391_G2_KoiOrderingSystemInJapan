@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -43,6 +44,15 @@ public class PaymentController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping("/status/{accountId}")
+    public ResponseEntity<List<Bookings>> getPaymentStatus(@PathVariable Long accountId){
+        List<Bookings> userPayment = bookingService.getTourBooking(accountId);
+        if(userPayment.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(userPayment);
     }
 
 }
