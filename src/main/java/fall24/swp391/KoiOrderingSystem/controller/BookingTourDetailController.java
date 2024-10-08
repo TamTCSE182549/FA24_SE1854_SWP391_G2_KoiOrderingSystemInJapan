@@ -2,6 +2,7 @@ package fall24.swp391.KoiOrderingSystem.controller;
 
 import fall24.swp391.KoiOrderingSystem.service.IBookingTourDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -12,5 +13,5 @@ public class BookingTourDetailController {
     @Autowired
     private IBookingTourDetailService iBookingTourDetailService;
 
-
+//    public ResponseEntity<?>
 }

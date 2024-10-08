@@ -21,7 +21,7 @@ public class ValidationHandler {
         return new ResponseEntity<>(message.toString(),HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler(GenericException.class)
     public ResponseEntity<?> handleGenericException(Exception exception){
         return new ResponseEntity<>("Error System: " + exception.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
     }
