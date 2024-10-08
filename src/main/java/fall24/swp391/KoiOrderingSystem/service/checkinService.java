@@ -2,16 +2,14 @@ package fall24.swp391.KoiOrderingSystem.service;
 
 import fall24.swp391.KoiOrderingSystem.pojo.Checkin;
 import fall24.swp391.KoiOrderingSystem.repo.ICheckinRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
 public class checkinService implements ICheckinService{
 
+    @Autowired
     private ICheckinRepository checkinRepository;
-
-    public checkinService(ICheckinRepository thecheckinRepository) {
-        checkinRepository = thecheckinRepository;
-    }
 
     @Override
     public List<Checkin> findAll() {
