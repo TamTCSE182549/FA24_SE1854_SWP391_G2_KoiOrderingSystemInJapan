@@ -38,7 +38,6 @@ public class Filter extends OncePerRequestFilter {
             "/api/register",
             "/api/forgot-password",
             "/tour/**"
-
     );
 
     public boolean checkIsPublicAPI(String uri){

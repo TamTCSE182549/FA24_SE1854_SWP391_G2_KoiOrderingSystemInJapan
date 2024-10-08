@@ -45,8 +45,13 @@ public class Deposit {
     private float shippingFee;
 
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "booking_id")
     private Bookings booking;
 
+    @PrePersist
+    protected void onCreate(){
+        deliveryExpectedDate = LocalDateTime.now();
+        depositDate = LocalDateTime.now();
+    }
 }
