@@ -5,12 +5,9 @@ import fall24.swp391.KoiOrderingSystem.component.Token;
 import fall24.swp391.KoiOrderingSystem.exception.AccountNotFoundException;
 import fall24.swp391.KoiOrderingSystem.exception.AuthException;
 import fall24.swp391.KoiOrderingSystem.exception.DuplicateEntity;
-import fall24.swp391.KoiOrderingSystem.model.request.AccountRequest;
-import fall24.swp391.KoiOrderingSystem.model.request.ForgotPassRequest;
-import fall24.swp391.KoiOrderingSystem.model.request.ResetPasswordRequest;
+import fall24.swp391.KoiOrderingSystem.model.request.*;
 import fall24.swp391.KoiOrderingSystem.model.response.AccountResponse;
 import fall24.swp391.KoiOrderingSystem.model.EmailDetail;
-import fall24.swp391.KoiOrderingSystem.model.request.RegisterRequest;
 import fall24.swp391.KoiOrderingSystem.pojo.Account;
 import fall24.swp391.KoiOrderingSystem.enums.Role;
 import fall24.swp391.KoiOrderingSystem.pojo.User;
@@ -103,6 +100,22 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
     public List<Account> getAllAccount() {
         List<Account> list = accountRepository.findAll();
         return list;
+    }
+
+    @Override
+    public String loginOrRegisterGoogle(GoogleRequest googleRequest) {
+        Account account = accountRepository.findAccountByEmail(googleRequest.getEmail());
+        //register if not found account in db
+        if(account == null){
+            account = new Account();
+            account.setEmail(googleRequest.getEmail());
+            User newUser = modelMapper.map(googleRequest,User.class);
+            account.setRole(Role.CUSTOMER);
+            account.setActive(true);
+            account.setUser(newUser);
+        }
+        //return token to fe
+        return getToken.generateToken(account);
     }
 
     @Override

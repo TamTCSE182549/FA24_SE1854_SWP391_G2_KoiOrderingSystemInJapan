@@ -27,7 +27,7 @@ public class User {
     private boolean gender;
 
     @Pattern(regexp = "(84|0[3|5|7|8|9])+(\\d{8})",message = "Phone invalid")
-    @Column(name = "phone_number",unique = true)
+    @Column(name = "phone_number")
     private String phone;
 
     private String address;
