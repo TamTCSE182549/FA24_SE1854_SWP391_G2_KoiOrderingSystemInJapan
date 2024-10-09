@@ -26,8 +26,12 @@ public class GoogleController {
     @Autowired
     AuthenticationService authenticationService;
     @PostMapping("/google")
-    public ResponseEntity<?> googleLogin(@RequestBody String token) {
+    public ResponseEntity<?> googleLogin(@RequestBody Map<String, String> body) {
         try {
+            String token = body.get("token"); // Extract the token from the JSON object
+            if (token == null) {
+                return ResponseEntity.badRequest().body("Token is missing");
+            }
             GoogleIdTokenVerifier verifier =
                     new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new GsonFactory())
                             .setAudience(Collections.singletonList(GOOGLE_CLIENT_ID))
@@ -52,4 +56,5 @@ public class GoogleController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error verifying Google token: " + e.getMessage());
         }
     }
+
 }

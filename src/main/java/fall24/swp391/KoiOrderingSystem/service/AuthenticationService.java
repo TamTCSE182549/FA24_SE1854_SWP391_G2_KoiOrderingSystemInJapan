@@ -114,6 +114,7 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
             account.setActive(true);
             account.setUser(newUser);
         }
+        System.out.println(account.toString());
         //return token to fe
         return getToken.generateToken(account);
     }
