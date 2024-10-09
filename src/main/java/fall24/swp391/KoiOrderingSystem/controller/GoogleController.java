@@ -2,6 +2,7 @@ package fall24.swp391.KoiOrderingSystem.controller;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import fall24.swp391.KoiOrderingSystem.model.request.GoogleRequest;
+import fall24.swp391.KoiOrderingSystem.model.response.GoogleResponse;
 import fall24.swp391.KoiOrderingSystem.pojo.Account;
 import fall24.swp391.KoiOrderingSystem.service.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,8 +48,10 @@ public class GoogleController {
                 String givenName = (String) payload.get("given_name");
                 GoogleRequest googleRequest = new GoogleRequest(email,familyName,givenName);
                 String accessToken = authenticationService.loginOrRegisterGoogle(googleRequest);
+                GoogleResponse googleResponse = new GoogleResponse();
+                googleResponse.setToken(accessToken);
                 // You can now use this information to create or log in the user in your application
-                return ResponseEntity.ok(accessToken);
+                return ResponseEntity.ok(googleResponse);
             } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
             }
