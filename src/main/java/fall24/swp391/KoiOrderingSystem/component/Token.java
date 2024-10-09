@@ -30,6 +30,12 @@ public class Token {
     }
     public String generateToken(Account account){
         String token = Jwts.builder().subject(account.getId()+"")
+                .claim("role", account.getRole())
+                .claim("last_name",account.getLastName())
+                .claim("first_name",account.getFirstName())
+                .claim("email",account.getEmail())
+                .claim("phone",account.getPhone())
+                .claim("address",account.getAddress())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis()+1000*60*60*24))
                 .signWith(getSignInKey())

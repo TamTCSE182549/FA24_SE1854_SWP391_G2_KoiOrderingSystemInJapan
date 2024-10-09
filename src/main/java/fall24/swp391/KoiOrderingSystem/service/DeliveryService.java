@@ -28,9 +28,6 @@ public class DeliveryService implements IDeliveryService {
     @Autowired
     IBookingRepository bookingRepository;
 
-    @Autowired
-    IBookingService bookingService;
-
     @Override
     public Deliveries addDelivery(DeliveryRequest deliveryRequest, Long bookingId) {
         try {
@@ -42,7 +39,7 @@ public class DeliveryService implements IDeliveryService {
                 if(booking.getPaymentStatus()== PaymentStatus.shipped)
                 {
                     booking.setPaymentStatus(PaymentStatus.complete);
-                    bookingService.updateBooking(bookingId, booking);
+                    bookingRepository.save(booking);
                     delivery.setBooking(booking);
                 }
                 else throw new NotFoundEntity("Booking isn't shipped");

@@ -9,10 +9,8 @@ import fall24.swp391.KoiOrderingSystem.model.request.*;
 import fall24.swp391.KoiOrderingSystem.model.response.AccountResponse;
 import fall24.swp391.KoiOrderingSystem.model.EmailDetail;
 import fall24.swp391.KoiOrderingSystem.pojo.Account;
-import fall24.swp391.KoiOrderingSystem.enums.Role;
-import fall24.swp391.KoiOrderingSystem.pojo.User;
+import fall24.swp391.KoiOrderingSystem.pojo.Role;
 import fall24.swp391.KoiOrderingSystem.repo.IAccountRepository;
-import fall24.swp391.KoiOrderingSystem.repo.IUserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -36,9 +34,6 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
     IAccountRepository accountRepository;
 
     @Autowired
-    IUserRepository userRepository;
-
-    @Autowired
     ModelMapper modelMapper;
 
     @Autowired
@@ -56,14 +51,11 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
     @Override
     public AccountResponse register(RegisterRequest registerRequest) {
         Account account = modelMapper.map(registerRequest,Account.class);
-        User user = modelMapper.map(registerRequest,User.class);
-        user.setAccount(account);
         account.setActive(true);
        try {
            account.setPassword(passwordEncoder.encode(account.getPassword()));
            account.setRole(Role.CUSTOMER);
            Account newAccount = accountRepository.save(account);
-           User newUser = userRepository.save(user);
 
            EmailDetail emailDetail = new EmailDetail();
            emailDetail.setReceiver(newAccount);
@@ -108,12 +100,11 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
         //register if not found account in db
         if(account == null){
             account = new Account();
-            account.setEmail(googleRequest.getEmail());
-            User newUser = modelMapper.map(googleRequest,User.class);
+            account  = modelMapper.map(googleRequest,Account.class);
             account.setRole(Role.CUSTOMER);
             account.setActive(true);
-            account.setUser(newUser);
         }
+        System.out.println(account.toString());
         //return token to fe
         return getToken.generateToken(account);
     }
