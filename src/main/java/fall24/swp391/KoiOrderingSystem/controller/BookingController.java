@@ -8,22 +8,23 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
-@RequestMapping("/api/bookings")
+@RequestMapping("/bookings")
 public class BookingController {
 
-//    @Autowired
-//    private IBookingService bookingService;
-//
-//    // Create a new booking
-//    @PostMapping
-//    public ResponseEntity<Bookings> createBooking(@RequestBody Bookings booking) {
-//        Bookings createdBooking = bookingService.createBooking(booking);
-//        return new ResponseEntity<>(createdBooking, HttpStatus.CREATED);
-//    }
+    @Autowired
+    private IBookingService bookingService;
+
+    // Create a new booking
+    @PostMapping("/create/{tourID}")
+    public ResponseEntity<Bookings> createBooking(@PathVariable Long tourID,
+                                                  @RequestBody Bookings booking,
+                                                  @RequestParam int participants) {
+        Bookings createdBooking = bookingService.createTourBooking(tourID, booking, participants);
+        return ResponseEntity.ok(createdBooking);
+    }
 //
 //    // Get a booking by ID
 //    @GetMapping("/{id}")
@@ -33,26 +34,24 @@ public class BookingController {
 //                .orElseGet(() -> ResponseEntity.notFound().build());
 //    }
 //
-//    // Get all bookings
-//    @GetMapping
-//    public ResponseEntity<List<Bookings>> getAllBookings() {
-//        List<Bookings> bookings = bookingService.getAllBookings();
-//        return ResponseEntity.ok(bookings);
-//    }
-//
-//    // Update an existing booking
-//    @PutMapping("/{id}")
-//    public ResponseEntity<Bookings> updateBooking(@PathVariable Long id, @RequestBody Bookings bookingDetails) {
-//        Bookings updatedBooking = bookingService.updateBooking(id, bookingDetails);
-//        return updatedBooking != null ? ResponseEntity.ok(updatedBooking)
-//                : ResponseEntity.notFound().build();
-//    }
-//
-//    // Delete a booking by ID
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<Boolean> deleteBooking(@PathVariable Long id) {
-//        boolean deleted = bookingService.deleteBooking(id);
-//        return deleted ? ResponseEntity.ok(true)
-//                : ResponseEntity.notFound().build();
-//    }
+    // Get all bookings
+    @GetMapping("/list/{accountID}")
+    public ResponseEntity<List<Bookings>> getTourBookings(@PathVariable Long accountID) {
+        List<Bookings> bookings = bookingService.getTourBooking(accountID);
+        return ResponseEntity.ok(bookings);
+    }
+
+    // Update an existing booking
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateBooking(@PathVariable Long id, @RequestBody Bookings bookingDetails) {
+        bookingService.updateBooking(id, bookingDetails);
+        return new ResponseEntity<>("Update Complete", HttpStatus.OK);
+    }
+
+    // Delete a booking by ID
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Bookings> deleteBooking(@PathVariable Long id) {
+        Bookings bookings = bookingService.deleteBooking(id);
+        return new ResponseEntity<>(bookings, HttpStatus.OK);
+    }
 }

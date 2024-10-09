@@ -26,17 +26,20 @@ public class DeliveryHistory {
     @Column(name = "health_koi_description")
     private String healthKoiDescription;
 
-    @Column(name = "created_at")
-    private LocalDateTime createdDate =  LocalDateTime.now();
-
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "booking_id")
     private Bookings booking;
 
+    @Column(name = "created_at")
+    private LocalDateTime createdDate;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "delivery_staff_id")
     private Account deliveryStaff;
 
+    @PrePersist
+    protected void onCreate(){
+        createdDate = LocalDateTime.now();
+    }
 }
 

@@ -16,14 +16,23 @@ public class ValidationHandler {
     public ResponseEntity<?> handleValidation(MethodArgumentNotValidException exception){
         StringBuilder message = new StringBuilder();
         for (FieldError fieldError : exception.getBindingResult().getFieldErrors()){
-            message.append(fieldError).append(": ").append(fieldError.getDefaultMessage());
+            message.append(fieldError.getField()).append(": ").append(fieldError.getDefaultMessage()).append("\n");
         }
         return new ResponseEntity<>(message.toString(),HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<?> handleValidation(Exception exception){
-        return new ResponseEntity<>(exception.getMessage(),HttpStatus.BAD_REQUEST);
+    @ExceptionHandler(GenericException.class)
+    public ResponseEntity<?> handleGenericException(Exception exception){
+        return new ResponseEntity<>("Error System: " + exception.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler(NotUpdateException.class)
+    public ResponseEntity<?> handleUpdateException(NotUpdateException exception){
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NotDeleteException.class)
+    public ResponseEntity<?> handleDeleteException(NotDeleteException exception){
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
+    }
 }

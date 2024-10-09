@@ -6,11 +6,11 @@ import java.util.List;
 
 public interface IDepositService {
 
-    List<Deposit> findAll();
+    List<Deposit> getDepositByBookingId(Long bookingId);
 
-    Deposit findById(Long Id);
+    Deposit createDeposit(Deposit theDeposit);
 
-    Deposit save(Deposit theDeposit);
+    Boolean deleteById(Long theid);
 
-    void deleteById(Long theid);
+    Deposit updateDeposit(Long id,Deposit deposit);
 }

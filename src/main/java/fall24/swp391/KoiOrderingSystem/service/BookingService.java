@@ -1,8 +1,13 @@
 package fall24.swp391.KoiOrderingSystem.service;
 
 import fall24.swp391.KoiOrderingSystem.enums.PaymentStatus;
+import fall24.swp391.KoiOrderingSystem.exception.GenericException;
+import fall24.swp391.KoiOrderingSystem.exception.NotDeleteException;
+import fall24.swp391.KoiOrderingSystem.exception.NotUpdateException;
+import fall24.swp391.KoiOrderingSystem.pojo.BookingTourDetail;
 import fall24.swp391.KoiOrderingSystem.pojo.Bookings;
 import fall24.swp391.KoiOrderingSystem.repo.IBookingRepository;
+import fall24.swp391.KoiOrderingSystem.repo.IBookingTourDetailRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,52 +20,87 @@ public class BookingService implements IBookingService{
     @Autowired
     private IBookingRepository bookingRepository;
 
+    @Autowired
+    private IBookingTourDetailRepository iBookingTourDetailRepository;
+
     @Override
-    public Bookings createBooking(Bookings booking) {
+    public Bookings createTourBooking(Long tourID, Bookings booking, int participants) {
         booking.setPaymentStatus(PaymentStatus.pending); // Set default status to pending
         return bookingRepository.save(booking);
     }
 
     @Override
-    public Optional<Bookings> getBookingById(Long id) {
-        return bookingRepository.findById(id);
+    public List<Bookings> getTourBooking(Long accountID) {
+        List<Bookings> bookingsList = bookingRepository.listTourBooking(accountID);
+        return bookingRepository.listTourBooking(accountID);
     }
 
     @Override
-    public List<Bookings> getAllBookings() {
-        return bookingRepository.findAll();
-    }
+    public Bookings updateBooking(Long id, Bookings bookingUpdateDetail) {
+        try {
+            Optional<Bookings> existingBooking = bookingRepository.findById(id);
+            if (existingBooking.isPresent()) {
+                Bookings bookingToUpdate = existingBooking.get();
+                // Update fields except paymentStatus if it's pending or cancelled
+                if (bookingToUpdate.getPaymentStatus() != PaymentStatus.pending &&
+                        bookingToUpdate.getPaymentStatus() != PaymentStatus.cancelled) {
+                    bookingToUpdate.setPaymentStatus(bookingUpdateDetail.getPaymentStatus());
+                }
+                bookingToUpdate.setPaymentMethod(bookingToUpdate.getPaymentMethod());
+                bookingToUpdate.setDiscountAmount(bookingUpdateDetail.getDiscountAmount());
+                bookingToUpdate.setVat(bookingUpdateDetail.getVat());
+                bookingToUpdate.setVatAmount(bookingToUpdate.getVat() * bookingToUpdate.getTotalAmount());
 
-    @Override
-    public Bookings updateBooking(Long id, Bookings bookingDetails) {
-        Optional<Bookings> existingBooking = bookingRepository.findById(id);
-        if (existingBooking.isPresent()) {
-            Bookings bookingToUpdate = existingBooking.get();
+                float totalBookingAmount = 0;
+                List<BookingTourDetail> tourDetailOfBookingID = iBookingTourDetailRepository.showDetailOfBookingID(id);
+                for(BookingTourDetail b : tourDetailOfBookingID){
+                    totalBookingAmount += b.getTotalAmount();
+                }
+                bookingToUpdate.setTotalAmount(totalBookingAmount);
 
-            // Update fields except paymentStatus if it's pending or cancelled
-            if (bookingToUpdate.getPaymentStatus() != PaymentStatus.pending &&
-                    bookingToUpdate.getPaymentStatus() != PaymentStatus.cancelled) {
-                bookingToUpdate.setPaymentStatus(bookingDetails.getPaymentStatus());
+                return bookingRepository.save(bookingToUpdate);
+            } else {
+                throw new NotUpdateException("Update booking id " + id + " failed");
             }
-
-            // Set other fields as needed (e.g., totalAmount, bookingType, etc.)
-            // bookingToUpdate.setTotalAmount(bookingDetails.getTotalAmount());
-            // Add other updates as necessary
-
-            return bookingRepository.save(bookingToUpdate);
+        } catch (NotUpdateException e) {
+            throw new GenericException(e.getMessage());
         }
-        return null; // Or throw an exception
     }
 
+    //delete means update payment_status to cancelled
     @Override
-    public boolean deleteBooking(Long id) {
-        Optional<Bookings> existingBooking = bookingRepository.findById(id);
-        if (existingBooking.isPresent()) {
-            Bookings bookingToUpdate = existingBooking.get();
-            bookingToUpdate.setPaymentStatus(PaymentStatus.cancelled); // Update status to cancelled
-            bookingRepository.save(bookingToUpdate); // Save the updated booking
-            return true; // Return true indicating successful cancellation
+    public Bookings deleteBooking(Long id) {
+        try {
+            Optional<Bookings> existingBooking = bookingRepository.findById(id);
+            if (existingBooking.isPresent()) {
+                Bookings bookingToUpdate = existingBooking.get();
+                bookingToUpdate.setPaymentStatus(PaymentStatus.cancelled); // Update status to cancelled
+                return bookingRepository.save(bookingToUpdate); // Save the updated booking
+            } else {
+                throw new NotDeleteException("Can not DELETE booking " + id);
+            }
+        } catch (Exception e) {
+            throw new GenericException(e.getMessage());
         }
-        return false; // Return false if booking was not found
+    }
+
+//    @Override
+//    public Bookings createPaymentTourPending(Bookings booking){
+//        Bookings savedBooking = createTourBooking(booking);
+//        float totalAmount =savedBooking.getBookingTourDetails().getFirst().getTotalAmount();
+//        System.out.println("Total amount to be paid: " + totalAmount);
+//        return savedBooking;
+//    }
+
+    @Override
+    public Bookings cancelledPaymentTour(Bookings booking) {
+        Optional<Bookings> existingBooking = bookingRepository.findById(booking.getId());
+        if(existingBooking.isPresent()){
+            Bookings bookingToUpdate = existingBooking.get();
+            bookingToUpdate.setPaymentStatus(PaymentStatus.cancelled);
+            bookingRepository.save(bookingToUpdate);
+            return bookingToUpdate;
+        }
+        return null;
     }
 }

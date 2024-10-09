@@ -2,18 +2,17 @@ package fall24.swp391.KoiOrderingSystem.service;
 
 import fall24.swp391.KoiOrderingSystem.pojo.BookingKoiDetail;
 import fall24.swp391.KoiOrderingSystem.repo.IBookingKoiDetailRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.Optional;
 
 public class BookingKoiDetailService implements IBookingKoiDetailService{
 
+    @Autowired
     private IBookingKoiDetailRepository bookingKoiDetailRepository;
 
-    public BookingKoiDetailService(IBookingKoiDetailRepository thebookingKoiDetailRepository) {
-        bookingKoiDetailRepository = thebookingKoiDetailRepository;
-    }
-
+  
     @Override
     public List<BookingKoiDetail> findAll() {
         return bookingKoiDetailRepository.findAll();
