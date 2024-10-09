@@ -31,4 +31,9 @@ public class BookingTourDetail {
     @Column(name = "total_amount")
     private float totalAmount;
 
+    public BookingTourDetail(Bookings booking, Tours tourId, int participant) {
+        this.booking = booking;
+        this.tourId = tourId;
+        this.participant = participant;
+    }
 }

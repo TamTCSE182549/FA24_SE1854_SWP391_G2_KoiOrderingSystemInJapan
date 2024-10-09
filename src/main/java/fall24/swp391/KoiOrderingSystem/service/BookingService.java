@@ -1,11 +1,13 @@
 package fall24.swp391.KoiOrderingSystem.service;
 
+import fall24.swp391.KoiOrderingSystem.enums.BookingType;
 import fall24.swp391.KoiOrderingSystem.enums.PaymentStatus;
 import fall24.swp391.KoiOrderingSystem.exception.GenericException;
 import fall24.swp391.KoiOrderingSystem.exception.NotDeleteException;
 import fall24.swp391.KoiOrderingSystem.exception.NotUpdateException;
 import fall24.swp391.KoiOrderingSystem.pojo.BookingTourDetail;
 import fall24.swp391.KoiOrderingSystem.pojo.Bookings;
+import fall24.swp391.KoiOrderingSystem.pojo.Tours;
 import fall24.swp391.KoiOrderingSystem.repo.IBookingRepository;
 import fall24.swp391.KoiOrderingSystem.repo.IBookingTourDetailRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,14 +26,24 @@ public class BookingService implements IBookingService{
     private IBookingTourDetailRepository iBookingTourDetailRepository;
 
     @Override
-    public Bookings createTourBooking(Long tourID, Bookings booking, int participants) {
-        booking.setPaymentStatus(PaymentStatus.pending); // Set default status to pending
+    public Bookings createTourBooking(Tours tours, Bookings booking, int participants) {
+        booking.setPaymentStatus(PaymentStatus.pending);// Set default status to pending
+        booking.setBookingType(BookingType.BookingForTour);
+        BookingTourDetail bookingTourDetail = new BookingTourDetail(booking, tours, participants);
+        bookingTourDetail.setTotalAmount(tours.getUnitPrice() * participants);
+        float totalBookingAmount = 0;
+        List<BookingTourDetail> tourDetailOfBookingID = iBookingTourDetailRepository.showDetailOfBookingID(booking.getId());
+        for(BookingTourDetail b : tourDetailOfBookingID){
+            totalBookingAmount += b.getTotalAmount();
+        }
+        booking.setTotalAmount(totalBookingAmount);
+        booking.setTotalAmountWithVAT(booking.getTotalAmount() + booking.getVatAmount() - booking.getDiscountAmount());
+        iBookingTourDetailRepository.save(bookingTourDetail);
         return bookingRepository.save(booking);
     }
 
     @Override
     public List<Bookings> getTourBooking(Long accountID) {
-        List<Bookings> bookingsList = bookingRepository.listTourBooking(accountID);
         return bookingRepository.listTourBooking(accountID);
     }
 
@@ -57,7 +69,7 @@ public class BookingService implements IBookingService{
                     totalBookingAmount += b.getTotalAmount();
                 }
                 bookingToUpdate.setTotalAmount(totalBookingAmount);
-
+                bookingToUpdate.setTotalAmountWithVAT(bookingToUpdate.getTotalAmount() + bookingToUpdate.getVatAmount() - bookingToUpdate.getDiscountAmount());
                 return bookingRepository.save(bookingToUpdate);
             } else {
                 throw new NotUpdateException("Update booking id " + id + " failed");
@@ -82,25 +94,5 @@ public class BookingService implements IBookingService{
         } catch (Exception e) {
             throw new GenericException(e.getMessage());
         }
-    }
-
-//    @Override
-//    public Bookings createPaymentTourPending(Bookings booking){
-//        Bookings savedBooking = createTourBooking(booking);
-//        float totalAmount =savedBooking.getBookingTourDetails().getFirst().getTotalAmount();
-//        System.out.println("Total amount to be paid: " + totalAmount);
-//        return savedBooking;
-//    }
-
-    @Override
-    public Bookings cancelledPaymentTour(Bookings booking) {
-        Optional<Bookings> existingBooking = bookingRepository.findById(booking.getId());
-        if(existingBooking.isPresent()){
-            Bookings bookingToUpdate = existingBooking.get();
-            bookingToUpdate.setPaymentStatus(PaymentStatus.cancelled);
-            bookingRepository.save(bookingToUpdate);
-            return bookingToUpdate;
-        }
-        return null;
     }
 }
