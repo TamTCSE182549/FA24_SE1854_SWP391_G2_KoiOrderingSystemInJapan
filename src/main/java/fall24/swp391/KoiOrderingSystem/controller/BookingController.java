@@ -1,6 +1,7 @@
 package fall24.swp391.KoiOrderingSystem.controller;
 
 import fall24.swp391.KoiOrderingSystem.pojo.Bookings;
+import fall24.swp391.KoiOrderingSystem.pojo.Tours;
 import fall24.swp391.KoiOrderingSystem.service.IBookingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,11 +19,11 @@ public class BookingController {
     private IBookingService bookingService;
 
     // Create a new booking
-    @PostMapping("/create/{tourID}")
-    public ResponseEntity<Bookings> createBooking(@PathVariable Long tourID,
+    @PostMapping("/create/tour/{tourID}/participants/{participants}")
+    public ResponseEntity<Bookings> createBooking(@RequestBody Tours tours,
                                                   @RequestBody Bookings booking,
-                                                  @RequestParam int participants) {
-        Bookings createdBooking = bookingService.createTourBooking(tourID, booking, participants);
+                                                  @PathVariable int participants) {
+        Bookings createdBooking = bookingService.createTourBooking(tours, booking, participants);
         return ResponseEntity.ok(createdBooking);
     }
 //

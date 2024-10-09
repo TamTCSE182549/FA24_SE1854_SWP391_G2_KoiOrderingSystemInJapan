@@ -3,7 +3,9 @@ package fall24.swp391.KoiOrderingSystem.service;
 import fall24.swp391.KoiOrderingSystem.exception.GenericException;
 import fall24.swp391.KoiOrderingSystem.exception.NotUpdateException;
 import fall24.swp391.KoiOrderingSystem.pojo.BookingTourDetail;
+import fall24.swp391.KoiOrderingSystem.pojo.Tours;
 import fall24.swp391.KoiOrderingSystem.repo.IBookingTourDetailRepository;
+import fall24.swp391.KoiOrderingSystem.repo.ITourRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,9 @@ public class BookingTourDetailService implements IBookingTourDetailService {
 
     @Autowired
     private IBookingTourDetailRepository iBookingTourDetailRepository;
+
+    @Autowired
+    private ITourRepository iTourRepository;
 
     @Override
     public List<BookingTourDetail> bookingTourDetails(Long bookingID) {
@@ -50,8 +55,8 @@ public class BookingTourDetailService implements IBookingTourDetailService {
             if (bTourDetail.isPresent()){
                 BookingTourDetail update = bTourDetail.get();
                 update.setParticipant(bookingTourDetail.getParticipant());
-                //còn sửa chỗ này
-                update.setTotalAmount(bookingTourDetail.getParticipant());
+                Tours tour = iTourRepository.findById(bookingTourDetail.getTourId().getId()).get();
+                update.setTotalAmount(tour.getUnitPrice() * update.getParticipant());
                 return iBookingTourDetailRepository.save(bookingTourDetail);
             } else {
                 throw new NotUpdateException("Update booking tour detail Failed");

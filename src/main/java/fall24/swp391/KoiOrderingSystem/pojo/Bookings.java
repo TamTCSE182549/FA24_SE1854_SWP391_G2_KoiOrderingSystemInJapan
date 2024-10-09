@@ -1,5 +1,7 @@
 package fall24.swp391.KoiOrderingSystem.pojo;
 
+import fall24.swp391.KoiOrderingSystem.enums.BookingType;
+import fall24.swp391.KoiOrderingSystem.enums.PaymentMethod;
 import fall24.swp391.KoiOrderingSystem.enums.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -26,8 +28,8 @@ public class Bookings {
     @JoinColumn(name = "account_id")
     private Account account;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
-    @JoinColumn(name = "booking_type_id")
+    @Enumerated(EnumType.STRING)
+    @Column(name = "booking_type")
     private BookingType bookingType;
 
     @Column(name = "booking_date")
@@ -35,6 +37,9 @@ public class Bookings {
 
     @Column(name = "total_amount")
     private float totalAmount;
+
+    @Column(name = "total_amount_with_vat")
+    private float totalAmountWithVAT;
 
     @Column(name = "discount_amount")
     private float discountAmount;
@@ -49,8 +54,9 @@ public class Bookings {
     @Column(name = "payment_status")
     private PaymentStatus paymentStatus;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "payment_method")
-    private String paymentMethod;
+    private PaymentMethod paymentMethod;
 
     //here mapping quotation table
     @OneToMany(mappedBy = "booking", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
