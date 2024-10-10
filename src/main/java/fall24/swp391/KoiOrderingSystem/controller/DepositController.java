@@ -11,15 +11,15 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/deposit")
+@RequestMapping("/deposit")
 public class DepositController {
 
     @Autowired
     private IDepositService depositService;
 
-    @PostMapping
-    public ResponseEntity<?> createDeposit(@RequestBody Deposit deposit){
-        Deposit createDeposit = depositService.createDeposit(deposit);
+    @PostMapping("/{bookingId}")
+    public ResponseEntity<?> createDeposit(@RequestBody Deposit deposit,@PathVariable Long bookingId){
+        Deposit createDeposit = depositService.createDeposit(deposit,bookingId);
         return  new ResponseEntity<>(createDeposit,HttpStatus.CREATED);
     }
 

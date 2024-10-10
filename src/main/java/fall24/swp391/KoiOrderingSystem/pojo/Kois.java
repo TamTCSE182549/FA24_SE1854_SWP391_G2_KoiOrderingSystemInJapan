@@ -16,7 +16,7 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Kois extends BaseEntity {
+public class Kois  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

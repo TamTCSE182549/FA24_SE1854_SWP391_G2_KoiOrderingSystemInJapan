@@ -8,7 +8,7 @@ public interface IDepositService {
 
     List<Deposit> getDepositByBookingId(Long bookingId);
 
-    Deposit createDeposit(Deposit theDeposit);
+    Deposit createDeposit(Deposit theDeposit,Long bookingId);
 
     Boolean deleteById(Long theid);
 
