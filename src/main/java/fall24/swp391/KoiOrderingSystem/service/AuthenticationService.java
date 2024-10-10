@@ -2,6 +2,8 @@ package fall24.swp391.KoiOrderingSystem.service;
 
 import fall24.swp391.KoiOrderingSystem.component.Email;
 import fall24.swp391.KoiOrderingSystem.component.Token;
+import fall24.swp391.KoiOrderingSystem.enums.Gender;
+import fall24.swp391.KoiOrderingSystem.enums.Role;
 import fall24.swp391.KoiOrderingSystem.exception.AccountNotFoundException;
 import fall24.swp391.KoiOrderingSystem.exception.AuthException;
 import fall24.swp391.KoiOrderingSystem.exception.DuplicateEntity;
@@ -9,7 +11,6 @@ import fall24.swp391.KoiOrderingSystem.model.request.*;
 import fall24.swp391.KoiOrderingSystem.model.response.AccountResponse;
 import fall24.swp391.KoiOrderingSystem.model.EmailDetail;
 import fall24.swp391.KoiOrderingSystem.pojo.Account;
-import fall24.swp391.KoiOrderingSystem.pojo.Role;
 import fall24.swp391.KoiOrderingSystem.repo.IAccountRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,6 +87,25 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
         } catch (Exception e){
             throw new AccountNotFoundException("Username or password invalid");
         }
+    }
+
+    @Override
+    public boolean updateAccount(AccountUpdateRequest accountUpdateRequest) {
+        Account account = accountRepository.findAccountByEmail(accountUpdateRequest.getEmail());
+        if (account == null) {
+            throw new AccountNotFoundException("Account not found");
+        }
+//        if(accountUpdateRequest.getGender().equals("Male")) account.setGender(Gender.MALE);
+//        else if(accountUpdateRequest.getGender().equals("Female")) account.setGender(Gender.FEMALE);
+//        else account.setGender(Gender.OTHER);
+        account.setGender(Gender.valueOf(accountUpdateRequest.getGender()));
+        account.setAddress(accountUpdateRequest.getAddress());
+        account.setFirstName(accountUpdateRequest.getFirstName());
+        account.setLastName(accountUpdateRequest.getLastName());
+        account.setNationality(accountUpdateRequest.getNationality());
+        account.setPhone(accountUpdateRequest.getPhone());
+        accountRepository.save(account);
+        return true;
     }
 
     @Override

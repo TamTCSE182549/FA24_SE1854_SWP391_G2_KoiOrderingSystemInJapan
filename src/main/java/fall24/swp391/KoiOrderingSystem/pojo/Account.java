@@ -2,6 +2,7 @@ package fall24.swp391.KoiOrderingSystem.pojo;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import fall24.swp391.KoiOrderingSystem.enums.Gender;
 import fall24.swp391.KoiOrderingSystem.enums.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -52,7 +53,10 @@ public class Account implements UserDetails {
     private String lastName;
 
     @Column(name = "gender")
-    private boolean gender;
+    private Gender gender;
+
+    @Column(name = "nationality")
+    private String nationality;
 
     @Pattern(regexp = "(84|0[3|5|7|8|9])+(\\d{8})",message = "Phone invalid")
     @Column(name = "phone_number")

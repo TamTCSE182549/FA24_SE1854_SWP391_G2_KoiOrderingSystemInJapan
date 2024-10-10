@@ -36,6 +36,8 @@ public class Token {
                 .claim("email",account.getEmail())
                 .claim("phone",account.getPhone())
                 .claim("address",account.getAddress())
+                .claim("gender",account.getGender())
+                .claim("nationality",account.getNationality())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis()+1000*60*60*24))
                 .signWith(getSignInKey())
