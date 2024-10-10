@@ -26,10 +26,10 @@ public class DepositService implements IDepositService{
     }
 
     @Override
-    public Deposit createDeposit(Deposit theDeposit) {
-        Bookings booking = bookingRepository.findById(theDeposit.getBooking().getId())
+    public Deposit createDeposit(Deposit theDeposit, Long bookingId) {
+        Bookings booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
-        theDeposit.setDepositStatus(DepositStatus.pending);
+        theDeposit.setDepositStatus(DepositStatus.processing);
         theDeposit.setBooking(booking);
         return depositRepository.save(theDeposit);
     }
@@ -52,8 +52,7 @@ public class DepositService implements IDepositService{
         if(existingDeposit.isPresent()){
             Deposit depositUpdate = existingDeposit.get();
 
-            if(depositUpdate.getDepositStatus() != DepositStatus.pending &&
-            depositUpdate.getDepositStatus() != DepositStatus.cancelled){
+            if(depositUpdate.getDepositStatus() != DepositStatus.processing){
                 depositUpdate.setDepositStatus(depositDeatil.getDepositStatus());
             }
             depositUpdate.setDepositAmount(depositDeatil.getDepositAmount());

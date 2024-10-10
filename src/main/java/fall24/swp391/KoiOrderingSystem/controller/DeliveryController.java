@@ -8,6 +8,7 @@ import fall24.swp391.KoiOrderingSystem.service.IDeliveryHistoryService;
 import fall24.swp391.KoiOrderingSystem.service.IDeliveryService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -73,5 +74,4 @@ public class DeliveryController {
         List<Deliveries> list = deliveryService.getAllDeliveries();
         return ResponseEntity.ok(list);
     }
-
 }
