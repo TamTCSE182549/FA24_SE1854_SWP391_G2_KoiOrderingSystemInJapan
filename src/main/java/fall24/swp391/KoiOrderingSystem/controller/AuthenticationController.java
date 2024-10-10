@@ -1,9 +1,6 @@
 package fall24.swp391.KoiOrderingSystem.controller;
-import fall24.swp391.KoiOrderingSystem.model.request.AccountRequest;
-import fall24.swp391.KoiOrderingSystem.model.request.ForgotPassRequest;
-import fall24.swp391.KoiOrderingSystem.model.request.ResetPasswordRequest;
+import fall24.swp391.KoiOrderingSystem.model.request.*;
 import fall24.swp391.KoiOrderingSystem.model.response.AccountResponse;
-import fall24.swp391.KoiOrderingSystem.model.request.RegisterRequest;
 import fall24.swp391.KoiOrderingSystem.pojo.Account;
 import fall24.swp391.KoiOrderingSystem.service.AuthenticationService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -27,6 +24,16 @@ public class AuthenticationController {
     public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest registerRequest) throws Exception {
         AccountResponse newAccount = authenticationService.register(registerRequest);
         return ResponseEntity.ok(newAccount);
+    }
+
+    @PutMapping("profile/update")
+    public ResponseEntity<?> update(@Valid @RequestBody AccountUpdateRequest accountUpdateRequest
+                                    ,@RequestHeader("Authorization") String authHeader
+    ) throws Exception {
+         if(authenticationService.updateAccount(accountUpdateRequest))
+        return ResponseEntity.ok("Account updated successfully");
+         else
+             return ResponseEntity.badRequest().body("Account update failed");
     }
 
     @PostMapping("login")

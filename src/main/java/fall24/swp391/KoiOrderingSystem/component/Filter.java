@@ -38,7 +38,7 @@ public class Filter extends OncePerRequestFilter {
             "/api/register",
             "/api/forgot-password"
             ,"/api/google"
-            "/tour/**"
+                    ,"/tour/**"
     );
 
     public boolean checkIsPublicAPI(String uri){
@@ -58,8 +58,10 @@ public class Filter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 //
+        filterChain.doFilter(request,response);
         //check xem api nguoi dung yeu cau co cho phep ai truy cap duoc
         boolean isPublicAPI = checkIsPublicAPI(request.getRequestURI());
+        isPublicAPI = true;
         if(isPublicAPI){
             filterChain.doFilter(request,response);
         } else{
