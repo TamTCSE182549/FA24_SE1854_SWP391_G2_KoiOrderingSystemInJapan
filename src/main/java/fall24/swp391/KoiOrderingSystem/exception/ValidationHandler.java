@@ -21,6 +21,11 @@ public class ValidationHandler {
         return new ResponseEntity<>(message.toString(),HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<?> handleValidation(Exception exception){
+        return new ResponseEntity<>(exception.getMessage(),HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(GenericException.class)
     public ResponseEntity<?> handleGenericException(Exception exception){
         return new ResponseEntity<>("Error System: " + exception.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
@@ -28,11 +33,16 @@ public class ValidationHandler {
 
     @ExceptionHandler(NotUpdateException.class)
     public ResponseEntity<?> handleUpdateException(NotUpdateException exception){
-        return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>("Error Update: " + exception.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(NotDeleteException.class)
     public ResponseEntity<?> handleDeleteException(NotDeleteException exception){
-        return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>("Error Delete: " + exception.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(NotCreateException.class)
+    public ResponseEntity<?> handleCreateException(NotCreateException exception){
+        return new ResponseEntity<>("Error Create: " + exception.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }

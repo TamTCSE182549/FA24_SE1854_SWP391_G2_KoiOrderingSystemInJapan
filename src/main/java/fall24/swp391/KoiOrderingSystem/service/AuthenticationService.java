@@ -9,7 +9,7 @@ import fall24.swp391.KoiOrderingSystem.model.request.*;
 import fall24.swp391.KoiOrderingSystem.model.response.AccountResponse;
 import fall24.swp391.KoiOrderingSystem.model.EmailDetail;
 import fall24.swp391.KoiOrderingSystem.pojo.Account;
-import fall24.swp391.KoiOrderingSystem.pojo.Role;
+import fall24.swp391.KoiOrderingSystem.enums.Role;
 import fall24.swp391.KoiOrderingSystem.repo.IAccountRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;

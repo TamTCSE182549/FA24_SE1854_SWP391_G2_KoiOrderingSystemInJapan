@@ -1,6 +1,7 @@
 package fall24.swp391.KoiOrderingSystem.service;
 
 import fall24.swp391.KoiOrderingSystem.exception.GenericException;
+import fall24.swp391.KoiOrderingSystem.exception.NotDeleteException;
 import fall24.swp391.KoiOrderingSystem.exception.NotUpdateException;
 import fall24.swp391.KoiOrderingSystem.pojo.BookingTourDetail;
 import fall24.swp391.KoiOrderingSystem.pojo.Tours;
@@ -38,13 +39,17 @@ public class BookingTourDetailService implements IBookingTourDetailService {
     }
 
     @Override
-    public boolean deleteBookingTourDetail(Long id){
-        Optional<BookingTourDetail> bookingTourDetail = iBookingTourDetailRepository.findById(id);
-        if (bookingTourDetail.isPresent()){
-            iBookingTourDetailRepository.deleteById(id);
-            return true;
+    public void deleteBookingTourDetail(Long bookingTourDetailID){
+        try {
+            Optional<BookingTourDetail> bookingTourDetail = iBookingTourDetailRepository.findById(bookingTourDetailID);
+            if (bookingTourDetail.isPresent()){
+                iBookingTourDetailRepository.deleteById(bookingTourDetailID);
+            } else {
+                throw new NotDeleteException("Delete booking tour detail ID " + bookingTourDetailID + "failed");
+            }
+        } catch (Exception e){
+            throw new GenericException(e.getMessage());
         }
-        return false;
     }
 
     @Override

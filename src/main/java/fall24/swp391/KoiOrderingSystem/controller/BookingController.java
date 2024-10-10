@@ -1,8 +1,11 @@
 package fall24.swp391.KoiOrderingSystem.controller;
 
+import fall24.swp391.KoiOrderingSystem.model.request.BookingRequest;
+import fall24.swp391.KoiOrderingSystem.model.response.BookingResponse;
 import fall24.swp391.KoiOrderingSystem.pojo.Bookings;
-import fall24.swp391.KoiOrderingSystem.pojo.Tours;
 import fall24.swp391.KoiOrderingSystem.service.IBookingService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,18 +16,21 @@ import java.util.List;
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/bookings")
+@SecurityRequirement(name = "api")
 public class BookingController {
 
     @Autowired
     private IBookingService bookingService;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
     // Create a new booking
-    @PostMapping("/create/tour/{tourID}/participants/{participants}")
-    public ResponseEntity<Bookings> createBooking(@RequestBody Tours tours,
-                                                  @RequestBody Bookings booking,
-                                                  @PathVariable int participants) {
-        Bookings createdBooking = bookingService.createTourBooking(tours, booking, participants);
-        return ResponseEntity.ok(createdBooking);
+    @PostMapping("/create")
+//    @PreAuthorize("hasAuthority('CUSTOMER')")
+    public ResponseEntity<?> createBooking(@RequestBody BookingRequest bookingRequest) throws Exception {
+        BookingResponse bookingResponse = bookingService.createTourBooking(bookingRequest);
+        return ResponseEntity.ok(bookingResponse);
     }
 //
 //    // Get a booking by ID
@@ -45,7 +51,7 @@ public class BookingController {
     // Update an existing booking
     @PutMapping("/{id}")
     public ResponseEntity<?> updateBooking(@PathVariable Long id, @RequestBody Bookings bookingDetails) {
-        bookingService.updateBooking(id, bookingDetails);
+        bookingService.updateTourBooking(id, bookingDetails);
         return new ResponseEntity<>("Update Complete", HttpStatus.OK);
     }
 

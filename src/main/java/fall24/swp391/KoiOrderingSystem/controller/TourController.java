@@ -1,5 +1,6 @@
 package fall24.swp391.KoiOrderingSystem.controller;
 
+import fall24.swp391.KoiOrderingSystem.model.response.TourResponse;
 import fall24.swp391.KoiOrderingSystem.pojo.Tours;
 import fall24.swp391.KoiOrderingSystem.service.ITourService;
 import jakarta.validation.constraints.NotNull;
@@ -21,6 +22,16 @@ public class TourController {
     @GetMapping("/list")
     public ResponseEntity<?> showAllTour(){
         List<Tours> tours = iTourService.tourList();
+        if (tours.isEmpty()) {
+            return ResponseEntity.ok("Empty list");
+        } else {
+            return ResponseEntity.ok(tours);
+        }
+    }
+
+    @GetMapping("/listTourResponse")
+    public ResponseEntity<?> showAllTourResponse(){
+        List<TourResponse> tours = iTourService.tourResponseList();
         if (tours.isEmpty()) {
             return ResponseEntity.ok("Empty list");
         } else {
