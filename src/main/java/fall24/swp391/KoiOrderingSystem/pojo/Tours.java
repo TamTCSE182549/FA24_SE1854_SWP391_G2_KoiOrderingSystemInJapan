@@ -2,6 +2,7 @@ package fall24.swp391.KoiOrderingSystem.pojo;
 
 import fall24.swp391.KoiOrderingSystem.enums.TourStatus;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,9 +26,11 @@ public class Tours{
     private String tourName;
 
     @Column(name = "unit_price")
+    @Min(value = 0)
     private float unitPrice;
 
     @Column(name = "max_participants")
+    @Min(value = 1)
     private int maxParticipants;
 
     @Column(name = "description")

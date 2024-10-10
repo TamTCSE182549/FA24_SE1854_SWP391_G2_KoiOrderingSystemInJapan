@@ -11,7 +11,7 @@ public interface IBookingTourDetailService {
 
     BookingTourDetail createBookingTourDetail(BookingTourDetail bookingTourDetail);
 
-    boolean deleteBookingTourDetail(Long id);
+    void deleteBookingTourDetail(Long bookingTourDetailID);
 
     BookingTourDetail updateBookingTourDetail(BookingTourDetail bookingTourDetail);
 }

@@ -3,19 +3,25 @@ package fall24.swp391.KoiOrderingSystem.service;
 import fall24.swp391.KoiOrderingSystem.enums.TourStatus;
 import fall24.swp391.KoiOrderingSystem.exception.NotDeleteException;
 import fall24.swp391.KoiOrderingSystem.exception.NotUpdateException;
+import fall24.swp391.KoiOrderingSystem.model.response.TourResponse;
 import fall24.swp391.KoiOrderingSystem.pojo.Tours;
 import fall24.swp391.KoiOrderingSystem.repo.ITourRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class TourService implements ITourService{
 
     @Autowired
     private ITourRepository iTourRepository;
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Override
     public void createTour(Tours tours){
@@ -58,5 +64,16 @@ public class TourService implements ITourService{
         } else {
             throw new NotDeleteException("Cannot delete tour");
         }
+    }
+
+    @Override
+    public List<TourResponse> tourResponseList() {
+        List<Tours> toursList = iTourRepository.findAll();
+        return toursList.stream()
+                .map(tours -> {
+                    TourResponse tourResponse = modelMapper.map(tours, TourResponse.class);
+                    tourResponse.setCreatedBy(tours.getCreatedBy().getFirstName() + " " + tours.getCreatedBy().getLastName());
+                    return tourResponse;
+                }).toList();
     }
 }

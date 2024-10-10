@@ -1,6 +1,7 @@
 package fall24.swp391.KoiOrderingSystem.pojo;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,6 +27,7 @@ public class BookingTourDetail {
     private Tours tourId;
 
     @Column(name = "participant")
+    @Min(value = 1)
     private int participant;
 
     @Column(name = "total_amount")
