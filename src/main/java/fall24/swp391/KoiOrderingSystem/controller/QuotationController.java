@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/quotations")
 @CrossOrigin
@@ -16,9 +18,41 @@ public class QuotationController {
     @Autowired
     private QuotationService quotationService;
 
+    //Create quotations
+    @PostMapping("/create")
+    public ResponseEntity<Quotations> createQuotation(@RequestBody Quotations quotations,
+                                                      @RequestParam float amount){
+        try{
+            Quotations createdQuotation = quotationService.createQuotations(quotations, amount);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdQuotation);
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+    }
+
+    //Lấy quotation ? trong Booking
+    @GetMapping("/booking/{bookId}")
+    public ResponseEntity<List<Quotations>> getQuotations(@PathVariable Long bookId){
+        List<Quotations> quotations = quotationService.getQuotationsByBookID(bookId);
+        if(quotations.isEmpty()){
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(quotations);
+    }
+
+    @PutMapping("/{quotationId}/delete")
+    public ResponseEntity<?> deleteQuotation(@PathVariable Long quotationId){
+        try {
+            quotationService.updateQuotations(quotationId);
+            return ResponseEntity.ok("Quotation has been finished");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
     //Lấy amount từ bookingTourDetail
     @PutMapping("/{id}/set-amount")
-    public ResponseEntity<?> setAmount(@PathVariable Long id){
+    public ResponseEntity<?> updateQuotation(@PathVariable Long id){
         try{
             quotationService.updateQuotations(id);
             return ResponseEntity.ok("Amount set successfully");
@@ -26,4 +60,6 @@ public class QuotationController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
+
+
 }
