@@ -6,11 +6,11 @@ import java.util.List;
 
 public interface ICheckinService {
 
-    List<Checkin> findAll();
+    List<Checkin> getChekinByBookingId(Long Id);
 
-    Checkin findById(Long Id);
+    Checkin createCheckin(Checkin checkin, Long bookingId);
 
-    Checkin save(Checkin checkin);
+    Checkin updateCheckin(Long Id,Checkin checkin);
 
-    void deletebyId(Long theId);
+    Boolean deleteCheckin(Long Id);
 }
