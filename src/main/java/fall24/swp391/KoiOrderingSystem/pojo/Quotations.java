@@ -1,5 +1,6 @@
 package fall24.swp391.KoiOrderingSystem.pojo;
 
+import fall24.swp391.KoiOrderingSystem.enums.ApproveStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,11 +28,13 @@ public class Quotations {
     @Column(name = "amount")
     private float amount;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "is_approve")
-    private boolean isApprove;
+    private ApproveStatus isApprove;
 
-    @Column(name = "approve_by")
-    private int approveBy;
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    @JoinColumn(name = "approve_by")
+    private Account approveBy;
 
     @Column(name = "approve_time")
     private LocalDateTime approveTime;
