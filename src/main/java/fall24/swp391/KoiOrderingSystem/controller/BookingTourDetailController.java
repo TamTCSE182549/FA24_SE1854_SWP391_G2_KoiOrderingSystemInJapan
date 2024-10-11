@@ -1,5 +1,7 @@
 package fall24.swp391.KoiOrderingSystem.controller;
 
+import fall24.swp391.KoiOrderingSystem.model.request.BookingTourDetailRequest;
+import fall24.swp391.KoiOrderingSystem.model.response.BookingTourDetailResponse;
 import fall24.swp391.KoiOrderingSystem.pojo.BookingTourDetail;
 import fall24.swp391.KoiOrderingSystem.service.IBookingTourDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,5 +36,11 @@ public class BookingTourDetailController {
     public ResponseEntity<?> viewBookingTourDetail(@PathVariable Long bookingID){
         List<BookingTourDetail> bookingTourDetailList = iBookingTourDetailService.bookingTourDetails(bookingID);
         return ResponseEntity.ok(bookingTourDetailList);
+    }
+
+    @PostMapping("/createBTDbyBookingID")
+    public ResponseEntity<?> createBookingTourDetailByBookingID(@RequestBody BookingTourDetailRequest bookingTourDetailRequest){
+        BookingTourDetailResponse bookingTourDetailResponse = iBookingTourDetailService.createBookingTourDetailRes(bookingTourDetailRequest);
+        return ResponseEntity.ok(bookingTourDetailResponse);
     }
 }
