@@ -1,9 +1,13 @@
 package fall24.swp391.KoiOrderingSystem.service;
 
 import fall24.swp391.KoiOrderingSystem.enums.TourStatus;
+import fall24.swp391.KoiOrderingSystem.exception.GenericException;
 import fall24.swp391.KoiOrderingSystem.exception.NotDeleteException;
+import fall24.swp391.KoiOrderingSystem.exception.NotFoundEntity;
 import fall24.swp391.KoiOrderingSystem.exception.NotUpdateException;
+import fall24.swp391.KoiOrderingSystem.model.request.TourRequest;
 import fall24.swp391.KoiOrderingSystem.model.response.TourResponse;
+import fall24.swp391.KoiOrderingSystem.pojo.Account;
 import fall24.swp391.KoiOrderingSystem.pojo.Tours;
 import fall24.swp391.KoiOrderingSystem.repo.ITourRepository;
 import org.modelmapper.ModelMapper;
@@ -12,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class TourService implements ITourService{
@@ -23,9 +26,24 @@ public class TourService implements ITourService{
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private AuthenticationService authenticationService;
+
     @Override
     public void createTour(Tours tours){
         iTourRepository.save(tours);
+    }
+
+    @Override
+    public TourResponse createTourRes(TourRequest tourRequest) {
+        Account account = authenticationService.getCurrentAccount();
+
+        Tours tours = modelMapper.map(tourRequest, Tours.class);
+        tours.setCreatedBy(account);
+        iTourRepository.save(tours);
+        TourResponse tourResponse = modelMapper.map(tours, TourResponse.class);
+        tourResponse.setCreatedBy(account.getFirstName() + " " + account.getLastName());
+        return tourResponse;
     }
 
     @Override
@@ -55,6 +73,22 @@ public class TourService implements ITourService{
     }
 
     @Override
+    public TourResponse updateTourRes(TourRequest tourRequest) {
+        try {
+            Account account = authenticationService.getCurrentAccount();
+            if (account == null){
+                throw new NotFoundEntity("Account is empty");
+            }
+            Tours tours = modelMapper.map(tourRequest, Tours.class);
+            tours.setUpdatedBy(account);
+            iTourRepository.save(tours);
+            return modelMapper.map(tours, TourResponse.class);
+        } catch (Exception e){
+            throw new GenericException(e.getMessage());
+        }
+    }
+
+    @Override
     public Tours deleteTourById(Long id) {
         Optional<Tours> tours = iTourRepository.findById(id);
         if(tours.isPresent()){
@@ -64,6 +98,23 @@ public class TourService implements ITourService{
         } else {
             throw new NotDeleteException("Cannot delete tour");
         }
+    }
+
+    @Override
+    public TourResponse deleteTourRes(Long tourID) {
+        Tours tours = iTourRepository.findById(tourID)
+                .orElseThrow(() -> new NotFoundEntity("Tour to delete not FOUND"));
+        Account account = authenticationService.getCurrentAccount();
+        if (account == null) {
+            throw new NotFoundEntity("Account is EMPTY");
+        }
+        tours.setStatus(TourStatus.inactive);
+        tours.setUpdatedBy(account);
+        iTourRepository.save(tours);
+        TourResponse tourResponse = modelMapper.map(tours, TourResponse.class);
+        tourResponse.setCreatedBy(tours.getCreatedBy().getFirstName() + " " + tours.getCreatedBy().getLastName());
+        tourResponse.setUpdatedBy(account.getFirstName() + " " + account.getLastName());
+        return tourResponse;
     }
 
     @Override

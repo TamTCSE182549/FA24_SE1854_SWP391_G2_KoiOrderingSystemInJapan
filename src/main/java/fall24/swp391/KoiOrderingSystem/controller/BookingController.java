@@ -1,7 +1,7 @@
 package fall24.swp391.KoiOrderingSystem.controller;
 
-import fall24.swp391.KoiOrderingSystem.model.request.BookingRequest;
-import fall24.swp391.KoiOrderingSystem.model.response.BookingResponse;
+import fall24.swp391.KoiOrderingSystem.model.request.BookingTourRequest;
+import fall24.swp391.KoiOrderingSystem.model.response.BookingTourResponse;
 import fall24.swp391.KoiOrderingSystem.pojo.Bookings;
 import fall24.swp391.KoiOrderingSystem.service.IBookingService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -28,9 +28,9 @@ public class BookingController {
     // Create a new booking
     @PostMapping("/create")
 //    @PreAuthorize("hasAuthority('CUSTOMER')")
-    public ResponseEntity<?> createBooking(@RequestBody BookingRequest bookingRequest) throws Exception {
-        BookingResponse bookingResponse = bookingService.createTourBooking(bookingRequest);
-        return ResponseEntity.ok(bookingResponse);
+    public ResponseEntity<?> createBooking(@RequestBody BookingTourRequest bookingTourRequest) throws Exception {
+        BookingTourResponse bookingTourResponse = bookingService.createTourBooking(bookingTourRequest);
+        return ResponseEntity.ok(bookingTourResponse);
     }
 //
 //    // Get a booking by ID
@@ -48,6 +48,12 @@ public class BookingController {
         return ResponseEntity.ok(bookings);
     }
 
+    @GetMapping("/listBookingTourResponse/{accountID}")
+    public ResponseEntity<List<BookingTourResponse>> getTourBookingResponse(@PathVariable Long accountID) {
+        List<BookingTourResponse> bookings = bookingService.getTourBookingResponse(accountID);
+        return ResponseEntity.ok(bookings);
+    }
+
     // Update an existing booking
     @PutMapping("/{id}")
     public ResponseEntity<?> updateBooking(@PathVariable Long id, @RequestBody Bookings bookingDetails) {
@@ -55,10 +61,21 @@ public class BookingController {
         return new ResponseEntity<>("Update Complete", HttpStatus.OK);
     }
 
+    @PutMapping("/updateResponseForm")
+    public ResponseEntity<?> updateBookingAndResponse(@RequestBody Bookings bookingDetails) {
+        BookingTourResponse bookingTourResponse = bookingService.updateTourBookingResponse(bookingDetails);
+        return new ResponseEntity<>(bookingTourResponse, HttpStatus.OK);
+    }
     // Delete a booking by ID
     @DeleteMapping("/{id}")
     public ResponseEntity<Bookings> deleteBooking(@PathVariable Long id) {
         Bookings bookings = bookingService.deleteBooking(id);
         return new ResponseEntity<>(bookings, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/deleteResponseForm/{id}")
+    public ResponseEntity<BookingTourResponse> deleteBookingResponse(@PathVariable Long id) {
+        BookingTourResponse bookingTourResponse = bookingService.deleteBookingResponse(id);
+        return new ResponseEntity<>(bookingTourResponse, HttpStatus.OK);
     }
 }
