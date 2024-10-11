@@ -1,5 +1,6 @@
 package fall24.swp391.KoiOrderingSystem.controller;
 
+import fall24.swp391.KoiOrderingSystem.model.request.TourRequest;
 import fall24.swp391.KoiOrderingSystem.model.response.TourResponse;
 import fall24.swp391.KoiOrderingSystem.pojo.Tours;
 import fall24.swp391.KoiOrderingSystem.service.ITourService;
@@ -45,15 +46,33 @@ public class TourController {
         return new ResponseEntity<>("Create tour: "+ tours.getTourName() +" Success",HttpStatus.CREATED);
     }
 
+    @PostMapping("/createTourRes")
+    public ResponseEntity<?> createTourRes(@RequestBody TourRequest tourRequest) {
+        TourResponse tourResponse = iTourService.createTourRes(tourRequest);
+        return new ResponseEntity<>("Create tour: "+ tourRequest.getTourName() +" Success\n" + tourResponse, HttpStatus.CREATED);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteTour(@PathVariable @NotNull Long id) {
         Tours tours = iTourService.deleteTourById(id);
         return new ResponseEntity<>(tours, HttpStatus.OK);
     }
 
+    @DeleteMapping("/deleteTourRes/{id}")
+    public ResponseEntity<?> deleteTourRes(@PathVariable @NotNull Long id) {
+        TourResponse tourResponse = iTourService.deleteTourRes(id);
+        return new ResponseEntity<>(tourResponse, HttpStatus.OK);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<?> updateTour(@PathVariable @NotNull Long id, @RequestBody Tours tours) {
         iTourService.updateTour(id, tours);
         return ResponseEntity.ok(tours);
+    }
+
+    @PutMapping("/updateTourRes/{id}")
+    public ResponseEntity<?> updateTourRes(@RequestBody TourRequest tourRequest) {
+        TourResponse tourResponse = iTourService.updateTourRes(tourRequest);
+        return ResponseEntity.ok(tourResponse);
     }
 }

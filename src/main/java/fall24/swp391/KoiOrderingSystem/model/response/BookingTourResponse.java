@@ -8,7 +8,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class BookingResponse {
+public class BookingTourResponse {
     Long id;
     float totalAmount;
     float vat;

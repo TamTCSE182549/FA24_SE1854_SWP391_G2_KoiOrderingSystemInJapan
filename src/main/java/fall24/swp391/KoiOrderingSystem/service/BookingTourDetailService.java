@@ -2,11 +2,17 @@ package fall24.swp391.KoiOrderingSystem.service;
 
 import fall24.swp391.KoiOrderingSystem.exception.GenericException;
 import fall24.swp391.KoiOrderingSystem.exception.NotDeleteException;
+import fall24.swp391.KoiOrderingSystem.exception.NotFoundEntity;
 import fall24.swp391.KoiOrderingSystem.exception.NotUpdateException;
+import fall24.swp391.KoiOrderingSystem.model.request.BookingTourDetailRequest;
+import fall24.swp391.KoiOrderingSystem.model.response.BookingTourDetailResponse;
 import fall24.swp391.KoiOrderingSystem.pojo.BookingTourDetail;
+import fall24.swp391.KoiOrderingSystem.pojo.Bookings;
 import fall24.swp391.KoiOrderingSystem.pojo.Tours;
+import fall24.swp391.KoiOrderingSystem.repo.IBookingRepository;
 import fall24.swp391.KoiOrderingSystem.repo.IBookingTourDetailRepository;
 import fall24.swp391.KoiOrderingSystem.repo.ITourRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,9 +28,30 @@ public class BookingTourDetailService implements IBookingTourDetailService {
     @Autowired
     private ITourRepository iTourRepository;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
+    @Autowired
+    private IBookingRepository iBookingRepository;
+
+    @Autowired
+    private IBookingService iBookingService;
+
     @Override
     public List<BookingTourDetail> bookingTourDetails(Long bookingID) {
         return iBookingTourDetailRepository.showDetailOfBookingID(bookingID);
+    }
+
+    @Override
+    public List<BookingTourDetailResponse> bookingTourDetailRes(Long bookingID) {
+        List<BookingTourDetail> bookingTourDetailList = iBookingTourDetailRepository.showDetailOfBookingID(bookingID);
+        return bookingTourDetailList.stream().map(
+                bookingTourDetail -> {
+                    BookingTourDetailResponse bookingTourDetailResponse = modelMapper.map(bookingTourDetail, BookingTourDetailResponse.class);
+                    bookingTourDetailResponse.setTourName(bookingTourDetail.getTourId().getTourName());
+                    return bookingTourDetailResponse;
+                }
+        ).toList();
     }
 
     @Override
@@ -36,6 +63,21 @@ public class BookingTourDetailService implements IBookingTourDetailService {
     @Override
     public BookingTourDetail createBookingTourDetail(BookingTourDetail bookingTourDetail){
         return iBookingTourDetailRepository.save(bookingTourDetail);
+    }
+
+    @Override
+    public BookingTourDetailResponse createBookingTourDetailRes(BookingTourDetailRequest bookingTourDetailRequest) {
+        Bookings bookings = iBookingRepository.findById(bookingTourDetailRequest.getBookingID())
+                .orElseThrow(() -> new NotFoundEntity("Booking ID not FOUND"));
+        Tours tours = iTourRepository.findById(bookingTourDetailRequest.getTourID())
+                .orElseThrow(() -> new NotFoundEntity("Tour ID not FOUND"));
+        BookingTourDetail bookingTourDetail = new BookingTourDetail(bookings, tours, bookingTourDetailRequest.getParticipant());
+        bookingTourDetail.setTotalAmount(tours.getUnitPrice() * bookingTourDetail.getParticipant());
+        iBookingTourDetailRepository.save(bookingTourDetail);
+        iBookingService.updateTourBookingResponse(bookings);
+        BookingTourDetailResponse bookingTourDetailResponse = modelMapper.map(bookingTourDetail, BookingTourDetailResponse.class);
+        bookingTourDetailResponse.setBookingTourDetailID(bookingTourDetail.getId());
+        return bookingTourDetailResponse;
     }
 
     @Override
