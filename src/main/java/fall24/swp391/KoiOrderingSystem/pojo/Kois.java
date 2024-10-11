@@ -2,6 +2,7 @@ package fall24.swp391.KoiOrderingSystem.pojo;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -44,6 +45,10 @@ public class Kois  {
 
     @Column(name = "is_active")
     private boolean isActive;
+
+    @Column(name = "unit_price")
+    @Min(value = 0)
+    private float unitPrice;
 
     @OneToMany(mappedBy = "kois", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     private List<KoiOfFarm> koiOfFarmList;

@@ -1,5 +1,9 @@
 package fall24.swp391.KoiOrderingSystem.controller;
 
+
+import fall24.swp391.KoiOrderingSystem.model.request.BookingKoiRequest;
+import fall24.swp391.KoiOrderingSystem.model.request.BookingRequest;
+import fall24.swp391.KoiOrderingSystem.model.response.BookingResponse;
 import fall24.swp391.KoiOrderingSystem.model.request.BookingTourRequest;
 import fall24.swp391.KoiOrderingSystem.model.response.BookingTourResponse;
 import fall24.swp391.KoiOrderingSystem.pojo.Bookings;
@@ -73,9 +77,29 @@ public class BookingController {
         return new ResponseEntity<>(bookings, HttpStatus.OK);
     }
 
+
+
+    @PostMapping("/koi/create")
+    public ResponseEntity<?> createKoiBooking(@RequestBody BookingKoiRequest bookingKoiRequest) throws Exception{
+        BookingResponse bookingResponse = bookingService.createKoiBooking(bookingKoiRequest);
+        return ResponseEntity.ok(bookingResponse);
+    }
+
+    @PutMapping("/koi/{id}")
+    public ResponseEntity<?> updateKoiBooking(@PathVariable Long id,@RequestBody Bookings bookings){
+        bookingService.updateKoiBooking(id,bookings);
+        return new ResponseEntity<>("Update Complete",HttpStatus.OK);
+    }
+
+    @GetMapping("/koi/list/{accountID}")
+    public ResponseEntity<List<Bookings>> getKoiBookings(@PathVariable Long accountID) {
+        List<Bookings> bookings = bookingService.getKoiBooking(accountID);
+        return ResponseEntity.ok(bookings);
+
     @DeleteMapping("/deleteResponseForm/{id}")
     public ResponseEntity<BookingTourResponse> deleteBookingResponse(@PathVariable Long id) {
         BookingTourResponse bookingTourResponse = bookingService.deleteBookingResponse(id);
         return new ResponseEntity<>(bookingTourResponse, HttpStatus.OK);
+
     }
 }

@@ -10,11 +10,11 @@ public interface IBookingKoiDetailService {
 
     List<BookingKoiDetail> findAll();
 
-    BookingKoiDetail findById(Long Id);
+    BookingKoiDetail createKoiDetail(BookingKoiDetail bookingKoiDetail);
 
-    BookingKoiDetail save(BookingKoiDetail bookingKoiDetail);
+    void deletebyBookingKoiDetail(Long theId);
 
-    void deletebyId(Long theId);
+    List<BookingKoiDetail> bookingKoiDetails(Long bookingID);
 
-
+    BookingKoiDetail updateBookingKoiDetail(BookingKoiDetail bookingKoiDetail);
 }

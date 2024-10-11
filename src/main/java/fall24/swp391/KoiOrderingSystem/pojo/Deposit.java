@@ -30,6 +30,8 @@ public class Deposit {
     @Column(name = "deposit_date")
     private LocalDateTime depositDate;
 
+    @Column(name ="deposit_percentage")
+    private float depositpercentage;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "deposit_status")

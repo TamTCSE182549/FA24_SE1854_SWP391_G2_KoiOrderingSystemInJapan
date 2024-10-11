@@ -31,4 +31,11 @@ public class BookingKoiDetail {
 
     @Column(name = "total_amount")
     private float totalAmount;
+
+    public BookingKoiDetail(Bookings booking, Kois koi, int quantity) {
+        this.booking =booking;
+        this.koi=koi;
+        this.quantity=quantity;
+
+    }
 }
