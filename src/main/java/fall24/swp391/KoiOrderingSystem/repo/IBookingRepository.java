@@ -10,19 +10,24 @@ import java.util.List;
 @Repository
 public interface IBookingRepository extends JpaRepository<Bookings, Long> {
 
-
-
     //list booking type 1
     @Query(value = "select b.* " +
-            "from bookings b,  booking_type bt " +
-            "where b.account_id = ?1 and b.booking_type_id = bt.id and bt.id = 1", nativeQuery = true)
-    List<Bookings> listTourBooking(Long idAccount);
+            "from bookings b " +
+            "where b.booking_type = 'BookingForTour' and b.account_id = ?1", nativeQuery = true)
+    List<Bookings> listTourBookingByID(Long idAccount);
+
+    @Query(value = "select b.* " +
+            "from bookings b " +
+            "where b.booking_type = 'BookingForTour'", nativeQuery = true)
+    List<Bookings> listBookingForTour();
+
 
     //list booking type 2
     @Query(value = "select b.* " +
-            "from bookings b,  booking_type bt " +
-            "where b.account_id = ?1 and b.booking_type_id = bt.id and bt.id = 2", nativeQuery = true)
+            "from bookings b " +
+            "where  b.booking_type = 'BookingForKoi'  and b.account_id = ?1", nativeQuery = true)
     List<Bookings> listKoiBooking(Long idAccount);
+
    Bookings findBookingsById(Long bookingId);
 
 }
