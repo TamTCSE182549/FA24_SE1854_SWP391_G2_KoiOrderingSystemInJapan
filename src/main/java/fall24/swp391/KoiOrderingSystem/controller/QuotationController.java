@@ -32,18 +32,18 @@ public class QuotationController {
 
     //Lấy quotation ? trong Booking
     @GetMapping("/booking/{bookId}")
-    public ResponseEntity<List<Quotations>> getQuotations(@PathVariable Long bookId){
-        List<Quotations> quotations = quotationService.getQuotationsByBookID(bookId);
+    public ResponseEntity<List<Quotations>> getQuotations(@PathVariable Long quotationId){
+        List<Quotations> quotations = quotationService.getQuotationsByBookID(quotationId);
         if(quotations.isEmpty()){
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(quotations);
     }
 
-    @PutMapping("/{quotationId}/delete")
+    @DeleteMapping("/{quotationId}/delete")
     public ResponseEntity<?> deleteQuotation(@PathVariable Long quotationId){
         try {
-            quotationService.updateQuotations(quotationId);
+            quotationService.deleteQuotations(quotationId);
             return ResponseEntity.ok("Quotation has been finished");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
@@ -51,7 +51,7 @@ public class QuotationController {
     }
 
     //Lấy amount từ bookingTourDetail
-    @PutMapping("/{id}/set-amount")
+    @PutMapping("/{id}")
     public ResponseEntity<?> updateQuotation(@PathVariable Long id){
         try{
             quotationService.updateQuotations(id);

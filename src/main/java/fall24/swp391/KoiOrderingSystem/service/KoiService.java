@@ -4,9 +4,11 @@ import fall24.swp391.KoiOrderingSystem.pojo.Categories;
 import fall24.swp391.KoiOrderingSystem.pojo.Kois;
 import fall24.swp391.KoiOrderingSystem.repo.ICategoriesRepository;
 import fall24.swp391.KoiOrderingSystem.repo.IKoisRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class KoiService implements IKoisService{
     private IKoisRepository koisRepository;
 

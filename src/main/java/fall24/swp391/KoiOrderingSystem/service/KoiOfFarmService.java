@@ -2,9 +2,11 @@ package fall24.swp391.KoiOrderingSystem.service;
 
 import fall24.swp391.KoiOrderingSystem.pojo.KoiOfFarm;
 import fall24.swp391.KoiOrderingSystem.repo.IKoiOfFarmRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class KoiOfFarmService implements IKoiOfFarmService{
     private IKoiOfFarmRepository koiOfFarmRepository;
 
