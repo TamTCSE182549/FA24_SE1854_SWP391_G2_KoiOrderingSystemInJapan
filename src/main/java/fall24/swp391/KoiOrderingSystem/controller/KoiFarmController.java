@@ -1,6 +1,8 @@
 package fall24.swp391.KoiOrderingSystem.controller;
 
 
+import fall24.swp391.KoiOrderingSystem.model.request.KoiFarmRequest;
+import fall24.swp391.KoiOrderingSystem.model.response.KoiFarmResponse;
 import fall24.swp391.KoiOrderingSystem.pojo.KoiFarms;
 import fall24.swp391.KoiOrderingSystem.service.IKoiFarmsService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -24,6 +26,12 @@ public class KoiFarmController {
     public ResponseEntity<KoiFarms> createKoiFarm(@RequestBody KoiFarms koiFarms){
         KoiFarms createdKoiFarm = iKoiFarmsService.createKoiFarm(koiFarms);
         return  ResponseEntity.status(HttpStatus.CREATED).body(createdKoiFarm);
+    }
+
+    @PostMapping("/create/res")
+    public ResponseEntity<?> createKoiFarmRes(@RequestBody KoiFarmRequest koiFarmRequest) {
+        KoiFarmResponse koiFarmResponse = iKoiFarmsService.createKoiFarmRes(koiFarmRequest);
+        return new ResponseEntity<>("Create Koi_Farm: "+ koiFarmRequest.getKoiFarmName() + "Success\n" + koiFarmResponse, HttpStatus.CREATED);
     }
 
     @GetMapping("/list-farm")
