@@ -5,8 +5,6 @@ import fall24.swp391.KoiOrderingSystem.enums.PaymentStatus;
 import fall24.swp391.KoiOrderingSystem.enums.Role;
 import fall24.swp391.KoiOrderingSystem.exception.*;
 import fall24.swp391.KoiOrderingSystem.model.request.BookingKoiRequest;
-import fall24.swp391.KoiOrderingSystem.model.request.BookingRequest;
-import fall24.swp391.KoiOrderingSystem.model.response.BookingResponse;
 import fall24.swp391.KoiOrderingSystem.pojo.*;
 import fall24.swp391.KoiOrderingSystem.repo.*;
 import fall24.swp391.KoiOrderingSystem.model.request.BookingTourRequest;
@@ -172,7 +170,7 @@ public class BookingService implements IBookingService{
 
     @Override
 
-    public BookingResponse createKoiBooking(BookingKoiRequest bookingKoiRequest) {
+    public BookingTourResponse createKoiBooking(BookingKoiRequest bookingKoiRequest) {
         try{
             Account account = authenticationService.getCurrentAccount();
             if(account.getRole()!=Role.SALES_STAFF){
@@ -201,7 +199,7 @@ public class BookingService implements IBookingService{
                     booking.setTotalAmountWithVAT(booking.getTotalAmount() + booking.getVatAmount() - booking.getDiscountAmount());
                     bookingRepository.save(booking);
 
-                    BookingResponse bookingResponse = modelMapper.map(booking, BookingResponse.class);
+                    BookingTourResponse bookingResponse = modelMapper.map(booking, BookingTourResponse.class);
                     bookingResponse.setCreatedBy(account.getFirstName() + " " + account.getLastName());
                     return bookingResponse;
             }else{
@@ -262,5 +260,5 @@ public class BookingService implements IBookingService{
         bookingTourResponse.setUpdatedBy(booking.getUpdatedBy().getFirstName() +  " " + booking.getUpdatedBy().getLastName());
         return modelMapper.map(booking, BookingTourResponse.class);
     }
- ư
+
 }
