@@ -3,9 +3,11 @@ package fall24.swp391.KoiOrderingSystem.service;
 import fall24.swp391.KoiOrderingSystem.pojo.KoiFarmImage;
 import fall24.swp391.KoiOrderingSystem.repo.IKoiFarmImageRepository;
 import fall24.swp391.KoiOrderingSystem.repo.IKoiFarmsRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class KoiFarmImageService implements IKoiFarmImageService{
     private IKoiFarmImageRepository koiFarmImageRepository;
 

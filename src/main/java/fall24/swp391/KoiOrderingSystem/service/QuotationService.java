@@ -3,6 +3,7 @@ package fall24.swp391.KoiOrderingSystem.service;
 import fall24.swp391.KoiOrderingSystem.enums.ApproveStatus;
 import fall24.swp391.KoiOrderingSystem.exception.GenericException;
 import fall24.swp391.KoiOrderingSystem.exception.NotUpdateException;
+import fall24.swp391.KoiOrderingSystem.pojo.Bookings;
 import fall24.swp391.KoiOrderingSystem.pojo.Quotations;
 import fall24.swp391.KoiOrderingSystem.repo.IBookingRepository;
 import fall24.swp391.KoiOrderingSystem.repo.IBookingTourDetailRepository;
@@ -26,41 +27,52 @@ public class QuotationService implements IQuotationService{
     private IBookingRepository bookingRepository;
 
     @Override
-    public List<Quotations> getQuotationsByBookID(Long bookId) {
-        List<Quotations> quotationsList = quotationRepository.listQuotations(bookId);
-        return quotationRepository.listQuotations(bookId);
-    } //Lấy Quotations từ Booking, để lấy amount từ BookingTourDetail
+    public List<Quotations> getQuotationsByBookID(Long quotationId) {
+        List<Quotations> quotationsList = quotationRepository.findQuotationById(quotationId);
+        return quotationsList;
+    }
 
     @Override
     public Quotations createQuotations(Quotations quotations, float amount) {
-        quotations.setIsApprove(ApproveStatus.PROCESS); //create initialization status
+        Long bookId = quotations.getBooking().getId();
+        Bookings booking = bookingRepository.findById(bookId).orElseThrow(() -> new RuntimeException("Booking Not Found For Quotations"));
+        amount = bookingTourDetailRepository.findTotalAmount(bookId);
+
+        quotations.setIsApprove(ApproveStatus.PROCESS);
+        quotations.setAmount(amount);
+        quotations.setBooking(booking);
         return quotationRepository.save(quotations);
     }
 
     @Override
-    public boolean deleteQuotations(Long bookId) {
-        Optional<Quotations> quotations = quotationRepository.findById(bookId);
-        if(quotations.isPresent()){
-            quotationRepository.deleteById(bookId);
-            return true;
+    public Boolean deleteQuotations(Long quotationId) {
+        try{
+            Optional<Quotations> quotations = quotationRepository.findById(quotationId);
+            if(quotations.isPresent()){
+                Quotations delQuotation = quotations.get();
+                delQuotation.setIsApprove(ApproveStatus.FINISH);
+                quotationRepository.save(delQuotation);
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            throw new GenericException(e.getMessage());
         }
-        return false;
     }
 
     @Override
-    public void updateQuotations(Long bookId) {
-        try{
-            Quotations quotations = quotationRepository.findById(bookId).orElseThrow();
-            bookId = quotations.getBooking().getId();
-            Float amount = bookingTourDetailRepository.findTotalAmount(bookId);
+    public Quotations updateQuotations(Long quotationId) {
 
-            if(amount != null){
-                quotations.setAmount(amount);
-                quotationRepository.save(quotations);
-            }
-        } catch (NotUpdateException e) {
-            throw new GenericException(e.getMessage());
+        Optional<Quotations> optionalQuotation = quotationRepository.findById(quotationId);
+
+        if(optionalQuotation.isPresent()){
+            Quotations quotations = optionalQuotation.get();
+            float totalAmount = bookingTourDetailRepository.findTotalAmount(quotationId);
+            quotations.setAmount(totalAmount);
+            return quotationRepository.save(quotations);
         }
+        return null;
+
     }
 
 }
