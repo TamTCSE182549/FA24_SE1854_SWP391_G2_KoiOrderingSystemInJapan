@@ -11,6 +11,6 @@ import java.util.List;
 public class BookingKoiRequest {
     Long koiId;
     PaymentMethod paymentMethod;
-    List<BookingKoiDetail> koiDetails;
+    int quantity;
 
 }
