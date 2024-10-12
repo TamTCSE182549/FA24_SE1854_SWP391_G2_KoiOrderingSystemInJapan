@@ -2,8 +2,8 @@ package fall24.swp391.KoiOrderingSystem.service;
 
 
 import fall24.swp391.KoiOrderingSystem.model.request.BookingKoiRequest;
-import fall24.swp391.KoiOrderingSystem.model.request.BookingRequest;
-import fall24.swp391.KoiOrderingSystem.model.response.BookingResponse;
+//import fall24.swp391.KoiOrderingSystem.model.request.BookingRequest;
+//import fall24.swp391.KoiOrderingSystem.model.response.BookingResponse;
 import fall24.swp391.KoiOrderingSystem.model.request.BookingTourRequest;
 import fall24.swp391.KoiOrderingSystem.model.response.BookingTourResponse;
 import fall24.swp391.KoiOrderingSystem.pojo.Bookings;
@@ -29,7 +29,7 @@ public interface IBookingService {
     // Delete a booking by ID (update status to 'cancelled' and return a boolean)
     Bookings deleteBooking(Long id);
 
-    BookingResponse createKoiBooking(BookingKoiRequest bookingKoiRequest) throws Exception;
+    BookingTourResponse createKoiBooking(BookingKoiRequest bookingKoiRequest) throws Exception;
 
     Bookings updateKoiBooking(Long id, Bookings bookingDetails);
 
