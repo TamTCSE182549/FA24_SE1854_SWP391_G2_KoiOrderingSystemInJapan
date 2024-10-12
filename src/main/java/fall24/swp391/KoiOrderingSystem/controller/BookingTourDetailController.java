@@ -4,6 +4,7 @@ import fall24.swp391.KoiOrderingSystem.model.request.BookingTourDetailRequest;
 import fall24.swp391.KoiOrderingSystem.model.response.BookingTourDetailResponse;
 import fall24.swp391.KoiOrderingSystem.pojo.BookingTourDetail;
 import fall24.swp391.KoiOrderingSystem.service.IBookingTourDetailService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import java.util.List;
 @RestController
 @CrossOrigin
 @RequestMapping("/BookingTourDetail")
+@SecurityRequirement(name = "api")
 public class BookingTourDetailController {
 
     @Autowired

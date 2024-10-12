@@ -3,6 +3,8 @@ package fall24.swp391.KoiOrderingSystem.controller;
 
 import fall24.swp391.KoiOrderingSystem.model.request.BookingKoiRequest;
 import fall24.swp391.KoiOrderingSystem.model.request.BookingTourRequest;
+import fall24.swp391.KoiOrderingSystem.model.request.BookingUpdateRequestCus;
+import fall24.swp391.KoiOrderingSystem.model.request.BookingUpdateRequestStaff;
 import fall24.swp391.KoiOrderingSystem.model.response.BookingTourResponse;
 import fall24.swp391.KoiOrderingSystem.pojo.Bookings;
 import fall24.swp391.KoiOrderingSystem.service.IBookingService;
@@ -43,6 +45,13 @@ public class BookingController {
 //                .orElseGet(() -> ResponseEntity.notFound().build());
 //    }
 //
+    //Get BookigForTour STAFF role
+    @GetMapping("/BookingForTour")
+    public ResponseEntity<?> showBookingForTour(){
+        List<BookingTourResponse> bookingTourResponses = bookingService.bookingForTour();
+        return ResponseEntity.ok(bookingTourResponses);
+    }
+
     // Get all bookings
     @GetMapping("/list/{accountID}")
     public ResponseEntity<List<Bookings>> getTourBookings(@PathVariable Long accountID) {
@@ -51,8 +60,8 @@ public class BookingController {
     }
 
     @GetMapping("/listBookingTourResponse/{accountID}")
-    public ResponseEntity<List<BookingTourResponse>> getTourBookingResponse(@PathVariable Long accountID) {
-        List<BookingTourResponse> bookings = bookingService.getTourBookingResponse(accountID);
+    public ResponseEntity<List<BookingTourResponse>> getTourBookingResponse() {
+        List<BookingTourResponse> bookings = bookingService.getTourBookingResponse();
         return ResponseEntity.ok(bookings);
     }
 
@@ -63,9 +72,21 @@ public class BookingController {
         return new ResponseEntity<>("Update Complete", HttpStatus.OK);
     }
 
+//    @PutMapping("/updateResponseForm")
+//    public ResponseEntity<?> updateBookingAndResponse(@RequestBody Bookings bookingDetails) {
+//        BookingTourResponse bookingTourResponse = bookingService.updateTourBookingResponse(bookingDetails);
+//        return new ResponseEntity<>(bookingTourResponse, HttpStatus.OK);
+//    }
+
     @PutMapping("/updateResponseForm")
-    public ResponseEntity<?> updateBookingAndResponse(@RequestBody Bookings bookingDetails) {
-        BookingTourResponse bookingTourResponse = bookingService.updateTourBookingResponse(bookingDetails);
+    public ResponseEntity<?> updateBookingAndResponse(@RequestBody BookingUpdateRequestStaff bookingUpdateRequestStaff) {
+        BookingTourResponse bookingTourResponse = bookingService.responseForStaff(bookingUpdateRequestStaff);
+        return new ResponseEntity<>(bookingTourResponse, HttpStatus.OK);
+    }
+
+    @PutMapping("/updateResponseFormCus")
+    public ResponseEntity<?> updateBookingAndResponseCus(@RequestBody BookingUpdateRequestCus bookingUpdateRequestCus) {
+        BookingTourResponse bookingTourResponse = bookingService.bookingUpdatePaymentMethod(bookingUpdateRequestCus);
         return new ResponseEntity<>(bookingTourResponse, HttpStatus.OK);
     }
     // Delete a booking by ID

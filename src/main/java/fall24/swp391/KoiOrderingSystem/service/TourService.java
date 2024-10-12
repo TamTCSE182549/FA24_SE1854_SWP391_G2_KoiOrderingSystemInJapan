@@ -36,13 +36,13 @@ public class TourService implements ITourService{
 
     @Override
     public TourResponse createTourRes(TourRequest tourRequest) {
-        Account account = authenticationService.getCurrentAccount();
+//        Account account = authenticationService.getCurrentAccount();
 
         Tours tours = modelMapper.map(tourRequest, Tours.class);
-        tours.setCreatedBy(account);
+//        tours.setCreatedBy(account);
         iTourRepository.save(tours);
         TourResponse tourResponse = modelMapper.map(tours, TourResponse.class);
-        tourResponse.setCreatedBy(account.getFirstName() + " " + account.getLastName());
+//        tourResponse.setCreatedBy(account.getFirstName() + " " + account.getLastName());
         return tourResponse;
     }
 

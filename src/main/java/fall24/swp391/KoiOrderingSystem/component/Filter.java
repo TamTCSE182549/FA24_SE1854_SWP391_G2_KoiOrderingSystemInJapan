@@ -60,7 +60,7 @@ public class Filter extends OncePerRequestFilter {
 //
         //check xem api nguoi dung yeu cau co cho phep ai truy cap duoc
         boolean isPublicAPI = checkIsPublicAPI(request.getRequestURI());
-//        isPublicAPI = true;
+     //   isPublicAPI = true;
         if(isPublicAPI){
             filterChain.doFilter(request,response);
         } else{

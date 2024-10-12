@@ -6,11 +6,11 @@ import java.util.List;
 
 public interface IQuotationService {
 
-    List<Quotations> getQuotationsByBookID(Long bookId);
+    List<Quotations> getQuotationsByBookID(Long quotationId);
 
     Quotations createQuotations(Quotations quotations, float amount);
 
-    void updateQuotations(Long bookId);
+    Quotations updateQuotations(Long quotationId);
 
-    boolean deleteQuotations(Long bookId);
+    Boolean deleteQuotations(Long quotationId);
 }
