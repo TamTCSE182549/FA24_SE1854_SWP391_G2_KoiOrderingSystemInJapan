@@ -10,9 +10,12 @@ import java.time.LocalDateTime;
 @Data
 public class BookingTourResponse {
     Long id;
+    Long customerID;
+    String nameCus;
     float totalAmount;
     float vat;
     float vatAmount;
+    float discountAmount;
     float totalAmountWithVAT;
     BookingType bookingType;
     PaymentMethod paymentMethod;
