@@ -1,5 +1,6 @@
 package fall24.swp391.KoiOrderingSystem.pojo;
 
+import com.google.api.client.util.DateTime;
 import fall24.swp391.KoiOrderingSystem.enums.DepositStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -31,14 +32,14 @@ public class Deposit {
     private LocalDateTime depositDate;
 
     @Column(name ="deposit_percentage")
-    private float depositpercentage;
+    private float depositPercentage;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "deposit_status")
     private DepositStatus depositStatus;
 
     @Column(name = "delivery_expected_date")
-    private LocalDateTime deliveryExpectedDate;
+    private Date deliveryExpectedDate;
 
     @Column(name = "shipping_address")
     private String shippingAddress;
@@ -53,7 +54,6 @@ public class Deposit {
 
     @PrePersist
     protected void onCreate(){
-        deliveryExpectedDate = LocalDateTime.now();
         depositDate = LocalDateTime.now();
     }
 }

@@ -185,11 +185,11 @@ public class BookingService implements IBookingService{
                 booking.setBookingType(BookingType.BookingForKoi);
                 bookingRepository.save(booking);
 
-                for(BookingKoiDetail koidetail: bookingKoiRequest.getKoiDetails()) {
-                    BookingKoiDetail bookingKoiDetail = new BookingKoiDetail(booking, kois, koidetail.getQuantity());
-                    bookingKoiDetail.setTotalAmount(kois.getUnitPrice() * koidetail.getQuantity());
+
+                    BookingKoiDetail bookingKoiDetail = new BookingKoiDetail(booking, kois, bookingKoiRequest.getQuantity());
+                    bookingKoiDetail.setTotalAmount(kois.getUnitPrice() * bookingKoiRequest.getQuantity());
                     iBookingKoiDetailRepository.save(bookingKoiDetail);
-                }
+
                     float totalBookingAmount = 0;
                     List<BookingKoiDetail> koiDetailOfBookingID = iBookingKoiDetailRepository.showDetailOfBookingID(booking.getId());
                     for (BookingKoiDetail b : koiDetailOfBookingID) {

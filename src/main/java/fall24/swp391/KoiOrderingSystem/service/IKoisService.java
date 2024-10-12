@@ -1,5 +1,6 @@
 package fall24.swp391.KoiOrderingSystem.service;
 
+import fall24.swp391.KoiOrderingSystem.model.request.KoiRequest;
 import fall24.swp391.KoiOrderingSystem.pojo.Kois;
 
 import java.util.List;
@@ -7,9 +8,11 @@ import java.util.List;
 public interface IKoisService {
     List<Kois> findAll();
 
-    Kois findById(Long Id);
+    List<Kois> getKoiByFarmId(Long farmId);
 
-    Kois save(Kois kois);
+    Kois createKois(KoiRequest koiRequest, Long farmId);
+
+    Kois updateKoi(Long Id,KoiRequest koiRequest);
 
     void deletebyId(Long Id);
 }
