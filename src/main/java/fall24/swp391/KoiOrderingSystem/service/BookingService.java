@@ -23,6 +23,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
@@ -81,7 +82,7 @@ public class BookingService implements IBookingService{
                 bookingTourResponse.setNameCus(account.getFirstName() + " " + account.getLastName());
                 return bookingTourResponse;
             } else {
-                throw new NotCreateException("Create Booking Only Role Manager");
+                throw new NotCreateException("Create Tour Booking Only Role Customer");
             }
         } catch (Exception e) {
             throw new GenericException(e.getMessage());
@@ -95,7 +96,14 @@ public class BookingService implements IBookingService{
 
     @Override
     public List<BookingTourResponse> bookingForTour() {
-        List<Bookings> bookingTourResponses = bookingRepository.listBookingForTour();
+        Account account = authenticationService.getCurrentAccount();
+        List<Bookings> bookingTourResponses = null;
+        if (account.getRole() == Role.MANAGER){
+            bookingTourResponses = bookingRepository.listBookingForTour();
+        } else {
+            throw new NotFoundEntity("Account not FOUND");
+        }
+
         return bookingTourResponses.stream().map(bookings -> {
             BookingTourResponse bookingTourResponse = modelMapper.map(bookings, BookingTourResponse.class);
             if (bookings.getUpdatedBy() == null) {
@@ -141,6 +149,10 @@ public class BookingService implements IBookingService{
     @Override
     public Bookings updateTourBooking(Long id, Bookings bookingUpdateDetail) {
         try {
+            Account account = authenticationService.getCurrentAccount();
+            if (account.getRole() != Role.MANAGER){
+                throw new NotUpdateException("Your Role Cannot Access");
+            }
             Optional<Bookings> existingBooking = bookingRepository.findById(id);
             if (existingBooking.isPresent()) {
                 Bookings bookingToUpdate = existingBooking.get();
@@ -153,7 +165,7 @@ public class BookingService implements IBookingService{
                 bookingToUpdate.setDiscountAmount(bookingUpdateDetail.getDiscountAmount());
                 bookingToUpdate.setVat(bookingUpdateDetail.getVat());
                 bookingToUpdate.setVatAmount(bookingToUpdate.getVat() * bookingToUpdate.getTotalAmount());
-                bookingToUpdate.setUpdatedBy(authenticationService.getCurrentAccount());
+                bookingToUpdate.setUpdatedBy(account);
                 float totalBookingAmount = 0;
                 List<BookingTourDetail> tourDetailOfBookingID = iBookingTourDetailRepository.showDetailOfBookingID(id);
                 for(BookingTourDetail b : tourDetailOfBookingID){
@@ -165,69 +177,99 @@ public class BookingService implements IBookingService{
             } else {
                 throw new NotUpdateException("Update booking id " + id + " failed");
             }
-        } catch (NotUpdateException e) {
+        } catch (Exception e) {
             throw new GenericException(e.getMessage());
         }
     }
 
     @Override
     public BookingTourResponse updateTourBookingResponse(Bookings bookingDetails) {
-        Bookings booking = bookingRepository.findById(bookingDetails.getId())
-                .orElseThrow(() -> new NotFoundEntity("Booking not exists"));
-        Account account = authenticationService.getCurrentAccount();
-        booking.setVat(bookingDetails.getVat());
-        booking.setVatAmount(booking.getVat() * booking.getTotalAmount());
-        booking.setDiscountAmount(bookingDetails.getDiscountAmount());
-        booking.setTotalAmountWithVAT(booking.getTotalAmount() + booking.getVatAmount() - booking.getDiscountAmount());
-        booking.setPaymentMethod(bookingDetails.getPaymentMethod());
-        booking.setUpdatedBy(account);
-        bookingRepository.save(booking);
-        BookingTourResponse bookingTourResponse = modelMapper.map(booking, BookingTourResponse.class);
-        bookingTourResponse.setCreatedBy(booking.getCreatedBy().getFirstName() +  " " + booking.getCreatedBy().getLastName());
-        bookingTourResponse.setUpdatedBy(booking.getUpdatedBy().getFirstName() +  " " + booking.getUpdatedBy().getLastName());
-        return modelMapper.map(booking, BookingTourResponse.class);
+        try {
+            Account account = authenticationService.getCurrentAccount();
+            if (account.getRole() != Role.MANAGER){
+                throw new NotUpdateException("Your Role Cannot Access");
+            }
+            Bookings booking = bookingRepository.findById(bookingDetails.getId())
+                    .orElseThrow(() -> new NotFoundEntity("Booking not exists"));
+            booking.setVat(bookingDetails.getVat());
+            booking.setVatAmount(booking.getVat() * booking.getTotalAmount());
+            booking.setDiscountAmount(bookingDetails.getDiscountAmount());
+            float totalBookingAmount = 0;
+            List<BookingTourDetail> tourDetailOfBookingID = iBookingTourDetailRepository.showDetailOfBookingID(booking.getId());
+            for(BookingTourDetail b : tourDetailOfBookingID){
+                totalBookingAmount += b.getTotalAmount();
+            }
+            booking.setTotalAmount(totalBookingAmount);
+            booking.setTotalAmountWithVAT(booking.getTotalAmount() + booking.getVatAmount() - booking.getDiscountAmount());
+            booking.setPaymentMethod(bookingDetails.getPaymentMethod());
+            booking.setUpdatedBy(account);
+            bookingRepository.save(booking);
+            BookingTourResponse bookingTourResponse = modelMapper.map(booking, BookingTourResponse.class);
+            bookingTourResponse.setCreatedBy(booking.getCreatedBy().getFirstName() +  " " + booking.getCreatedBy().getLastName());
+            bookingTourResponse.setUpdatedBy(booking.getUpdatedBy().getFirstName() +  " " + booking.getUpdatedBy().getLastName());
+            return modelMapper.map(booking, BookingTourResponse.class);
+        } catch (Exception e){
+            throw new GenericException(e.getMessage());
+        }
     }
 
     @Override
     public BookingTourResponse bookingUpdatePaymentMethod(BookingUpdateRequestCus bookingUpdateRequestCus) {
-        Bookings bookings = bookingRepository.findById(bookingUpdateRequestCus.getBookingID())
-                .orElseThrow(() -> new NotUpdateException("Booking ID not FOUND"));
-        bookings.setPaymentMethod(bookingUpdateRequestCus.getPaymentMethod());
-        bookingRepository.save(bookings);
-        BookingTourResponse bookingTourResponse = modelMapper.map(bookings, BookingTourResponse.class);
-        if (bookings.getUpdatedBy() == null) {
-            bookingTourResponse.setUpdatedBy("");
-        } else {
-            bookingTourResponse.setUpdatedBy(bookings.getUpdatedBy().getFirstName() + " " + bookings.getUpdatedBy().getLastName());
-        }
+        try {
+            Account account = authenticationService.getCurrentAccount();
+            if (account.getRole() != Role.CUSTOMER){
+                throw new NotUpdateException("Your Role cannot access");
+            }
+            Bookings bookings = bookingRepository.findById(bookingUpdateRequestCus.getBookingID())
+                    .orElseThrow(() -> new NotUpdateException("Booking ID not FOUND"));
+            bookings.setPaymentMethod(bookingUpdateRequestCus.getPaymentMethod());
+            bookingRepository.save(bookings);
+            BookingTourResponse bookingTourResponse = modelMapper.map(bookings, BookingTourResponse.class);
+            if (bookings.getUpdatedBy() == null) {
+                bookingTourResponse.setUpdatedBy("");
+            } else {
+                bookingTourResponse.setUpdatedBy(bookings.getUpdatedBy().getFirstName() + " " + bookings.getUpdatedBy().getLastName());
+            }
 
-        if (bookings.getCreatedBy() == null) {
-            bookingTourResponse.setCreatedBy("");
-        } else {
-            bookingTourResponse.setCreatedBy(bookings.getCreatedBy().getFirstName() + " " + bookings.getCreatedBy().getLastName());
+            if (bookings.getCreatedBy() == null) {
+                bookingTourResponse.setCreatedBy("");
+            } else {
+                bookingTourResponse.setCreatedBy(bookings.getCreatedBy().getFirstName() + " " + bookings.getCreatedBy().getLastName());
+            }
+            bookingTourResponse.setCustomerID(bookings.getAccount().getId());
+            bookingTourResponse.setNameCus(bookings.getAccount().getFirstName() + " " + bookings.getAccount().getLastName());
+            return bookingTourResponse;
+        } catch (Exception e) {
+            throw new NotUpdateException(e.getMessage());
         }
-        bookingTourResponse.setCustomerID(bookings.getAccount().getId());
-        bookingTourResponse.setNameCus(bookings.getAccount().getFirstName() + " " + bookings.getAccount().getLastName());
-        return bookingTourResponse;
     }
 
     @Override
     public BookingTourResponse responseForStaff(BookingUpdateRequestStaff bookingUpdateRequestStaff) {
-        Account account = authenticationService.getCurrentAccount();
-        Bookings bookings = bookingRepository.findById(bookingUpdateRequestStaff.getBookingID())
-                .orElseThrow(() -> new NotFoundEntity("Booking ID not FOUND"));
-        bookings.setPaymentMethod(bookingUpdateRequestStaff.getPaymentMethod());
-        bookings.setPaymentStatus(bookingUpdateRequestStaff.getPaymentStatus());
-        bookings.setVat(bookingUpdateRequestStaff.getVat());
-        bookings.setDiscountAmount(bookingUpdateRequestStaff.getDiscountAmount());
-        bookings.setUpdatedBy(account);
-        bookings.setVatAmount(bookingUpdateRequestStaff.getVat() * bookings.getTotalAmount());
-        bookings.setDiscountAmount(bookingUpdateRequestStaff.getDiscountAmount());
-        bookings.setTotalAmountWithVAT(bookings.getTotalAmount() + bookings.getVatAmount() - bookings.getDiscountAmount());
-        bookingRepository.save(bookings);
-        BookingTourResponse bookingTourResponse = modelMapper.map(bookings, BookingTourResponse.class);
-        bookingTourResponse.setUpdatedBy(account.getFirstName() + " " + account.getLastName());
-        return bookingTourResponse;
+        try {
+            Account account = authenticationService.getCurrentAccount();
+            if (account.getRole() != Role.MANAGER){
+                throw new NotUpdateException("Your Role cannot access");
+            }
+            Bookings bookings = bookingRepository.findById(bookingUpdateRequestStaff.getBookingID())
+                    .orElseThrow(() -> new NotFoundEntity("Booking ID not FOUND"));
+            bookings.setPaymentMethod(bookingUpdateRequestStaff.getPaymentMethod());
+            bookings.setPaymentStatus(bookingUpdateRequestStaff.getPaymentStatus());
+            bookings.setVat(bookingUpdateRequestStaff.getVat());
+            bookings.setDiscountAmount(bookingUpdateRequestStaff.getDiscountAmount());
+            bookings.setUpdatedBy(account);
+            bookings.setVatAmount(bookingUpdateRequestStaff.getVat() * bookings.getTotalAmount());
+            bookings.setDiscountAmount(bookingUpdateRequestStaff.getDiscountAmount());
+            bookings.setTotalAmountWithVAT(bookings.getTotalAmount() + bookings.getVatAmount() - bookings.getDiscountAmount());
+            bookingRepository.save(bookings);
+            BookingTourResponse bookingTourResponse = modelMapper.map(bookings, BookingTourResponse.class);
+            bookingTourResponse.setUpdatedBy(account.getFirstName() + " " + account.getLastName());
+            bookingTourResponse.setCustomerID(bookings.getAccount().getId());
+            bookingTourResponse.setNameCus(bookings.getAccount().getFirstName() + " " + bookings.getAccount().getLastName());
+            return bookingTourResponse;
+        } catch (Exception e){
+            throw new GenericException(e.getMessage());
+        }
     }
 
     //delete means update payment_status to cancelled
@@ -330,6 +372,9 @@ public class BookingService implements IBookingService{
         Bookings booking = bookingRepository.findById(bookingID)
                 .orElseThrow(() -> new NotFoundEntity("Booking not exist"));
         Account account = authenticationService.getCurrentAccount();
+        if(booking.getPaymentStatus()!=PaymentStatus.pending){
+            throw new NotDeleteException("Your cannot delete this booking because it processing");
+        }
         booking.setPaymentStatus(PaymentStatus.cancelled);
         booking.setUpdatedBy(account);
         bookingRepository.save(booking);

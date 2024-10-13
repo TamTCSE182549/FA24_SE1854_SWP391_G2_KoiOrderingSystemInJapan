@@ -7,13 +7,13 @@ import fall24.swp391.KoiOrderingSystem.pojo.BookingTourDetail;
 import java.util.List;
 
 public interface IBookingTourDetailService {
-    List<BookingTourDetail> bookingTourDetails(Long bookingID);
+    List<BookingTourDetailResponse> bookingTourDetails(Long bookingID);
 
-    List<BookingTourDetailResponse> bookingTourDetailRes(Long bookingID);
+//    List<BookingTourDetailResponse> bookingTourDetailRes(Long bookingID);
 
-    List<BookingTourDetail> getAll();
+//    List<BookingTourDetail> getAll();
 
-    BookingTourDetail createBookingTourDetail(BookingTourDetail bookingTourDetail);
+//    BookingTourDetail createBookingTourDetail(BookingTourDetail bookingTourDetail);
 
     BookingTourDetailResponse createBookingTourDetailRes(BookingTourDetailRequest bookingTourDetailRequest);
 

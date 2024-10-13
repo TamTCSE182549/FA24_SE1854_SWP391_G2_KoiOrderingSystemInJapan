@@ -44,4 +44,9 @@ public class ValidationHandler {
     public ResponseEntity<?> handleCreateException(NotCreateException exception){
         return new ResponseEntity<>("Error Create: " + exception.getMessage(), HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(NotReadException.class)
+    public ResponseEntity<?> handleReadException(NotReadException exception){
+        return new ResponseEntity<>("Error Read Data: " + exception.getMessage(), HttpStatus.BAD_REQUEST);
+    }
 }
