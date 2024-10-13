@@ -1,10 +1,8 @@
 package fall24.swp391.KoiOrderingSystem.service;
 
+import fall24.swp391.KoiOrderingSystem.enums.Role;
 import fall24.swp391.KoiOrderingSystem.enums.TourStatus;
-import fall24.swp391.KoiOrderingSystem.exception.GenericException;
-import fall24.swp391.KoiOrderingSystem.exception.NotDeleteException;
-import fall24.swp391.KoiOrderingSystem.exception.NotFoundEntity;
-import fall24.swp391.KoiOrderingSystem.exception.NotUpdateException;
+import fall24.swp391.KoiOrderingSystem.exception.*;
 import fall24.swp391.KoiOrderingSystem.model.request.TourRequest;
 import fall24.swp391.KoiOrderingSystem.model.response.TourResponse;
 import fall24.swp391.KoiOrderingSystem.pojo.Account;
@@ -36,14 +34,22 @@ public class TourService implements ITourService{
 
     @Override
     public TourResponse createTourRes(TourRequest tourRequest) {
-//        Account account = authenticationService.getCurrentAccount();
-
-        Tours tours = modelMapper.map(tourRequest, Tours.class);
-//        tours.setCreatedBy(account);
-        iTourRepository.save(tours);
-        TourResponse tourResponse = modelMapper.map(tours, TourResponse.class);
-//        tourResponse.setCreatedBy(account.getFirstName() + " " + account.getLastName());
-        return tourResponse;
+        try {
+            Account account = authenticationService.getCurrentAccount();
+            if (account.getRole()!= Role.MANAGER){
+                throw new NotCreateException("Your role cannot access");
+            }
+            Tours tours = modelMapper.map(tourRequest, Tours.class);
+            tours.setCreatedBy(account);
+            tours.setStatus(TourStatus.active);
+            iTourRepository.save(tours);
+            TourResponse tourResponse = modelMapper.map(tours, TourResponse.class);
+            tourResponse.setMessage("Create Tour " + tourResponse.getTourName() + " Success");
+            tourResponse.setCreatedBy(account.getFirstName() + " " + account.getLastName());
+            return tourResponse;
+        } catch (Exception e){
+            throw new GenericException(e.getMessage());
+        }
     }
 
     @Override
@@ -73,16 +79,21 @@ public class TourService implements ITourService{
     }
 
     @Override
-    public TourResponse updateTourRes(TourRequest tourRequest) {
+    public TourResponse updateTourRes(Long id, TourRequest tourRequest) {
         try {
             Account account = authenticationService.getCurrentAccount();
-            if (account == null){
-                throw new NotFoundEntity("Account is empty");
+            if (account.getRole()!= Role.MANAGER){
+                throw new NotCreateException("Your role cannot access");
             }
-            Tours tours = modelMapper.map(tourRequest, Tours.class);
+            Tours tours = iTourRepository.findById(id)
+                    .orElseThrow(() -> new NotFoundEntity("Tour not FOUND to UPDATE"));
             tours.setUpdatedBy(account);
             iTourRepository.save(tours);
-            return modelMapper.map(tours, TourResponse.class);
+            TourResponse tourResponse = modelMapper.map(tours, TourResponse.class);
+            tourResponse.setMessage("Update Tour " + tourResponse.getTourName() + " Success");
+            tourResponse.setCreatedBy(tours.getCreatedBy().getFirstName() + " " + tours.getCreatedBy().getLastName());
+            tourResponse.setUpdatedBy(tours.getUpdatedBy().getFirstName() + " " + tours.getUpdatedBy().getLastName());
+            return tourResponse;
         } catch (Exception e){
             throw new GenericException(e.getMessage());
         }
@@ -102,28 +113,52 @@ public class TourService implements ITourService{
 
     @Override
     public TourResponse deleteTourRes(Long tourID) {
-        Tours tours = iTourRepository.findById(tourID)
-                .orElseThrow(() -> new NotFoundEntity("Tour to delete not FOUND"));
-        Account account = authenticationService.getCurrentAccount();
-        if (account == null) {
-            throw new NotFoundEntity("Account is EMPTY");
+        try {
+            Account account = authenticationService.getCurrentAccount();
+            if (account.getRole()!= Role.MANAGER){
+                throw new NotCreateException("Your role cannot access");
+            }
+            Tours tours = iTourRepository.findById(tourID)
+                    .orElseThrow(() -> new NotFoundEntity("Tour to delete not FOUND"));
+            tours.setStatus(TourStatus.inactive);
+            tours.setUpdatedBy(account);
+            iTourRepository.save(tours);
+            TourResponse tourResponse = modelMapper.map(tours, TourResponse.class);
+            tourResponse.setCreatedBy(tours.getCreatedBy().getFirstName() + " " + tours.getCreatedBy().getLastName());
+            tourResponse.setUpdatedBy(account.getFirstName() + " " + account.getLastName());
+            return tourResponse;
+        } catch (Exception e) {
+            throw new GenericException(e.getMessage());
         }
-        tours.setStatus(TourStatus.inactive);
-        tours.setUpdatedBy(account);
-        iTourRepository.save(tours);
-        TourResponse tourResponse = modelMapper.map(tours, TourResponse.class);
-        tourResponse.setCreatedBy(tours.getCreatedBy().getFirstName() + " " + tours.getCreatedBy().getLastName());
-        tourResponse.setUpdatedBy(account.getFirstName() + " " + account.getLastName());
-        return tourResponse;
     }
 
     @Override
-    public List<TourResponse> tourResponseList() {
+    public List<TourResponse> tourResponseListActive() {
+        List<Tours> toursList = iTourRepository.findAllByStatusActive();
+        return toursList.stream()
+                .map(tours -> {
+                    TourResponse tourResponse = modelMapper.map(tours, TourResponse.class);
+                    tourResponse.setCreatedBy(tours.getCreatedBy().getFirstName() + " " + tours.getCreatedBy().getLastName());
+                    if (tours.getUpdatedBy()!=null){
+                        tourResponse.setUpdatedBy(tours.getUpdatedBy().getFirstName() + " " + tours.getUpdatedBy().getLastName());
+                    } else {
+                        tourResponse.setUpdatedBy("");
+                    }
+                    return tourResponse;
+                }).toList();
+    }
+
+    public List<TourResponse> showAll() {
         List<Tours> toursList = iTourRepository.findAll();
         return toursList.stream()
                 .map(tours -> {
                     TourResponse tourResponse = modelMapper.map(tours, TourResponse.class);
                     tourResponse.setCreatedBy(tours.getCreatedBy().getFirstName() + " " + tours.getCreatedBy().getLastName());
+                    if (tours.getUpdatedBy()!=null){
+                        tourResponse.setUpdatedBy(tours.getUpdatedBy().getFirstName() + " " + tours.getUpdatedBy().getLastName());
+                    } else {
+                        tourResponse.setUpdatedBy("");
+                    }
                     return tourResponse;
                 }).toList();
     }

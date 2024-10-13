@@ -27,4 +27,10 @@ public class TourDetail {
 
     @Column(name = "description")
     private String description;
+
+    public TourDetail(Tours tour, KoiFarms farm, String description) {
+        this.tour = tour;
+        this.farm = farm;
+        this.description = description;
+    }
 }

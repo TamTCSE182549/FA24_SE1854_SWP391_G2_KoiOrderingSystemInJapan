@@ -36,7 +36,7 @@ public class BookingTourDetailController {
 
     @GetMapping("/{bookingID}")
     public ResponseEntity<?> viewBookingTourDetail(@PathVariable Long bookingID){
-        List<BookingTourDetail> bookingTourDetailList = iBookingTourDetailService.bookingTourDetails(bookingID);
+        List<BookingTourDetailResponse> bookingTourDetailList = iBookingTourDetailService.bookingTourDetails(bookingID);
         return ResponseEntity.ok(bookingTourDetailList);
     }
 

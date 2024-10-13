@@ -16,11 +16,13 @@ public interface ITourService {
 
     void updateTour(Long id, Tours tours);
 
-    TourResponse updateTourRes(TourRequest tourRequest);
+    TourResponse updateTourRes(Long id, TourRequest tourRequest);
 
     Tours deleteTourById(Long id);
 
     TourResponse deleteTourRes(Long tourID);
 
-    List<TourResponse> tourResponseList();
+    List<TourResponse> tourResponseListActive();
+
+    List<TourResponse> showAll();
 }

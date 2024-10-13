@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "*")
 @RequestMapping("/bookings")
 @SecurityRequirement(name = "api")
 public class BookingController {
@@ -29,9 +29,8 @@ public class BookingController {
     @Autowired
     private ModelMapper modelMapper;
 
-    // Create a new booking
-    @PostMapping("/create")
-//    @PreAuthorize("hasAuthority('CUSTOMER')")
+    // Create a new booking for Customer
+    @PostMapping("/CreateForTour")
     public ResponseEntity<?> createBooking(@RequestBody BookingTourRequest bookingTourRequest) throws Exception {
         BookingTourResponse bookingTourResponse = bookingService.createTourBooking(bookingTourRequest);
         return ResponseEntity.ok(bookingTourResponse);
@@ -45,7 +44,7 @@ public class BookingController {
 //                .orElseGet(() -> ResponseEntity.notFound().build());
 //    }
 //
-    //Get BookigForTour STAFF role
+    //Get BookingForTour STAFF role
     @GetMapping("/BookingForTour")
     public ResponseEntity<?> showBookingForTour(){
         List<BookingTourResponse> bookingTourResponses = bookingService.bookingForTour();
@@ -53,24 +52,24 @@ public class BookingController {
     }
 
     // Get all bookings
-    @GetMapping("/list/{accountID}")
-    public ResponseEntity<List<Bookings>> getTourBookings(@PathVariable Long accountID) {
-        List<Bookings> bookings = bookingService.getTourBooking(accountID);
-        return ResponseEntity.ok(bookings);
-    }
+//    @GetMapping("/list/{accountID}")
+//    public ResponseEntity<List<Bookings>> getTourBookings(@PathVariable Long accountID) {
+//        List<Bookings> bookings = bookingService.getTourBooking(accountID);
+//        return ResponseEntity.ok(bookings);
+//    }
 
-    @GetMapping("/listBookingTourResponse/{accountID}")
+    @GetMapping("/listBookingTourResponse")
     public ResponseEntity<List<BookingTourResponse>> getTourBookingResponse() {
         List<BookingTourResponse> bookings = bookingService.getTourBookingResponse();
         return ResponseEntity.ok(bookings);
     }
 
     // Update an existing booking
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updateBooking(@PathVariable Long id, @RequestBody Bookings bookingDetails) {
-        bookingService.updateTourBooking(id, bookingDetails);
-        return new ResponseEntity<>("Update Complete", HttpStatus.OK);
-    }
+//    @PutMapping("/{id}")
+//    public ResponseEntity<?> updateBooking(@PathVariable Long id, @RequestBody Bookings bookingDetails) {
+//        bookingService.updateTourBooking(id, bookingDetails);
+//        return new ResponseEntity<>("Update Complete", HttpStatus.OK);
+//    }
 
 //    @PutMapping("/updateResponseForm")
 //    public ResponseEntity<?> updateBookingAndResponse(@RequestBody Bookings bookingDetails) {
@@ -78,7 +77,7 @@ public class BookingController {
 //        return new ResponseEntity<>(bookingTourResponse, HttpStatus.OK);
 //    }
 
-    @PutMapping("/updateResponseForm")
+    @PutMapping("/updateResponseFormStaff")
     public ResponseEntity<?> updateBookingAndResponse(@RequestBody BookingUpdateRequestStaff bookingUpdateRequestStaff) {
         BookingTourResponse bookingTourResponse = bookingService.responseForStaff(bookingUpdateRequestStaff);
         return new ResponseEntity<>(bookingTourResponse, HttpStatus.OK);
@@ -90,11 +89,11 @@ public class BookingController {
         return new ResponseEntity<>(bookingTourResponse, HttpStatus.OK);
     }
     // Delete a booking by ID
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Bookings> deleteBooking(@PathVariable Long id) {
-        Bookings bookings = bookingService.deleteBooking(id);
-        return new ResponseEntity<>(bookings, HttpStatus.OK);
-    }
+//    @DeleteMapping("/{id}")
+//    public ResponseEntity<Bookings> deleteBooking(@PathVariable Long id) {
+//        Bookings bookings = bookingService.deleteBooking(id);
+//        return new ResponseEntity<>(bookings, HttpStatus.OK);
+//    }
 
 
 
