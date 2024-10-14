@@ -4,6 +4,7 @@ import fall24.swp391.KoiOrderingSystem.exception.NotFoundEntity;
 import fall24.swp391.KoiOrderingSystem.exception.NotUpdateException;
 import fall24.swp391.KoiOrderingSystem.model.request.KoiFarmRequest;
 import fall24.swp391.KoiOrderingSystem.model.response.KoiFarmResponse;
+import fall24.swp391.KoiOrderingSystem.model.response.KoiOfFarmResponse;
 import fall24.swp391.KoiOrderingSystem.pojo.KoiFarms;
 import fall24.swp391.KoiOrderingSystem.repo.IKoiFarmsRepository;
 import org.modelmapper.ModelMapper;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class KoiFarmService implements IKoiFarmsService{
@@ -111,5 +113,32 @@ public class KoiFarmService implements IKoiFarmsService{
         iKoiFarmsRepository.save(koiFarms);
         KoiFarmResponse koiFarmResponse = modelMapper.map(koiFarms, KoiFarmResponse.class);
         return koiFarmResponse;
+    }
+
+    @Override
+    public List<KoiFarmResponse> getAllKoiFarms() {
+        List<KoiFarms> koiFarmsList = iKoiFarmsRepository.findAll();
+        return koiFarmsList.stream().map(this::convertToKoiFarmResponse).collect(Collectors.toList());
+    }
+
+    @Override
+    public KoiFarmResponse convertToKoiFarmResponse(KoiFarms koiFarm) {
+        KoiFarmResponse response = new KoiFarmResponse();
+        response.setKoiFarmName(koiFarm.getFarmName());
+        response.setKoiFarmPhone(koiFarm.getFarmPhoneNumber());
+        response.setKoiFarmEmail(koiFarm.getFarmEmail());
+        response.setKoiFarmAddress(koiFarm.getFarmAddress());
+        response.setWebsite(koiFarm.getWebsite());
+
+        List<KoiOfFarmResponse> koiOfFarmResponses = koiFarm.getKoiOfFarms().stream()
+                .map(koiOfFarm -> {
+                    KoiOfFarmResponse koiOfFarmResponse = new KoiOfFarmResponse();
+                    koiOfFarmResponse.setKoiId(koiOfFarm.getKois().getId());
+                    koiOfFarmResponse.setQuantity(koiOfFarm.getQuantity());
+                    return koiOfFarmResponse;
+                }).collect(Collectors.toList());
+
+        response.setKoiOfFarms(koiOfFarmResponses);
+        return response;
     }
 }

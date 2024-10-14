@@ -14,5 +14,5 @@ public class KoiFarmResponse {
     private String koiFarmAddress;
     private String website;
     private List<KoiFarmImage> koiFarmImages;
-    private List<KoiOfFarm> koiOfFarms;
+    private List<KoiOfFarmResponse> koiOfFarms;
 }
