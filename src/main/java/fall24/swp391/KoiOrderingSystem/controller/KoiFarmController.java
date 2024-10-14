@@ -23,15 +23,18 @@ public class KoiFarmController {
     private IKoiFarmsService iKoiFarmsService;
 
     @PostMapping("/create")
-    public ResponseEntity<KoiFarms> createKoiFarm(@RequestBody KoiFarms koiFarms){
-        KoiFarms createdKoiFarm = iKoiFarmsService.createKoiFarm(koiFarms);
-        return  ResponseEntity.status(HttpStatus.CREATED).body(createdKoiFarm);
+    public ResponseEntity<?> createKoiFarmRes(@RequestBody KoiFarmRequest koiFarmRequest) {
+        KoiFarmResponse koiFarmResponse = iKoiFarmsService.createKoiFarm(koiFarmRequest);
+        return new ResponseEntity<>("Create Koi_Farm: "+ koiFarmRequest.getFarmName() + "Success\n" + koiFarmResponse, HttpStatus.CREATED);
     }
 
-    @PostMapping("/create/res")
-    public ResponseEntity<?> createKoiFarmRes(@RequestBody KoiFarmRequest koiFarmRequest) {
-        KoiFarmResponse koiFarmResponse = iKoiFarmsService.createKoiFarmRes(koiFarmRequest);
-        return new ResponseEntity<>("Create Koi_Farm: "+ koiFarmRequest.getKoiFarmName() + "Success\n" + koiFarmResponse, HttpStatus.CREATED);
+    @GetMapping("/list-farm/{id}")
+    public ResponseEntity<?> getFarm(@PathVariable Long id){
+        List<KoiFarmResponse> koiFarmResponseList = iKoiFarmsService.getFarmById(id);
+        if(koiFarmResponseList == null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Farm not Found");
+        }
+        return new ResponseEntity<>(koiFarmResponseList,HttpStatus.OK);
     }
 
     @GetMapping("/list-farm")
@@ -44,20 +47,17 @@ public class KoiFarmController {
         }
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<KoiFarms> updateKoiFarms(@PathVariable Long id,
-                                                   @RequestBody KoiFarms koiFarms){
-        try{
-            KoiFarms updatedKoiFarm = iKoiFarmsService.updateKoiFarm(id,koiFarms);
-            return new ResponseEntity<>(updatedKoiFarm, HttpStatus.OK);
-        } catch (Exception e){
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        }
+    @PutMapping("/update/{id}")
+    public ResponseEntity<?> updateKoiFarms(@PathVariable Long id,
+                                            @RequestBody KoiFarmRequest
+                                                    koiFarmRequest){
+        KoiFarmResponse updatedKoiFarm = iKoiFarmsService.updateKoiFarmRes(koiFarmRequest,id);
+        return ResponseEntity.ok(updatedKoiFarm);
     }
 
-    @DeleteMapping("/delete")
-    public ResponseEntity<KoiFarms> deleteKoiFarm(@PathVariable Long id){
-        KoiFarms koiFarms = iKoiFarmsService.deleteKoiFarm(id);
+    @DeleteMapping("/deleteFarm/{id}")
+    public ResponseEntity<?> deleteKoiFarm(@PathVariable Long id){
+        KoiFarmResponse koiFarms = iKoiFarmsService.deleteKoiFarmRes(id);
         return new ResponseEntity<>(koiFarms, HttpStatus.OK);
     }
 }

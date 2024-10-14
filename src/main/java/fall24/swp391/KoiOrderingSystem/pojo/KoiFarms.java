@@ -1,6 +1,7 @@
 package fall24.swp391.KoiOrderingSystem.pojo;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -30,11 +31,11 @@ public class KoiFarms {
     @Column(name = "farmEmail")
     private String farmEmail;
 
+    @Column(name = "description")
+    private String description;
+
     @Column(name = "farmAddress")
     private String farmAddress;
-
-    @Column(name = "farmImage", columnDefinition = "TEXT")
-    private String farmImage;
 
     @Column(name = "website")
     private String website;
@@ -43,11 +44,14 @@ public class KoiFarms {
     private boolean isActive;
 
     @OneToMany(mappedBy = "farm", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    @JsonIgnore
     private Set<TourDetail> tourDetails;
 
     @OneToMany(mappedBy = "koiFarms", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    @JsonIgnore
     private List<KoiFarmImage> koiFarmImages;
 
     @OneToMany(mappedBy = "koiFarms", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    @JsonIgnore
     private List<KoiOfFarm> koiOfFarms;
 }

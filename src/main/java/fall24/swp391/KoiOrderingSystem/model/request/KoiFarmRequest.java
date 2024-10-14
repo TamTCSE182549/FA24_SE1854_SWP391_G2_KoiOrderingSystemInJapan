@@ -4,10 +4,9 @@ import lombok.Data;
 
 @Data
 public class KoiFarmRequest {
-    String koiFarmName;
-    String koiFarmPhone;
-    String koiFarmEmail;
-    String koiFarmAddress;
-    String koiFarmImage;
-    String website;
+    private String farmName;
+    private String farmPhoneNumber;
+    private String farmEmail;
+    private String farmAddress;
+    private String website;
 }
