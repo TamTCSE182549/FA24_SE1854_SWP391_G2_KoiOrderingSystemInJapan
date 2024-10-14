@@ -10,6 +10,15 @@ import java.util.List;
 @Repository
 public interface IQuotationRepository extends JpaRepository<Quotations, Long> {
 
-//    @Query(value = "select qt.* from quotations as qt where id = ?", nativeQuery = true)
-    List<Quotations> findQuotationById(Long quotationId);
+    @Query(value = "select qt.* from quotations as qt where id = ?", nativeQuery = true)
+    List<Quotations> listQuotations(Long bookId);
+
+    Quotations findQuotationsById(Long quoctationId);
+
+    @Query("SELECT q FROM Quotations q WHERE q.isApprove = 'WAITING'")
+    List<Quotations> findQuotationsByIsApproveWaiting();
+
+
+
+
 }
