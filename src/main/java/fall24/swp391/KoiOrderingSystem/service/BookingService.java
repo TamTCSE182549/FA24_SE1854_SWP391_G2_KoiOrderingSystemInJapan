@@ -307,7 +307,7 @@ public class BookingService implements IBookingService{
 
 
                     BookingKoiDetail bookingKoiDetail = new BookingKoiDetail(booking, kois, bookingKoiRequest.getQuantity());
-                    bookingKoiDetail.setTotalAmount(kois.getUnitPrice() * bookingKoiRequest.getQuantity());
+//                    bookingKoiDetail.setTotalAmount(kois.getUnitPrice() * bookingKoiRequest.getQuantity());
                     iBookingKoiDetailRepository.save(bookingKoiDetail);
 
                     float totalBookingAmount = 0;

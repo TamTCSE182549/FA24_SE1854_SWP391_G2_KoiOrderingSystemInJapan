@@ -1,6 +1,7 @@
 package fall24.swp391.KoiOrderingSystem.pojo;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
@@ -27,7 +28,7 @@ public class Kois  {
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "category_id")
-    @JsonIgnore
+    @JsonBackReference
     private Categories category;
 
     @Column(name = "koi_name")
@@ -48,15 +49,11 @@ public class Kois  {
     @Column(name = "is_active")
     private boolean isActive;
 
-    @Column(name = "unit_price")
-    @Min(value = 0)
-    private float unitPrice;
-
     @OneToMany(mappedBy = "kois", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
-    @JsonIgnore
+    @JsonBackReference
     private List<KoiOfFarm> koiOfFarmList;
 
     @OneToMany(mappedBy = "koi", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
-    @JsonIgnore
+    @JsonBackReference
     private List<BookingKoiDetail> bookingKoiDetails;
 }

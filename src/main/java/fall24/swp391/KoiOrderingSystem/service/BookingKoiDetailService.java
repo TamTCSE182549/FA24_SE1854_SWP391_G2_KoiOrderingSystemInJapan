@@ -57,7 +57,7 @@ public class BookingKoiDetailService implements IBookingKoiDetailService{
                 BookingKoiDetail koiDetail =bookingKoiDetail1.get();
                 koiDetail.setQuantity(bookingKoiDetail.getQuantity());
                 Kois kois= iKoisRepository.findById(bookingKoiDetail.getKoi().getId()).get();
-                koiDetail.setTotalAmount(kois.getUnitPrice()* koiDetail.getQuantity());
+//                koiDetail.setTotalAmount(kois.getUnitPrice()* koiDetail.getQuantity());
                 return bookingKoiDetailRepository.save(koiDetail);
             }else{
                 throw new NotUpdateException("Update Booking Kois detail failed");
