@@ -36,6 +36,10 @@ public class Quotations {
     @JoinColumn(name = "approve_by")
     private Account approveBy;
 
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    @JoinColumn(name = "created_by")
+    private Account createdBy;
+
     @Column(name = "approve_time")
     private LocalDateTime approveTime;
 
