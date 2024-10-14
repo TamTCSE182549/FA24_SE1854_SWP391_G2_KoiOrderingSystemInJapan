@@ -8,4 +8,6 @@ import java.util.List;
 
 @Repository
 public interface IKoisRepository extends JpaRepository<Kois, Long>{
+
+    Kois findKoisById(Long id);
 }

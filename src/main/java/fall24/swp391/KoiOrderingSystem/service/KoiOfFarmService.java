@@ -1,5 +1,6 @@
 package fall24.swp391.KoiOrderingSystem.service;
 
+
 import fall24.swp391.KoiOrderingSystem.exception.NotFoundEntity;
 import fall24.swp391.KoiOrderingSystem.model.request.KoiOfFarmRequest;
 import fall24.swp391.KoiOrderingSystem.pojo.KoiFarms;
@@ -42,6 +43,7 @@ public class KoiOfFarmService implements IKoiOfFarmService{
     }
 
     @Override
+
     public KoiOfFarm createKoiOfFarm(KoiOfFarmRequest koiOfFarmRequest) {
 //        KoiOfFarm koiOfFarms = modelMapper.map(koiOfFarmRequest,KoiOfFarm.class);
         KoiOfFarm koiOfFarms =new KoiOfFarm();
@@ -57,6 +59,7 @@ public class KoiOfFarmService implements IKoiOfFarmService{
 //        koiOfFarms.setKoiFarms(koiFarms);
         koiOfFarms.setKoiFarms(koiFarms);
         return koiOfFarmRepository.save(koiOfFarms);
+
     }
 
     @Override
@@ -86,4 +89,5 @@ public class KoiOfFarmService implements IKoiOfFarmService{
         koiOfFarm.setQuantity(koiOfFarmRequest.getQuantity());
         return koiOfFarmRepository.save(koiOfFarm);
     }
+
 }

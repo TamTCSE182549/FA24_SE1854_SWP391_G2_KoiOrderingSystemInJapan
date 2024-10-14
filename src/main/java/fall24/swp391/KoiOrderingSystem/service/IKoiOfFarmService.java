@@ -15,4 +15,5 @@ public interface IKoiOfFarmService {
     void deleteById(Long Id);
 
     KoiOfFarm updateKoiOfFarm(Long Id,KoiOfFarmRequest koiOfFarmRequest);
+
 }

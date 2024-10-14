@@ -8,11 +8,11 @@ import java.util.List;
 
 public interface IKoiFarmsService {
 
-    KoiFarms createKoiFarm(KoiFarms koiFarm);
-
-    KoiFarmResponse createKoiFarmRes(KoiFarmRequest koiFarmRequest);
+    KoiFarmResponse createKoiFarm(KoiFarmRequest koiFarmRequest);
 
     List<KoiFarms> listKoiFarm();
+
+    List<KoiFarmResponse> getFarmById(Long id);
 
     KoiFarms updateKoiFarm(Long id, KoiFarms koiFarm);
 
@@ -22,5 +22,9 @@ public interface IKoiFarmsService {
 
     KoiFarmResponse deleteKoiFarmRes(Long id);
 
-    List<KoiFarmResponse> koiFarmResList();
+    List<KoiFarmResponse> getAllKoiFarms();
+
+    KoiFarmResponse convertToKoiFarmResponse(KoiFarms koiFarm);
+
+
 }

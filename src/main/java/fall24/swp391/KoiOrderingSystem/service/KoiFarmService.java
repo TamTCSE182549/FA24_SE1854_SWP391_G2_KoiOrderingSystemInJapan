@@ -1,8 +1,10 @@
 package fall24.swp391.KoiOrderingSystem.service;
 
+import fall24.swp391.KoiOrderingSystem.exception.NotFoundEntity;
 import fall24.swp391.KoiOrderingSystem.exception.NotUpdateException;
 import fall24.swp391.KoiOrderingSystem.model.request.KoiFarmRequest;
 import fall24.swp391.KoiOrderingSystem.model.response.KoiFarmResponse;
+import fall24.swp391.KoiOrderingSystem.model.response.KoiOfFarmResponse;
 import fall24.swp391.KoiOrderingSystem.pojo.KoiFarms;
 import fall24.swp391.KoiOrderingSystem.repo.IKoiFarmsRepository;
 import org.modelmapper.ModelMapper;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class KoiFarmService implements IKoiFarmsService{
@@ -22,24 +25,25 @@ public class KoiFarmService implements IKoiFarmsService{
     private ModelMapper modelMapper;
 
     @Override
-    public KoiFarms createKoiFarm(KoiFarms koiFarm) {
-        return iKoiFarmsRepository.save(koiFarm);
-    }
-
-    @Override
-    public KoiFarmResponse createKoiFarmRes(KoiFarmRequest koiFarmRequest) {
+    public KoiFarmResponse createKoiFarm(KoiFarmRequest koiFarmRequest) {
         KoiFarms koiFarms = modelMapper.map(koiFarmRequest, KoiFarms.class);
-        koiFarms.setFarmName(koiFarmRequest.getKoiFarmName());
-        koiFarms.setFarmPhoneNumber(koiFarmRequest.getKoiFarmPhone());
-        koiFarms.setFarmEmail(koiFarmRequest.getKoiFarmEmail());
+        koiFarms.setActive(true);
         iKoiFarmsRepository.save(koiFarms);
-        KoiFarmResponse koiFarmResponse = modelMapper.map(koiFarms, KoiFarmResponse.class);
-        return koiFarmResponse;
+        return modelMapper.map(koiFarms, KoiFarmResponse.class);
     }
 
     @Override
     public List<KoiFarms> listKoiFarm() {
         return iKoiFarmsRepository.findAll();
+    }
+
+    @Override
+    public List<KoiFarmResponse> getFarmById(Long id) {
+        List<KoiFarms> koiFarmsList = iKoiFarmsRepository.findFarmById(id);
+        return koiFarmsList.stream().map(koiFarms -> {
+            KoiFarmResponse koiFarmResponse = modelMapper.map(koiFarms, KoiFarmResponse.class);
+            return koiFarmResponse;
+        }).toList();
     }
 
     @Override
@@ -51,7 +55,7 @@ public class KoiFarmService implements IKoiFarmsService{
                 koiFarmToUpdate = existFarm.get();
                 koiFarmToUpdate.setFarmAddress(koiFarm.getFarmAddress());
                 koiFarmToUpdate.setFarmEmail(koiFarm.getFarmEmail());
-                koiFarmToUpdate.setFarmImage(koiFarm.getFarmImage());
+//                koiFarmToUpdate.setFarmImage(koiFarm.getFarmImage());
                 koiFarmToUpdate.setFarmName(koiFarm.getFarmName());
                 koiFarmToUpdate.setFarmPhoneNumber(koiFarm.getFarmPhoneNumber());
                 koiFarmToUpdate.setWebsite(koiFarm.getWebsite());
@@ -67,7 +71,17 @@ public class KoiFarmService implements IKoiFarmsService{
 
     @Override
     public KoiFarmResponse updateKoiFarmRes(KoiFarmRequest koiFarmRequest, Long id) {
-        return null;
+        KoiFarms koiFarms = iKoiFarmsRepository.findKoiFarmsById(id);
+        if(koiFarms == null){
+            throw new NotFoundEntity("Farm not found!");
+        }
+        koiFarms.setFarmName(koiFarmRequest.getFarmName());
+        koiFarms.setFarmPhoneNumber(koiFarmRequest.getFarmPhoneNumber());
+        koiFarms.setFarmEmail(koiFarmRequest.getFarmEmail());
+        koiFarms.setFarmAddress(koiFarmRequest.getFarmAddress());
+        koiFarms.setWebsite(koiFarmRequest.getWebsite());
+        iKoiFarmsRepository.save(koiFarms);
+        return modelMapper.map(koiFarms, KoiFarmResponse.class);
     }
 
     @Override
@@ -88,13 +102,43 @@ public class KoiFarmService implements IKoiFarmsService{
         }
     }
 
+    //Khi delete thi Farm se tra ve gia tri false
     @Override
     public KoiFarmResponse deleteKoiFarmRes(Long id) {
-        return null;
+        KoiFarms koiFarms = iKoiFarmsRepository.findKoiFarmsById(id);
+        if(koiFarms == null){
+            throw new NotFoundEntity("Farm not found!");
+        }
+        koiFarms.setActive(false);
+        iKoiFarmsRepository.save(koiFarms);
+        KoiFarmResponse koiFarmResponse = modelMapper.map(koiFarms, KoiFarmResponse.class);
+        return koiFarmResponse;
     }
 
     @Override
-    public List<KoiFarmResponse> koiFarmResList() {
-        return List.of();
+    public List<KoiFarmResponse> getAllKoiFarms() {
+        List<KoiFarms> koiFarmsList = iKoiFarmsRepository.findAll();
+        return koiFarmsList.stream().map(this::convertToKoiFarmResponse).collect(Collectors.toList());
+    }
+
+    @Override
+    public KoiFarmResponse convertToKoiFarmResponse(KoiFarms koiFarm) {
+        KoiFarmResponse response = new KoiFarmResponse();
+        response.setKoiFarmName(koiFarm.getFarmName());
+        response.setKoiFarmPhone(koiFarm.getFarmPhoneNumber());
+        response.setKoiFarmEmail(koiFarm.getFarmEmail());
+        response.setKoiFarmAddress(koiFarm.getFarmAddress());
+        response.setWebsite(koiFarm.getWebsite());
+
+        List<KoiOfFarmResponse> koiOfFarmResponses = koiFarm.getKoiOfFarms().stream()
+                .map(koiOfFarm -> {
+                    KoiOfFarmResponse koiOfFarmResponse = new KoiOfFarmResponse();
+                    koiOfFarmResponse.setKoiId(koiOfFarm.getKois().getId());
+                    koiOfFarmResponse.setQuantity(koiOfFarm.getQuantity());
+                    return koiOfFarmResponse;
+                }).collect(Collectors.toList());
+
+        response.setKoiOfFarms(koiOfFarmResponses);
+        return response;
     }
 }
