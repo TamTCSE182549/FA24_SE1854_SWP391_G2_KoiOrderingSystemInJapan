@@ -3,12 +3,11 @@ package fall24.swp391.KoiOrderingSystem.model.response;
 import fall24.swp391.KoiOrderingSystem.enums.DepositStatus;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 @Data
 public class DepositRespone {
-
-    private Long id;
 
     private  float depositAmount;
 
@@ -16,9 +15,9 @@ public class DepositRespone {
 
     private float shippingFee;
 
-    private LocalDateTime depositDate;
+    private LocalDate depositDate;
 
-    private Date deliveryExpectedDate;
+    private LocalDate deliveryExpectedDate;
 
     private String shippingAddress;
 

@@ -10,9 +10,9 @@ public interface IDepositService {
 
     List<DepositRespone> getDepositByBookingId(Long bookingId);
 
-    Deposit createDeposit(DepositRequest depositRequest, Long bookingId);
+    DepositRespone createDeposit(DepositRequest depositRequest, Long bookingId);
 
     DepositRespone deleteById(Long theid);
 
-    Deposit updateDeposit(Long id, DepositRequest depositRequest);
+    DepositRespone updateDeposit(Long id, DepositRequest depositRequest);
 }

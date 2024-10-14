@@ -1,12 +1,16 @@
 package fall24.swp391.KoiOrderingSystem.pojo;
 
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.google.api.client.util.DateTime;
 import fall24.swp391.KoiOrderingSystem.enums.DepositStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -38,8 +42,9 @@ public class Deposit {
     @Column(name = "deposit_status")
     private DepositStatus depositStatus;
 
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @Column(name = "delivery_expected_date")
-    private Date deliveryExpectedDate;
+    private LocalDate deliveryExpectedDate;
 
     @Column(name = "shipping_address")
     private String shippingAddress;

@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
+
 @Service
 public class DepositService implements IDepositService{
 
@@ -41,16 +41,18 @@ public class DepositService implements IDepositService{
 
 
     @Override
-    public Deposit createDeposit(DepositRequest depositRequest, Long bookingId) {
+    public DepositRespone createDeposit(DepositRequest depositRequest, Long bookingId) {
         try{
+            Deposit deposit =modelMapper.map(depositRequest,Deposit.class);
             Bookings booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
-            Deposit deposit =modelMapper.map(depositRequest,Deposit.class);
             deposit.setDepositStatus(DepositStatus.processing);
             deposit.setBooking(booking);
             deposit.setDepositAmount(booking.getTotalAmountWithVAT()*depositRequest.getDepositPercentage());
             deposit.setRemainAmount(booking.getTotalAmountWithVAT()-deposit.getDepositAmount());
-            return depositRepository.save(deposit);
+            DepositRespone depositRespone =modelMapper.map(deposit,DepositRespone.class);
+            depositRepository.save(deposit);
+            return depositRespone;
         }catch (Exception e){
             throw new NotCreateException(e.getMessage());
         }
@@ -72,7 +74,7 @@ public class DepositService implements IDepositService{
 
 
     @Override
-    public Deposit updateDeposit(Long id, DepositRequest depositRequest) {
+    public DepositRespone updateDeposit(Long id, DepositRequest depositRequest) {
         Deposit Deposit = depositRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Deposit Id not found"));
 
@@ -102,6 +104,8 @@ public class DepositService implements IDepositService{
                     bookingRepository.save(relateBooking);
                 }
             }
-            return depositRepository.save(Deposit);
+            DepositRespone depositRespone =modelMapper.map(Deposit,DepositRespone.class);
+            depositRepository.save(Deposit);
+            return depositRespone;
     }
 }
