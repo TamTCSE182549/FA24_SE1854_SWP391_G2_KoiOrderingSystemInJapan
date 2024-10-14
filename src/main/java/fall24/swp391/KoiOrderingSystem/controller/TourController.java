@@ -2,7 +2,6 @@ package fall24.swp391.KoiOrderingSystem.controller;
 
 import fall24.swp391.KoiOrderingSystem.model.request.TourRequest;
 import fall24.swp391.KoiOrderingSystem.model.response.TourResponse;
-import fall24.swp391.KoiOrderingSystem.pojo.Tours;
 import fall24.swp391.KoiOrderingSystem.service.ITourService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.constraints.NotNull;
@@ -11,7 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin
@@ -50,6 +51,15 @@ public class TourController {
         } else {
             return ResponseEntity.ok(tours);
         }
+    }
+
+    @GetMapping("/showAllPageable")
+    public ResponseEntity<?> showAllPageable(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "2") int size){
+        Map<String, Object> response = new HashMap<>();
+        response.put("totalPage", iTourService.showAllPageable(page,size).getTotalPages());
+        response.put("pageNumber", iTourService.showAllPageable(page,size).getNumber());
+        response.put("content", iTourService.showAllPageable(page, size).get());
+        return ResponseEntity.ok(response);
     }
 
 //    @PostMapping("/create")

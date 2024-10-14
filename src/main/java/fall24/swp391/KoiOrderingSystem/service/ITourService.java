@@ -3,6 +3,7 @@ package fall24.swp391.KoiOrderingSystem.service;
 import fall24.swp391.KoiOrderingSystem.model.request.TourRequest;
 import fall24.swp391.KoiOrderingSystem.model.response.TourResponse;
 import fall24.swp391.KoiOrderingSystem.pojo.Tours;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -25,4 +26,6 @@ public interface ITourService {
     List<TourResponse> tourResponseListActive();
 
     List<TourResponse> showAll();
+
+    Page<TourResponse> showAllPageable(int page, int size);
 }
