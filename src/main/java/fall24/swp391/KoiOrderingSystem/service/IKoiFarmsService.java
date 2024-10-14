@@ -21,4 +21,10 @@ public interface IKoiFarmsService {
     KoiFarms deleteKoiFarm(Long id);
 
     KoiFarmResponse deleteKoiFarmRes(Long id);
+
+    List<KoiFarmResponse> getAllKoiFarms();
+
+    KoiFarmResponse convertToKoiFarmResponse(KoiFarms koiFarm);
+
+
 }
