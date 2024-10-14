@@ -10,6 +10,9 @@ import fall24.swp391.KoiOrderingSystem.pojo.Tours;
 import fall24.swp391.KoiOrderingSystem.repo.ITourRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -161,5 +164,20 @@ public class TourService implements ITourService{
                     }
                     return tourResponse;
                 }).toList();
+    }
+
+    @Override
+    public Page<TourResponse> showAllPageable(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return iTourRepository.showAllPageable(pageable).map(tours -> {
+            TourResponse tourResponse = modelMapper.map(tours, TourResponse.class);
+            tourResponse.setCreatedBy(tours.getCreatedBy().getFirstName() + " " + tours.getCreatedBy().getLastName());
+            if (tours.getUpdatedBy()!=null){
+                tourResponse.setUpdatedBy(tours.getUpdatedBy().getFirstName() + " " + tours.getUpdatedBy().getLastName());
+            } else {
+                tourResponse.setUpdatedBy("");
+            }
+            return tourResponse;
+        });
     }
 }
