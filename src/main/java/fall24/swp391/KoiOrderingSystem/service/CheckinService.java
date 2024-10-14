@@ -1,16 +1,19 @@
 package fall24.swp391.KoiOrderingSystem.service;
 
 import fall24.swp391.KoiOrderingSystem.enums.CheckinStatus;
-import fall24.swp391.KoiOrderingSystem.exception.NotFoundEntity;
+import fall24.swp391.KoiOrderingSystem.exception.NotCreateException;
+import fall24.swp391.KoiOrderingSystem.model.request.CheckinRequest;
+import fall24.swp391.KoiOrderingSystem.model.response.CheckinResponse;
 import fall24.swp391.KoiOrderingSystem.pojo.Bookings;
 import fall24.swp391.KoiOrderingSystem.pojo.Checkin;
 import fall24.swp391.KoiOrderingSystem.repo.IBookingRepository;
 import fall24.swp391.KoiOrderingSystem.repo.ICheckinRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
+
 @Service
 public class CheckinService implements ICheckinService{
 
@@ -20,6 +23,8 @@ public class CheckinService implements ICheckinService{
     @Autowired
     private IBookingRepository bookingRepository;
 
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Override
     public List<Checkin> getChekinByBookingId(Long Id) {
@@ -28,54 +33,53 @@ public class CheckinService implements ICheckinService{
     }
 
     @Override
-    public Checkin createCheckin(Checkin checkin,Long bookingId) {
-        Bookings booking = bookingRepository.findBookingsById(bookingId);
-        if(booking == null){
-            throw new NotFoundEntity("Booking not found");
+    public Checkin createCheckin(CheckinRequest checkinRequest, Long bookingId) {
+        try {
+            Bookings booking = bookingRepository.findById(bookingId)
+                    .orElseThrow(() -> new RuntimeException("Booking not found"));
+            Checkin checkin =modelMapper.map(checkinRequest,Checkin.class);
+            checkin.setBooking(booking);
+            checkin.setStatus(CheckinStatus.NOTCHECKEDIN);
+            return checkinRepository.save(checkin);
+        }catch (Exception e){
+            throw new NotCreateException(e.getMessage());
         }
-        checkin.setBooking(booking);
-        checkin.setStatus(CheckinStatus.NOTCHECKEDIN);
-        return checkinRepository.save(checkin);
     }
 
     @Override
-    public Checkin updateCheckin(Long Id, Checkin checkinDetail) {
-        Optional<Checkin> existingCheckin = checkinRepository.findById(Id);
-        Checkin checkinUpdate = null;
-        if (existingCheckin.isPresent()) {
-            checkinUpdate = existingCheckin.get();
-            checkinUpdate.setAirline(checkinDetail.getAirline());
+    public Checkin updateCheckin(Long Id, CheckinRequest checkinRequest) {
+        Checkin Checkin = checkinRepository.findById(Id)
+                .orElseThrow(() ->new RuntimeException("Checkin Id not found"));
 
-            checkinUpdate.setStatus(CheckinStatus.CHECKED);
+        Checkin.setAirline(checkinRequest.getAirline());
 
-            checkinUpdate.setAirport(checkinDetail.getAirport());
+            if (Checkin.getStatus() == CheckinStatus.NOTCHECKEDIN) {
+                Checkin.setStatus(CheckinStatus.CHECKED);
+            }
+        Checkin.setAirport(checkinRequest.getAirport());
 
-            checkinUpdate.setCheckinDate(checkinDetail.getCheckinDate());
+        Checkin.setCheckinDate(checkinRequest.getCheckinDate());
 
-            checkinUpdate.setDateOfBirth(checkinDetail.getDateOfBirth());
+        Checkin.setDateOfBirth(checkinRequest.getDateOfBirth());
 
-            checkinUpdate.setFirstName(checkinDetail.getFirstName());
+        Checkin.setFirstName(checkinRequest.getFirstName());
 
-            checkinUpdate.setLastName(checkinDetail.getLastName());
+        Checkin.setLastName(checkinRequest.getLastName());
 
-            checkinUpdate.setNationality(checkinDetail.getNationality());
+        Checkin.setNationality(checkinRequest.getNationality());
 
-            checkinUpdate.setPassportNumber(checkinDetail.getPassportNumber());
+        Checkin.setPassportNumber(checkinRequest.getPassportNumber());
 
-            checkinUpdate.setStatus(CheckinStatus.CHECKED);
-        }
-        return checkinRepository.save(checkinUpdate);
+
+        return checkinRepository.save(Checkin);
     }
 
     @Override
-    public Boolean deleteCheckin(Long Id) {
-        Optional<Checkin> deleteCheckin = checkinRepository.findById(Id);
-        if(deleteCheckin.isPresent()){
-            Checkin checkin = deleteCheckin.get();
-            checkin.setStatus(CheckinStatus.CANCELLED);
-            checkinRepository.save(checkin);
-            return true;
-        }
-        return false;
+    public CheckinResponse deleteCheckin(Long Id) {
+        Checkin deleteCheckin = checkinRepository.findById(Id)
+                .orElseThrow(() ->new RuntimeException("Checkin Id not found"));
+            deleteCheckin.setStatus(CheckinStatus.CANCELLED);
+            checkinRepository.save(deleteCheckin);
+            return modelMapper.map(deleteCheckin,CheckinResponse.class);
     }
 }

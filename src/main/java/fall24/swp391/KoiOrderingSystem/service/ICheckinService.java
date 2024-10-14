@@ -1,5 +1,7 @@
 package fall24.swp391.KoiOrderingSystem.service;
 
+import fall24.swp391.KoiOrderingSystem.model.request.CheckinRequest;
+import fall24.swp391.KoiOrderingSystem.model.response.CheckinResponse;
 import fall24.swp391.KoiOrderingSystem.pojo.Checkin;
 
 import java.util.List;
@@ -8,9 +10,9 @@ public interface ICheckinService {
 
     List<Checkin> getChekinByBookingId(Long Id);
 
-    Checkin createCheckin(Checkin checkin, Long bookingId);
+    Checkin createCheckin(CheckinRequest checkinUserRequest, Long bookingId);
 
-    Checkin updateCheckin(Long Id,Checkin checkin);
+    Checkin updateCheckin(Long Id, CheckinRequest checkinRequest);
 
-    Boolean deleteCheckin(Long Id);
+    CheckinResponse deleteCheckin(Long Id);
 }

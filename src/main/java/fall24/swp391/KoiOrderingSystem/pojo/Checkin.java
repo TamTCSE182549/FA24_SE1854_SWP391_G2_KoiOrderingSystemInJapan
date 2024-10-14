@@ -1,5 +1,6 @@
 package fall24.swp391.KoiOrderingSystem.pojo;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import fall24.swp391.KoiOrderingSystem.enums.CheckinStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Pattern;
@@ -7,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import net.minidev.json.annotate.JsonIgnore;
 
 import java.util.Date;
 
@@ -27,7 +29,7 @@ public class Checkin extends BaseEntity{
     @Column(name = "last_name",length = 50)
     private String lastName;
 
-    @Pattern(regexp = "",message = "Passport invalid")
+//    @Pattern(regexp = "",message = "Passport invalid")
     @Column(name = "passport_number",length = 20)
     private String passportNumber;
 
@@ -46,6 +48,7 @@ public class Checkin extends BaseEntity{
     @Enumerated(EnumType.STRING)
     private CheckinStatus status;
 
+    @JsonBackReference
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "booking_id") //name same foreign key mapping
     private Bookings booking;

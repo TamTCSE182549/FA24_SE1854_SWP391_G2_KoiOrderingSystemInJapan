@@ -8,7 +8,4 @@ import java.util.List;
 
 @Repository
 public interface IKoisRepository extends JpaRepository<Kois, Long>{
-
-    // Tìm tất cả Kois thuộc một KoiFarm cụ thể
-    List<Kois> findByKoiOfFarmList_KoiFarms_Id(Long farmId);
 }

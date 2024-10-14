@@ -1,6 +1,7 @@
 package fall24.swp391.KoiOrderingSystem.controller;
 
 import fall24.swp391.KoiOrderingSystem.model.request.KoiRequest;
+import fall24.swp391.KoiOrderingSystem.model.response.KoiResponse;
 import fall24.swp391.KoiOrderingSystem.pojo.Kois;
 import fall24.swp391.KoiOrderingSystem.service.IKoisService;
 import fall24.swp391.KoiOrderingSystem.service.KoiService;
@@ -9,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/kois/")
@@ -20,9 +23,33 @@ public class KoiController {
     private KoiService iKoisService;
 
 
-    @PostMapping("/{farmId}")
-    public ResponseEntity<?> creatKoi(@PathVariable Long farmId, @RequestBody KoiRequest koiRequest){
-        Kois kois =iKoisService.createKois(koiRequest, farmId);
+    @PostMapping
+    public ResponseEntity<?> creatKoi( @RequestBody KoiRequest koiRequest){
+        KoiResponse kois =iKoisService.createKois(koiRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(kois);
+    }
+
+    @PutMapping("/{Id}")
+    public ResponseEntity<?> updateKois(@PathVariable Long Id,@RequestBody KoiRequest koiRequest){
+        KoiResponse kois = iKoisService.updateKoi(Id,koiRequest);
+        return ResponseEntity.ok(kois);
+    }
+
+    @GetMapping("/{Id}")
+    public ResponseEntity<?> getKoisById(@PathVariable Long Id){
+        KoiResponse kois = iKoisService.getKoiById(Id);
+        return ResponseEntity.ok(kois);
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getAllKois(){
+        List<Kois> koisList =iKoisService.findAll();
+        return ResponseEntity.ok(koisList);
+    }
+
+    @DeleteMapping("/{Id}")
+    public ResponseEntity<?> deleteKois(@PathVariable Long Id){
+        iKoisService.deletebyId(Id);
+        return new ResponseEntity<>("Delete successfull",HttpStatus.OK);
     }
 }

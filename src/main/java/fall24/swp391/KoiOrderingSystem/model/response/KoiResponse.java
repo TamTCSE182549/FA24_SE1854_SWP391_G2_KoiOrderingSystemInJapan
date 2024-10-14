@@ -1,9 +1,12 @@
-package fall24.swp391.KoiOrderingSystem.model.request;
+package fall24.swp391.KoiOrderingSystem.model.response;
 
 import lombok.Data;
 
 @Data
-public class KoiRequest {
+public class KoiResponse {
+
+    private Long Id;
+
     private String koiName;
 
     private String koiImage;

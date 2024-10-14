@@ -59,15 +59,12 @@ public class DepositService implements IDepositService{
     @Override
     public DepositRespone deleteById(Long theid) {
         try {
-            Optional<Deposit> deposit = depositRepository.findById(theid);
-            if (deposit.isPresent()) {
-                Deposit deposit1 = deposit.get();
-                deposit1.setDepositStatus(DepositStatus.cancelled);
-                DepositRespone depositRespone = modelMapper.map(deposit1, DepositRespone.class);
-                depositRepository.save(deposit1);
+            Deposit deposit = depositRepository.findById(theid)
+                    .orElseThrow(() ->new RuntimeException("Deposit Id not found"));
+                deposit.setDepositStatus(DepositStatus.cancelled);
+                DepositRespone depositRespone = modelMapper.map(deposit, DepositRespone.class);
+                depositRepository.save(deposit);
                 return depositRespone;
-            }
-            return null;
         }catch (Exception e){
             throw new NotDeleteException(e.getMessage());
         }
@@ -76,36 +73,35 @@ public class DepositService implements IDepositService{
 
     @Override
     public Deposit updateDeposit(Long id, DepositRequest depositRequest) {
-        Optional<Deposit> existingDeposit = depositRepository.findById(id);
-        if (existingDeposit.isPresent()) {
-            Deposit depositUpdate = existingDeposit.get();
-            if(depositUpdate.getDepositStatus() ==DepositStatus.cancelled){
-                throw new NotUpdateException("Cannot update the cancelled deposit");
-            }
-            if (depositUpdate.getDepositStatus() == DepositStatus.processing) {
-                depositUpdate.setDepositStatus(DepositStatus.complete);
+        Deposit Deposit = depositRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Deposit Id not found"));
 
-
-                depositUpdate.setDeliveryExpectedDate(depositRequest.getDeliveryExpectedDate());
-
-                depositUpdate.setShippingAddress(depositRequest.getShippingAddress());
-
-                depositUpdate.setShippingFee(depositRequest.getShippingFee());
-
-                depositUpdate.setDepositPercentage(depositRequest.getDepositPercentage());
-
-                Bookings relateBooking = depositUpdate.getBooking();
-                if (relateBooking != null) {
-                    if (relateBooking.getBookingType() == BookingType.BookingForKoi) {
-                        relateBooking.setPaymentStatus(PaymentStatus.shipped);
-                        bookingRepository.save(relateBooking);
-                    }
-                }
-
-                return depositRepository.save(depositUpdate);
-            }
-            return depositUpdate;
+        if (Deposit.getDepositStatus() == DepositStatus.cancelled) {
+            throw new NotUpdateException("Cannot update the cancelled deposit");
         }
-        return null;
+        if (Deposit.getDepositStatus() == DepositStatus.processing) {
+            Deposit.setDepositStatus(DepositStatus.complete);
+        }
+
+            Deposit.setDeliveryExpectedDate(depositRequest.getDeliveryExpectedDate());
+
+            Deposit.setShippingAddress(depositRequest.getShippingAddress());
+
+            Deposit.setShippingFee(depositRequest.getShippingFee());
+
+            Deposit.setDepositPercentage(depositRequest.getDepositPercentage());
+
+            Deposit.setDepositAmount(depositRequest.getDepositPercentage()*Deposit.getBooking().getTotalAmountWithVAT());
+
+            Deposit.setRemainAmount(Deposit.getBooking().getTotalAmountWithVAT()-Deposit.getDepositAmount());
+
+            Bookings relateBooking = Deposit.getBooking();
+            if (relateBooking != null) {
+                if (relateBooking.getBookingType() == BookingType.BookingForKoi) {
+                    relateBooking.setPaymentStatus(PaymentStatus.shipped);
+                    bookingRepository.save(relateBooking);
+                }
+            }
+            return depositRepository.save(Deposit);
     }
 }
