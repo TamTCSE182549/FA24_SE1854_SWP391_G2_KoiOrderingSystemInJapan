@@ -28,4 +28,6 @@ public interface ITourService {
     List<TourResponse> showAll();
 
     Page<TourResponse> showAllPageable(int page, int size);
+
+    Page<TourResponse> showTourByName(int page, int size, String nameTour);
 }
