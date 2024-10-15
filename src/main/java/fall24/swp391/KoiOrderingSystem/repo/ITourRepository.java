@@ -16,4 +16,7 @@ public interface ITourRepository extends JpaRepository<Tours, Long> {
 
     @Query(value = "SELECT * FROM Tours", nativeQuery = true)
     Page<Tours> showAllPageable(Pageable pageable);
+
+    @Query(value = "select * from tours where tour_name like %?1%", nativeQuery = true)
+    Page<Tours> showTourByName(String nameTour, Pageable pageable);
 }
