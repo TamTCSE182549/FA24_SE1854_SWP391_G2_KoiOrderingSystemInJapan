@@ -26,21 +26,21 @@ public class CheckinController {
 
     @GetMapping("/{bookingId}")
     public ResponseEntity<?> getChekinByBookingId(@PathVariable Long bookingId) {
-        List<Checkin> checkins = checkinService.getChekinByBookingId(bookingId);
+        List<CheckinResponse> checkins = checkinService.getChekinByBookingId(bookingId);
         return ResponseEntity.ok(checkins);
     }
 
 
     @PostMapping("/{bookingId}")
     public ResponseEntity<?> createCheckin(@RequestBody CheckinRequest checkinRequest, @PathVariable Long bookingId) {
-        Checkin createdCheckin = checkinService.createCheckin(checkinRequest,bookingId);
+        CheckinResponse createdCheckin = checkinService.createCheckin(checkinRequest,bookingId);
         return new ResponseEntity<>(createdCheckin, HttpStatus.CREATED);
     }
 
 
     @PutMapping("/{checkinId}")
     public ResponseEntity<?> updateCheckin(@PathVariable Long checkinId, @Validated @RequestBody CheckinRequest checkinRequest) {
-        Checkin checkin = checkinService.updateCheckin(checkinId,checkinRequest);
+        CheckinResponse checkin = checkinService.updateCheckin(checkinId,checkinRequest);
         return new ResponseEntity<>(checkin,HttpStatus.OK);
     }
 

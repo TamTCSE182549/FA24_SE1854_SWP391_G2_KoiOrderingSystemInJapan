@@ -3,6 +3,7 @@ package fall24.swp391.KoiOrderingSystem.service;
 import fall24.swp391.KoiOrderingSystem.enums.BookingType;
 import fall24.swp391.KoiOrderingSystem.enums.DepositStatus;
 import fall24.swp391.KoiOrderingSystem.enums.PaymentStatus;
+import fall24.swp391.KoiOrderingSystem.exception.GenericException;
 import fall24.swp391.KoiOrderingSystem.exception.NotCreateException;
 import fall24.swp391.KoiOrderingSystem.exception.NotDeleteException;
 import fall24.swp391.KoiOrderingSystem.exception.NotUpdateException;
@@ -50,8 +51,8 @@ public class DepositService implements IDepositService{
             deposit.setBooking(booking);
             deposit.setDepositAmount(booking.getTotalAmountWithVAT()*depositRequest.getDepositPercentage());
             deposit.setRemainAmount(booking.getTotalAmountWithVAT()-deposit.getDepositAmount());
-            DepositRespone depositRespone =modelMapper.map(deposit,DepositRespone.class);
             depositRepository.save(deposit);
+            DepositRespone depositRespone = modelMapper.map(deposit, DepositRespone.class);
             return depositRespone;
         }catch (Exception e){
             throw new NotCreateException(e.getMessage());
@@ -64,8 +65,8 @@ public class DepositService implements IDepositService{
             Deposit deposit = depositRepository.findById(theid)
                     .orElseThrow(() ->new RuntimeException("Deposit Id not found"));
                 deposit.setDepositStatus(DepositStatus.cancelled);
-                DepositRespone depositRespone = modelMapper.map(deposit, DepositRespone.class);
                 depositRepository.save(deposit);
+                DepositRespone depositRespone = modelMapper.map(deposit, DepositRespone.class);
                 return depositRespone;
         }catch (Exception e){
             throw new NotDeleteException(e.getMessage());
@@ -75,37 +76,54 @@ public class DepositService implements IDepositService{
 
     @Override
     public DepositRespone updateDeposit(Long id, DepositRequest depositRequest) {
-        Deposit Deposit = depositRepository.findById(id)
+        try{
+        Deposit deposit = depositRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Deposit Id not found"));
 
-        if (Deposit.getDepositStatus() == DepositStatus.cancelled) {
+        if (deposit.getDepositStatus() == DepositStatus.cancelled) {
             throw new NotUpdateException("Cannot update the cancelled deposit");
         }
-        if (Deposit.getDepositStatus() == DepositStatus.processing) {
-            Deposit.setDepositStatus(DepositStatus.complete);
+        else if (deposit.getDepositStatus() == DepositStatus.processing) {
+            deposit.setDepositStatus(DepositStatus.complete);
         }
+            deposit.setDeliveryExpectedDate(depositRequest.getDeliveryExpectedDate());
 
-            Deposit.setDeliveryExpectedDate(depositRequest.getDeliveryExpectedDate());
+            deposit.setShippingAddress(depositRequest.getShippingAddress());
 
-            Deposit.setShippingAddress(depositRequest.getShippingAddress());
+            deposit.setShippingFee(depositRequest.getShippingFee());
 
-            Deposit.setShippingFee(depositRequest.getShippingFee());
+            deposit.setDepositPercentage(depositRequest.getDepositPercentage());
 
-            Deposit.setDepositPercentage(depositRequest.getDepositPercentage());
+            deposit.setDepositAmount(depositRequest.getDepositPercentage()*deposit.getBooking().getTotalAmountWithVAT());
 
-            Deposit.setDepositAmount(depositRequest.getDepositPercentage()*Deposit.getBooking().getTotalAmountWithVAT());
+            deposit.setRemainAmount(deposit.getBooking().getTotalAmountWithVAT()-deposit.getDepositAmount());
 
-            Deposit.setRemainAmount(Deposit.getBooking().getTotalAmountWithVAT()-Deposit.getDepositAmount());
-
-            Bookings relateBooking = Deposit.getBooking();
+            Bookings relateBooking = deposit.getBooking();
             if (relateBooking != null) {
                 if (relateBooking.getBookingType() == BookingType.BookingForKoi) {
                     relateBooking.setPaymentStatus(PaymentStatus.shipped);
                     bookingRepository.save(relateBooking);
                 }
             }
-            DepositRespone depositRespone =modelMapper.map(Deposit,DepositRespone.class);
-            depositRepository.save(Deposit);
+            depositRepository.save(deposit);
+            DepositRespone depositRespone =modelMapper.map(deposit,DepositRespone.class);
             return depositRespone;
+        }catch (Exception e){
+            throw new GenericException(e.getMessage());
+        }
+    }
+
+    @Override
+    public List<DepositRespone> getDepositIsActive() {
+        List<Deposit> depositList = depositRepository.findAllByStatusActive();
+        if(depositList.isEmpty()){
+            throw new GenericException("Not active Deposit found");
+        }
+        return depositList.stream()
+                .map(deposit -> {
+                    DepositRespone depositRespone =modelMapper.map(deposit,DepositRespone.class);
+                    return  depositRespone;
+                }).toList();
     }
 }
+

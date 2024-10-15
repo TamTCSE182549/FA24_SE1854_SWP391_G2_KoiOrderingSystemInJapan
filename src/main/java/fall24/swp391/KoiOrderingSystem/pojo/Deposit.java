@@ -1,6 +1,5 @@
 package fall24.swp391.KoiOrderingSystem.pojo;
 
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.google.api.client.util.DateTime;
 import fall24.swp391.KoiOrderingSystem.enums.DepositStatus;

@@ -7,13 +7,13 @@ import fall24.swp391.KoiOrderingSystem.pojo.Kois;
 import java.util.List;
 
 public interface IKoisService {
-    List<Kois> findAll();
+    List<KoiResponse> findAll();
 
     KoiResponse createKois(KoiRequest koiRequest);
 
     KoiResponse updateKoi(Long Id,KoiRequest koiRequest);
 
-    void deletebyId(Long Id);
+    KoiResponse deletebyId(Long Id);
 
     KoiResponse getKoiById (Long Id);
 }

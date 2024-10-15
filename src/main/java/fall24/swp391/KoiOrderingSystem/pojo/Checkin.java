@@ -1,6 +1,7 @@
 package fall24.swp391.KoiOrderingSystem.pojo;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import fall24.swp391.KoiOrderingSystem.enums.CheckinStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Pattern;
@@ -10,6 +11,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import net.minidev.json.annotate.JsonIgnore;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Getter
@@ -29,17 +32,9 @@ public class Checkin extends BaseEntity{
     @Column(name = "last_name",length = 50)
     private String lastName;
 
-//    @Pattern(regexp = "",message = "Passport invalid")
-    @Column(name = "passport_number",length = 20)
-    private String passportNumber;
-
-    private String nationality;
-
-    @Column(name = "date_of_birth")
-    private Date dateOfBirth;
-
     @Column(name = "checkin_date")
-    private Date checkinDate;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate checkinDate;
 
     private String airline;
 
@@ -52,5 +47,29 @@ public class Checkin extends BaseEntity{
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "booking_id") //name same foreign key mapping
     private Bookings booking;
+
+    @Column(name = "created_at")
+    private LocalDateTime createdDate;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedDate;
+
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    @JoinColumn(name = "created_by")
+    private Account createdBy;
+
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    @JoinColumn(name = "updated_by")
+    private Account updatedBy;
+
+    @PrePersist
+    protected void onCreate(){
+        createdDate = LocalDateTime.now();
+        updatedDate = LocalDateTime.now();
+    }
+    @PreUpdate
+    protected void onUpdate(){
+        updatedDate = LocalDateTime.now();
+    }
 
 }

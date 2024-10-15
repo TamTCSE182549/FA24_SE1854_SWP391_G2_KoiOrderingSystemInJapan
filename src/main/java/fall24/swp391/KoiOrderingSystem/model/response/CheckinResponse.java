@@ -2,6 +2,7 @@ package fall24.swp391.KoiOrderingSystem.model.response;
 
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -16,15 +17,9 @@ public class CheckinResponse {
 
         private String airport;
 
-        private String nationality;
-
-        private Date checkinDate;
-
-        private Date dateOfBirth;
+        private LocalDate checkinDate;
 
         private Long bookingId;
-
-        private String passportNumber;
 
         private LocalDateTime createdDate;
 

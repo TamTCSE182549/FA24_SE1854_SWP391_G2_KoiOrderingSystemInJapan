@@ -5,8 +5,6 @@ import lombok.Data;
 @Data
 public class KoiResponse {
 
-    private Long Id;
-
     private String koiName;
 
     private String koiImage;

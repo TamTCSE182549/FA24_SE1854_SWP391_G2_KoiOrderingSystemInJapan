@@ -43,13 +43,13 @@ public class KoiController {
 
     @GetMapping
     public ResponseEntity<?> getAllKois(){
-        List<Kois> koisList =iKoisService.findAll();
+        List<KoiResponse> koisList =iKoisService.findAll();
         return ResponseEntity.ok(koisList);
     }
 
     @DeleteMapping("/{Id}")
     public ResponseEntity<?> deleteKois(@PathVariable Long Id){
-        iKoisService.deletebyId(Id);
-        return new ResponseEntity<>("Delete successfull",HttpStatus.OK);
+        KoiResponse koiResponse =iKoisService.deletebyId(Id);
+        return ResponseEntity.ok(koiResponse);
     }
 }
