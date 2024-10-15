@@ -31,7 +31,7 @@ public class BookingController {
 
     // Create a new booking for Customer
     @PostMapping("/CreateForTour")
-    public ResponseEntity<?> createBooking(@RequestBody BookingTourRequest bookingTourRequest) throws Exception {
+    public ResponseEntity<?> createBooking(@RequestBody BookingTourRequest bookingTourRequest) {
         BookingTourResponse bookingTourResponse = bookingService.createTourBooking(bookingTourRequest);
         return ResponseEntity.ok(bookingTourResponse);
     }
@@ -79,24 +79,21 @@ public class BookingController {
 
     @PutMapping("/updateResponseFormStaff")
     public ResponseEntity<?> updateBookingAndResponse(@RequestBody BookingUpdateRequestStaff bookingUpdateRequestStaff) {
-        BookingTourResponse bookingTourResponse = bookingService.responseForStaff(bookingUpdateRequestStaff);
+        BookingTourResponse bookingTourResponse = bookingService.responseUpdateForStaff(bookingUpdateRequestStaff);
         return new ResponseEntity<>(bookingTourResponse, HttpStatus.OK);
     }
 
-    @PutMapping("/updateResponseFormCus")
+    @PutMapping("/updateResponseFormCustomer")
     public ResponseEntity<?> updateBookingAndResponseCus(@RequestBody BookingUpdateRequestCus bookingUpdateRequestCus) {
         BookingTourResponse bookingTourResponse = bookingService.bookingUpdatePaymentMethod(bookingUpdateRequestCus);
         return new ResponseEntity<>(bookingTourResponse, HttpStatus.OK);
     }
     // Delete a booking by ID
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<Bookings> deleteBooking(@PathVariable Long id) {
-//        Bookings bookings = bookingService.deleteBooking(id);
-//        return new ResponseEntity<>(bookings, HttpStatus.OK);
-//    }
-
-
-
+    @DeleteMapping("/manager/delete/{bookingId}")
+    public ResponseEntity<String> deleteBooking(@PathVariable Long bookingId) {
+        bookingService.deleteBookingForManager(bookingId);
+        return new ResponseEntity<>("Delete booking complete", HttpStatus.OK);
+    }
     @PostMapping("/koi/create")
     public ResponseEntity<?> createKoiBooking(@RequestBody BookingKoiRequest bookingKoiRequest) throws Exception{
         BookingTourResponse bookingResponse = bookingService.createKoiBooking(bookingKoiRequest);
