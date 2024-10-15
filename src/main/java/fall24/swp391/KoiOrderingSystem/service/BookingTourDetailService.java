@@ -1,5 +1,6 @@
 package fall24.swp391.KoiOrderingSystem.service;
 
+import fall24.swp391.KoiOrderingSystem.enums.PaymentStatus;
 import fall24.swp391.KoiOrderingSystem.enums.Role;
 import fall24.swp391.KoiOrderingSystem.exception.*;
 import fall24.swp391.KoiOrderingSystem.model.request.BookingTourDetailRequest;
@@ -52,6 +53,8 @@ public class BookingTourDetailService implements IBookingTourDetailService {
             List<BookingTourDetail> bookingTourDetailList = iBookingTourDetailRepository.showDetailOfBookingID(bookings.getId());
             return bookingTourDetailList.stream().map(bookingTourDetail -> {
                 BookingTourDetailResponse bookingTourDetailResponse = modelMapper.map(bookingTourDetail, BookingTourDetailResponse.class);
+                bookingTourDetailResponse.setBookingTourDetailID(bookingTourDetail.getId());
+                bookingTourDetailResponse.setBookingID(bookings.getId());
                 bookingTourDetailResponse.setTourName(bookingTourDetail.getTourId().getTourName());
                 return bookingTourDetailResponse;
             }).toList();
@@ -92,6 +95,9 @@ public class BookingTourDetailService implements IBookingTourDetailService {
             }
             Bookings bookings = iBookingRepository.findById(bookingTourDetailRequest.getBookingID())
                     .orElseThrow(() -> new NotFoundEntity("Booking ID not FOUND"));
+            if(bookings.getPaymentStatus()== PaymentStatus.complete){
+                throw new NotCreateException("This booking had complete, so You cannot add tour more!");
+            }
             Tours tours = iTourRepository.findById(bookingTourDetailRequest.getTourID())
                     .orElseThrow(() -> new NotFoundEntity("Tour ID not FOUND"));
             BookingTourDetail bookingTourDetail = new BookingTourDetail(bookings, tours, bookingTourDetailRequest.getParticipant());

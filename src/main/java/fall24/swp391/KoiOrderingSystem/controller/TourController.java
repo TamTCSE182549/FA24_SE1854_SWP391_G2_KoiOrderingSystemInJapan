@@ -80,7 +80,7 @@ public class TourController {
     @PostMapping("/createTourRes")
     public ResponseEntity<?> createTourRes(@RequestBody TourRequest tourRequest) {
         TourResponse tourResponse = iTourService.createTourRes(tourRequest);
-        return new ResponseEntity<>(tourResponse, HttpStatus.CREATED);
+        return new ResponseEntity<>(tourResponse, HttpStatus.OK);
     }
 
 //    @DeleteMapping("/{id}")
