@@ -35,9 +35,9 @@ public class CheckinService implements ICheckinService{
     @Override
     public Checkin createCheckin(CheckinRequest checkinRequest, Long bookingId) {
         try {
+            Checkin checkin =modelMapper.map(checkinRequest,Checkin.class);
             Bookings booking = bookingRepository.findById(bookingId)
                     .orElseThrow(() -> new RuntimeException("Booking not found"));
-            Checkin checkin =modelMapper.map(checkinRequest,Checkin.class);
             checkin.setBooking(booking);
             checkin.setStatus(CheckinStatus.NOTCHECKEDIN);
             return checkinRepository.save(checkin);

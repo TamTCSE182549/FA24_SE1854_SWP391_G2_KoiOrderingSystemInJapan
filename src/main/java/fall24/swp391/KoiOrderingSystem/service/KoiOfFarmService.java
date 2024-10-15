@@ -1,14 +1,14 @@
 package fall24.swp391.KoiOrderingSystem.service;
 
+
+import fall24.swp391.KoiOrderingSystem.exception.NotFoundEntity;
 import fall24.swp391.KoiOrderingSystem.model.request.KoiOfFarmRequest;
-import fall24.swp391.KoiOrderingSystem.model.response.KoiOfFarmResponse;
 import fall24.swp391.KoiOrderingSystem.pojo.KoiFarms;
 import fall24.swp391.KoiOrderingSystem.pojo.KoiOfFarm;
 import fall24.swp391.KoiOrderingSystem.pojo.Kois;
 import fall24.swp391.KoiOrderingSystem.repo.IKoiFarmsRepository;
 import fall24.swp391.KoiOrderingSystem.repo.IKoiOfFarmRepository;
 import fall24.swp391.KoiOrderingSystem.repo.IKoisRepository;
-import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +17,7 @@ import java.util.List;
 
 @Service
 public class KoiOfFarmService implements IKoiOfFarmService{
+
     @Autowired
     private IKoiOfFarmRepository koiOfFarmRepository;
 
@@ -29,60 +30,64 @@ public class KoiOfFarmService implements IKoiOfFarmService{
     @Autowired
     private ModelMapper modelMapper;
 
-    public void koiOfFarmService(IKoiOfFarmRepository koiOfFarmRepo){
-        koiOfFarmRepository = koiOfFarmRepo;
-    }
-
     @Override
-    public List<KoiOfFarm> findAll() {
+    public List<KoiOfFarm> getAll() {
         return koiOfFarmRepository.findAll();
     }
 
     @Override
-    public KoiOfFarm findById(Long Id) {
-        return null;
-    }
-
-    @Override
-    public KoiOfFarm addKoiToFarm(KoiOfFarmRequest koiOfFarmRequest) {
-        KoiFarms koiFarms = iKoiFarmsRepository.findKoiFarmsById(koiOfFarmRequest.getFarmId());
-        if(koiFarms == null){
-            throw new EntityNotFoundException("KoiOfFarm not found");
-        }
-        Kois kois = iKoisRepository.findKoisById(koiOfFarmRequest.getKoiId());
-        if(kois == null){
-            throw new EntityNotFoundException("Koi not found");
-        }
-        KoiOfFarm koiOfFarm = new KoiOfFarm();
-        koiOfFarm.setKoiFarms(koiFarms);
-        koiOfFarm.setKois(kois);
-        koiOfFarm.setAvailable(true);
-        koiOfFarm.setQuantity(koiOfFarmRequest.getQuantity());
-        koiOfFarmRepository.save(koiOfFarm);
+    public KoiOfFarm getById(Long Id) {
+        KoiOfFarm koiOfFarm =koiOfFarmRepository.findById(Id)
+                .orElseThrow(() -> new NotFoundEntity("Not found"));
         return koiOfFarm;
     }
 
     @Override
+
+    public KoiOfFarm createKoiOfFarm(KoiOfFarmRequest koiOfFarmRequest) {
+//        KoiOfFarm koiOfFarms = modelMapper.map(koiOfFarmRequest,KoiOfFarm.class);
+        KoiOfFarm koiOfFarms =new KoiOfFarm();
+        koiOfFarms.setQuantity(koiOfFarmRequest.getQuantity());
+        koiOfFarms.setAvailable(koiOfFarmRequest.isAvailable());
+
+        Kois kois = iKoisRepository.findById(koiOfFarmRequest.getKoiId())
+                .orElseThrow(() -> new NotFoundEntity("NOT FOUND KOI ID"));
+        koiOfFarms.setKois(kois);
+        KoiFarms koiFarms =iKoiFarmsRepository.findById(koiOfFarmRequest.getFarmId())
+                .orElseThrow(() -> new NotFoundEntity("Not found Farm Id"));
+//        koiOfFarms.setKois(kois);
+//        koiOfFarms.setKoiFarms(koiFarms);
+        koiOfFarms.setKoiFarms(koiFarms);
+        return koiOfFarmRepository.save(koiOfFarms);
+
+    }
+
+    @Override
     public void deleteById(Long Id) {
+        KoiOfFarm koiOfFarm =koiOfFarmRepository.findById(Id)
+                .orElseThrow(() -> new NotFoundEntity("Not Found"));
         koiOfFarmRepository.deleteById(Id);
     }
 
     @Override
-    public List<KoiOfFarmResponse> findKoiOfFarmByFarmId(Long farmId) {
-        List<KoiOfFarm> koiOfFarmsList = koiOfFarmRepository.findByKoiFarms_Id(farmId);
-        return koiOfFarmsList.stream().map(koiOfFarm -> {
-            KoiOfFarmResponse koiOfFarmResponse = modelMapper.map(koiOfFarm, KoiOfFarmResponse.class);
-            return koiOfFarmResponse;
-        }).toList();
+    public KoiOfFarm updateKoiOfFarm(Long Id,KoiOfFarmRequest koiOfFarmRequest) {
+        KoiOfFarm koiOfFarm = koiOfFarmRepository.findById(Id)
+                .orElseThrow(() -> new NotFoundEntity("Not Found"));
+        Kois kois = null;
+        KoiFarms koiFarms = null;
+        if (koiOfFarmRequest.getFarmId() != null) {
+            koiFarms = iKoiFarmsRepository.findById(koiOfFarmRequest.getFarmId())
+                    .orElseThrow(() -> new NotFoundEntity("Not found Farm Id"));
+            koiOfFarm.setKoiFarms(koiFarms);
+        }
+        if(  koiOfFarmRequest.getKoiId() != null){
+            kois = iKoisRepository.findById(koiOfFarmRequest.getKoiId())
+                    .orElseThrow(() -> new NotFoundEntity("Not Found Koi Id"));
+            koiOfFarm.setKois(kois);
+        }
+        koiOfFarm.setAvailable(koiOfFarmRequest.isAvailable());
+        koiOfFarm.setQuantity(koiOfFarmRequest.getQuantity());
+        return koiOfFarmRepository.save(koiOfFarm);
     }
 
-//    @Override
-//    public KoiOfFarm updateKoiQuantity(Long farmId, Long koiId, int newQuantity) {
-//        KoiOfFarm koiOfFarm = koiOfFarmRepository.findByKoiFarms_IdAndKois_Id(farmId, koiId);
-//        if (koiOfFarm == null) {
-//            throw new EntityNotFoundException("KoiOfFarm not found for given farmId and koiId");
-//        }
-//        koiOfFarm.setQuantity(newQuantity);
-//        return koiOfFarmRepository.save(koiOfFarm);
-//    }
 }
