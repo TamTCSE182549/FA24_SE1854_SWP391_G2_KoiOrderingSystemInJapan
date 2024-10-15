@@ -17,4 +17,5 @@ public interface IDepositService {
     DepositRespone updateDeposit(Long id, DepositRequest depositRequest);
 
     List<DepositRespone> getDepositIsActive();
+
 }

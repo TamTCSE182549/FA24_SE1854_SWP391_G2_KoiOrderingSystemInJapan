@@ -18,7 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
+
 @Service
 public class DepositService implements IDepositService{
 
@@ -44,9 +44,9 @@ public class DepositService implements IDepositService{
     @Override
     public DepositRespone createDeposit(DepositRequest depositRequest, Long bookingId) {
         try{
+            Deposit deposit =modelMapper.map(depositRequest,Deposit.class);
             Bookings booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
-            Deposit deposit =modelMapper.map(depositRequest,Deposit.class);
             deposit.setDepositStatus(DepositStatus.processing);
             deposit.setBooking(booking);
             deposit.setDepositAmount(booking.getTotalAmountWithVAT()*depositRequest.getDepositPercentage());

@@ -43,6 +43,7 @@ public class CheckinService implements ICheckinService {
     @Override
     public CheckinResponse createCheckin(CheckinRequest checkinRequest, Long bookingId) {
         try {
+
             Account account = authenticationService.getCurrentAccount();
             if (account.getRole() == Role.SALES_STAFF) {
                 Bookings booking = bookingRepository.findById(bookingId)

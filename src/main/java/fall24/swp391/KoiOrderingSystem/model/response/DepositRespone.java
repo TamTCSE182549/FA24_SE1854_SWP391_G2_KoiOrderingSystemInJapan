@@ -8,13 +8,14 @@ import java.time.LocalDateTime;
 import java.util.Date;
 @Data
 public class DepositRespone {
+
     private  float depositAmount;
 
     private float  remainAmount;
 
     private float shippingFee;
 
-    private LocalDateTime depositDate;
+    private LocalDate depositDate;
 
     private LocalDate deliveryExpectedDate;
 
