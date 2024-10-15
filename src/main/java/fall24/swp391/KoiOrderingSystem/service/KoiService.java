@@ -1,9 +1,11 @@
 package fall24.swp391.KoiOrderingSystem.service;
 
+import fall24.swp391.KoiOrderingSystem.exception.GenericException;
 import fall24.swp391.KoiOrderingSystem.exception.NotCreateException;
 import fall24.swp391.KoiOrderingSystem.exception.NotFoundEntity;
 import fall24.swp391.KoiOrderingSystem.model.request.KoiRequest;
 import fall24.swp391.KoiOrderingSystem.model.response.KoiResponse;
+import fall24.swp391.KoiOrderingSystem.model.response.TourResponse;
 import fall24.swp391.KoiOrderingSystem.pojo.*;
 import fall24.swp391.KoiOrderingSystem.repo.ICategoriesRepository;
 import fall24.swp391.KoiOrderingSystem.repo.IKoiFarmsRepository;
@@ -31,10 +33,10 @@ public class KoiService implements IKoisService{
     @Autowired
     private ICategoriesRepository iCategoriesRepository;
     @Override
-    public List<Kois> findAll() {
-        return iKoisRepository.findAll();
+    public List<KoiResponse> findAll() {
+        List<Kois> koisList = iKoisRepository.findAll();
+        return koisList.stream().map(kois -> modelMapper.map(kois, KoiResponse.class)).toList();
     }
-
     @Override
     public KoiResponse getKoiById(Long Id) {
             Kois kois =iKoisRepository.findById(Id)
@@ -48,10 +50,10 @@ public class KoiService implements IKoisService{
         try {
             Kois kois = modelMapper.map(koiRequest, Kois.class);
             kois.setId(null);
-            if (koiRequest.getCategoryId() != null) {
-                Categories categories = iCategoriesRepository.findById(koiRequest.getCategoryId()).get();
-                kois.setCategory(categories);
-            }
+            Categories categories = iCategoriesRepository.findById(koiRequest.getCategoryId())
+                            .orElseThrow(() -> new NotFoundEntity("Not Found Category"));
+            kois.setCategory(categories);
+
             Kois createKoi = iKoisRepository.save(kois);
             KoiResponse koiResponse =modelMapper.map(createKoi,KoiResponse.class);
             return koiResponse;
@@ -62,34 +64,42 @@ public class KoiService implements IKoisService{
 
     @Override
     public KoiResponse updateKoi(Long Id, KoiRequest koiRequest) {
-        Kois kois = iKoisRepository.findById(Id)
-                .orElseThrow(() -> new NotFoundEntity("Not Found Kois"));
-        if (koiRequest.getCategoryId() != null) {
-            Categories categories = iCategoriesRepository.findById(koiRequest.getCategoryId())
-                    .orElseThrow(() -> new RuntimeException("Category not found"));
-            kois.setCategory(categories);
+        try {
+            Kois kois = iKoisRepository.findById(Id)
+                    .orElseThrow(() -> new NotFoundEntity("Not Found Kois"));
+            if (koiRequest.getCategoryId() != null) {
+                Categories categories = iCategoriesRepository.findById(koiRequest.getCategoryId())
+                        .orElseThrow(() -> new RuntimeException("Category not found"));
+                kois.setCategory(categories);
+            }
+            kois.setKoiName(koiRequest.getKoiName());
+            kois.setOrigin(koiRequest.getOrigin());
+            kois.setColor(koiRequest.getColor());
+            kois.setDescription(koiRequest.getDescription());
+            kois.setKoiImage(koiRequest.getKoiImage());
+            kois.setActive(koiRequest.isActive());
+            Kois updatedKoi = iKoisRepository.save(kois);
+            KoiResponse koiResponse = modelMapper.map(updatedKoi, KoiResponse.class);
+            return koiResponse;
+        }catch (Exception e){
+            throw new GenericException(e.getMessage());
         }
-        kois.setKoiName(koiRequest.getKoiName());
-        kois.setOrigin(koiRequest.getOrigin());
-        kois.setColor(koiRequest.getColor());
-        kois.setDescription(koiRequest.getDescription());
-        kois.setKoiImage(koiRequest.getKoiImage());
-        kois.setActive(koiRequest.isActive());
-
-        Kois updatedKoi = iKoisRepository.save(kois);
-
-
-        KoiResponse koiResponse = modelMapper.map(updatedKoi, KoiResponse.class);
-        return koiResponse;
     }
 
 
     @Override
-    public void deletebyId(Long Id) {
-        Kois kois = iKoisRepository.findById(Id)
-                .orElseThrow(() -> new NotFoundEntity("Not Found Kois"));
-//        bookingKoiDetailRepository.deleteByKoiId(id);
+    public KoiResponse deletebyId(Long Id) {
+        try {
+            Kois kois = iKoisRepository.findById(Id)
+                    .orElseThrow(() -> new NotFoundEntity("Not Found Kois"));
 
-        iKoisRepository.delete(kois);
+
+            kois.setActive(false);
+            iKoisRepository.save(kois);
+            KoiResponse koiResponse = modelMapper.map(kois, KoiResponse.class);
+            return koiResponse;
+        }catch (Exception e) {
+            throw new GenericException(e.getMessage());
+        }
     }
 }

@@ -76,13 +76,4 @@ public class KoiOfFarmService implements IKoiOfFarmService{
         }).toList();
     }
 
-//    @Override
-//    public KoiOfFarm updateKoiQuantity(Long farmId, Long koiId, int newQuantity) {
-//        KoiOfFarm koiOfFarm = koiOfFarmRepository.findByKoiFarms_IdAndKois_Id(farmId, koiId);
-//        if (koiOfFarm == null) {
-//            throw new EntityNotFoundException("KoiOfFarm not found for given farmId and koiId");
-//        }
-//        koiOfFarm.setQuantity(newQuantity);
-//        return koiOfFarmRepository.save(koiOfFarm);
-//    }
 }

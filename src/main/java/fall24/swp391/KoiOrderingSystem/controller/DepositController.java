@@ -23,14 +23,14 @@ public class DepositController {
 
     @PostMapping("/{bookingId}")
     public ResponseEntity<?> createDeposit(@RequestBody DepositRequest depositRequest, @PathVariable Long bookingId){
-        Deposit createDeposit = depositService.createDeposit(depositRequest,bookingId);
+        DepositRespone createDeposit = depositService.createDeposit(depositRequest,bookingId);
         return  new ResponseEntity<>(createDeposit,HttpStatus.CREATED);
     }
 
 
     @PutMapping("/{ID}")
     public ResponseEntity<?> updateDeposit(@PathVariable Long ID,@RequestBody DepositRequest depositRequest){
-        Deposit deposit = depositService.updateDeposit(ID,depositRequest);
+        DepositRespone deposit = depositService.updateDeposit(ID,depositRequest);
         return new ResponseEntity<>(deposit,HttpStatus.OK);
     }
 

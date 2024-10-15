@@ -8,11 +8,11 @@ import java.util.List;
 
 public interface ICheckinService {
 
-    List<Checkin> getChekinByBookingId(Long Id);
+    List<CheckinResponse> getChekinByBookingId(Long Id);
 
-    Checkin createCheckin(CheckinRequest checkinUserRequest, Long bookingId);
+    CheckinResponse createCheckin(CheckinRequest checkinUserRequest, Long bookingId);
 
-    Checkin updateCheckin(Long Id, CheckinRequest checkinRequest);
+    CheckinResponse updateCheckin(Long Id, CheckinRequest checkinRequest);
 
     CheckinResponse deleteCheckin(Long Id);
 }
