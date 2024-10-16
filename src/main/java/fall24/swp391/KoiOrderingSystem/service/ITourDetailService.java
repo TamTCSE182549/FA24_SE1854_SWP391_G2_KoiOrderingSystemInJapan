@@ -3,13 +3,14 @@ package fall24.swp391.KoiOrderingSystem.service;
 import fall24.swp391.KoiOrderingSystem.model.request.TourDetailRequest;
 import fall24.swp391.KoiOrderingSystem.model.response.TourDetailResponse;
 
+import java.util.List;
 import java.util.Set;
 
 public interface ITourDetailService {
 
-    Set<TourDetailResponse> TOUR_RESPONSES_BY_FARM(Long farmID);
+    List<TourDetailResponse> TOUR_RESPONSES_BY_FARM(Long farmID);
 
-    Set<TourDetailResponse> TOUR_DETAIL_RESPONSES_BY_TOUR(Long tourID);
+    List<TourDetailResponse> TOUR_DETAIL_RESPONSES_BY_TOUR(Long tourID);
 
     TourDetailResponse CREATE_TOUR_DETAIL_RESPONSES(TourDetailRequest tourDetailRequest);
 

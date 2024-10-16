@@ -91,6 +91,12 @@ public class TourService implements ITourService{
             Tours tours = iTourRepository.findById(id)
                     .orElseThrow(() -> new NotFoundEntity("Tour not FOUND to UPDATE"));
             tours.setTourName(tourRequest.getTourName());
+            tours.setUnitPrice(tourRequest.getUnitPrice());
+            tours.setMaxParticipants(tourRequest.getMaxParticipants());
+            tours.setDescription(tourRequest.getDescription());
+            tours.setStartTime(tourRequest.getStartTime());
+            tours.setEndTime(tourRequest.getEndTime());
+            tours.setTourImg(tourRequest.getTourImg());
             tours.setUpdatedBy(account);
             iTourRepository.save(tours);
             TourResponse tourResponse = modelMapper.map(tours, TourResponse.class);

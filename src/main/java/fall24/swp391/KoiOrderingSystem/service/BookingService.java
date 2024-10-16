@@ -254,8 +254,8 @@ public class BookingService implements IBookingService{
             bookings.setVat(bookingUpdateRequestStaff.getVat());
             bookings.setDiscountAmount(bookingUpdateRequestStaff.getDiscountAmount());
             bookings.setUpdatedBy(account);
-            bookings.setVatAmount(bookingUpdateRequestStaff.getVat() * bookings.getTotalAmount());
             bookings.setDiscountAmount(bookingUpdateRequestStaff.getDiscountAmount());
+            bookings.setVatAmount(bookingUpdateRequestStaff.getVat() * (bookings.getTotalAmount() - bookingUpdateRequestStaff.getDiscountAmount()));
             bookings.setTotalAmountWithVAT(bookings.getTotalAmount() + bookings.getVatAmount() - bookings.getDiscountAmount());
             bookingRepository.save(bookings);
             BookingTourResponse bookingTourResponse = modelMapper.map(bookings, BookingTourResponse.class);
