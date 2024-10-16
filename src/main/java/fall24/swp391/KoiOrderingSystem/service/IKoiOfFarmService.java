@@ -1,14 +1,15 @@
 package fall24.swp391.KoiOrderingSystem.service;
 
 import fall24.swp391.KoiOrderingSystem.model.request.KoiOfFarmRequest;
+import fall24.swp391.KoiOrderingSystem.model.response.KoiOfFarmResponse;
 import fall24.swp391.KoiOrderingSystem.pojo.KoiOfFarm;
 
 import java.util.List;
 
 public interface IKoiOfFarmService {
-    List<KoiOfFarm> getAll();
+    List<KoiOfFarmResponse> findKoiOfFarmByKoiId(Long koiId);
 
-    KoiOfFarm getById(Long Id);
+    List<KoiOfFarmResponse> findKoiOfFarmByFarmId(Long farmId);
 
     KoiOfFarm createKoiOfFarm(KoiOfFarmRequest koiOfFarmRequest);
 

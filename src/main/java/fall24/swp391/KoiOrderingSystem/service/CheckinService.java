@@ -51,6 +51,7 @@ public class CheckinService implements ICheckinService {
                 Checkin checkin = modelMapper.map(checkinRequest, Checkin.class);
                 checkin.setBooking(booking);
                 checkin.setStatus(CheckinStatus.NOTCHECKEDIN);
+                checkin.setCreatedBy(account);
                 checkinRepository.save(checkin);
                 CheckinResponse checkinResponse = modelMapper.map(checkin, CheckinResponse.class);
                 checkinResponse.setCreateBy(account.getFirstName() + " " + account.getLastName());
@@ -80,6 +81,7 @@ public class CheckinService implements ICheckinService {
                 checkin.setCheckinDate(checkinRequest.getCheckinDate());
                 checkin.setFirstName(checkinRequest.getFirstName());
                 checkin.setLastName(checkinRequest.getLastName());
+                checkin.setUpdatedBy(account);
                 checkinRepository.save(checkin);
                 CheckinResponse checkinResponse = modelMapper.map(checkin, CheckinResponse.class);
                 checkinResponse.setCreateBy(checkin.getCreatedBy().getFirstName() + " " + checkin.getCreatedBy().getLastName());

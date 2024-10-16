@@ -26,7 +26,7 @@ public class KoiController {
     @PostMapping
     public ResponseEntity<?> creatKoi( @RequestBody KoiRequest koiRequest){
         KoiResponse kois =iKoisService.createKois(koiRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).body(kois);
+        return ResponseEntity.status(HttpStatus.OK).body(kois);
     }
 
     @PutMapping("/{Id}")
