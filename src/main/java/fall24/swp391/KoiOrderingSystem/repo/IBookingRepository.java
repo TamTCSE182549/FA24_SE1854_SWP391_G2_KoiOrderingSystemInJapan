@@ -33,4 +33,5 @@ public interface IBookingRepository extends JpaRepository<Bookings, Long> {
             "where b.booking_type = 'BookingForKoi'", nativeQuery = true)
     List<Bookings> listBookingForKoi();
 
+    Bookings findBookingsById(Long id);
 }
