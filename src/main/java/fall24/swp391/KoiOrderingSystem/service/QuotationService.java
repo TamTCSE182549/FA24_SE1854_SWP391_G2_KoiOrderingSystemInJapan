@@ -1,11 +1,13 @@
 package fall24.swp391.KoiOrderingSystem.service;
 
 import fall24.swp391.KoiOrderingSystem.enums.ApproveStatus;
+import fall24.swp391.KoiOrderingSystem.enums.PaymentStatus;
 import fall24.swp391.KoiOrderingSystem.exception.GenericException;
 import fall24.swp391.KoiOrderingSystem.exception.NotFoundEntity;
 import fall24.swp391.KoiOrderingSystem.exception.NotUpdateException;
 import fall24.swp391.KoiOrderingSystem.model.request.QuotationRequest;
 import fall24.swp391.KoiOrderingSystem.pojo.Account;
+import fall24.swp391.KoiOrderingSystem.pojo.Bookings;
 import fall24.swp391.KoiOrderingSystem.pojo.Quotations;
 import fall24.swp391.KoiOrderingSystem.repo.IBookingRepository;
 import fall24.swp391.KoiOrderingSystem.repo.IBookingTourDetailRepository;
@@ -35,15 +37,20 @@ public class QuotationService implements IQuotationService{
 
     @Override
     public List<Quotations> getQuotationsByBookID(Long bookId) {
-        List<Quotations> quotationsList = quotationRepository.listQuotations(bookId);
-        return quotationRepository.listQuotations(bookId);
+        List<Quotations> quotationsList = quotationRepository.findByBookingId(bookId);
+        return quotationRepository.findByBookingId(bookId);
     } //Lấy Quotations từ Booking, để lấy amount từ BookingTourDetail
 
     @Override
     public Quotations createQuotations(QuotationRequest quotationRequest) {
+        Bookings bookings = bookingRepository.findBookingsById(quotationRequest.getBookingId());
+        if (bookings== null) {
+            throw new NotFoundEntity("Booking not found");
+        }
         Quotations quotation = new Quotations();
-        quotation = modelMapper.map(quotationRequest, Quotations.class);
-        quotation.setIsApprove(ApproveStatus.WAITING);
+        quotation.setAmount(quotationRequest.getAmount());
+        quotation.setBooking(bookings);
+        quotation.setIsApprove(ApproveStatus.PROCESS);
         Account account = authenticationService.getCurrentAccount();
         quotation.setCreatedBy(account);
         //create initialization status

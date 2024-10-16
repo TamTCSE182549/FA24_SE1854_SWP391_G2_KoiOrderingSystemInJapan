@@ -3,6 +3,7 @@ package fall24.swp391.KoiOrderingSystem.controller;
 
 import fall24.swp391.KoiOrderingSystem.pojo.BookingKoiDetail;
 import fall24.swp391.KoiOrderingSystem.service.IBookingKoiDetailService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,7 @@ import java.util.List;
 @CrossOrigin
 @RestController
 @RequestMapping("/BookingKoiDetail")
+@SecurityRequirement(name = "api")
 public class BookingKoiDetailController {
 
     @Autowired
