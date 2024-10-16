@@ -28,7 +28,7 @@ public class AuthenticationController {
 
     @PutMapping("profile/update")
     public ResponseEntity<?> update(@Valid @RequestBody AccountUpdateRequest accountUpdateRequest
-                                    ,@RequestHeader("Authorization") String authHeader
+//                                    ,@RequestHeader("Authorization") String authHeader
     ) throws Exception {
          if(authenticationService.updateAccount(accountUpdateRequest))
         return ResponseEntity.ok("Account updated successfully");

@@ -5,6 +5,7 @@ import fall24.swp391.KoiOrderingSystem.enums.ApproveStatus;
 import fall24.swp391.KoiOrderingSystem.model.request.QuotationRequest;
 import fall24.swp391.KoiOrderingSystem.pojo.Quotations;
 import fall24.swp391.KoiOrderingSystem.service.QuotationService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/quotations")
 @CrossOrigin(origins = "*")
+@SecurityRequirement(name = "api")
 public class QuotationController {
 
     @Autowired

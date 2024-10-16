@@ -1,18 +1,18 @@
 package fall24.swp391.KoiOrderingSystem.pojo;
 
+import fall24.swp391.KoiOrderingSystem.enums.DeliveryStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="deliverys")
-public class Deliveries {
+@Table(name="delivery")
+public class Delivery {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,7 +22,6 @@ public class Deliveries {
     @Column(name = "customer_name")
     private String customerName;
 
-
     @Column(name = "receive_date")
     private Date receiveDate;
 
@@ -31,6 +30,10 @@ public class Deliveries {
 
     @Column(name = "remain_amount")
     private float remainAmount;
+
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    private DeliveryStatus status;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "delivery_staff_id")
