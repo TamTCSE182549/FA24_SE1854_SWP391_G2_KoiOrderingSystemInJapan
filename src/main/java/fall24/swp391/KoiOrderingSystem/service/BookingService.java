@@ -48,7 +48,7 @@ public class BookingService implements IBookingService{
     private ModelMapper modelMapper;
 
     @Override
-    public BookingTourResponse createTourBooking(BookingTourRequest bookingTourRequest) throws Exception{
+    public BookingTourResponse createTourBooking(BookingTourRequest bookingTourRequest) {
         try {
             Account account = authenticationService.getCurrentAccount();
             if(account.getRole() == Role.CUSTOMER){
@@ -85,10 +85,10 @@ public class BookingService implements IBookingService{
         }
     }
 
-    @Override
-    public List<Bookings> getTourBooking(Long accountID) {
-        return bookingRepository.listTourBookingByID(accountID);
-    }
+//    @Override
+//    public List<Bookings> getTourBooking(Long accountID) {
+//        return bookingRepository.listTourBookingByID(accountID);
+//    }
 
     @Override
     public List<BookingTourResponse> bookingForTour() {
@@ -142,41 +142,41 @@ public class BookingService implements IBookingService{
         }).toList();
     }
 
-    @Override
-    public Bookings updateTourBooking(Long id, Bookings bookingUpdateDetail) {
-        try {
-            Account account = authenticationService.getCurrentAccount();
-            if (account.getRole() != Role.MANAGER){
-                throw new NotUpdateException("Your Role Cannot Access");
-            }
-            Optional<Bookings> existingBooking = bookingRepository.findById(id);
-            if (existingBooking.isPresent()) {
-                Bookings bookingToUpdate = existingBooking.get();
-                // Update fields except paymentStatus if it's pending or cancelled
-                if (bookingToUpdate.getPaymentStatus() != PaymentStatus.pending &&
-                        bookingToUpdate.getPaymentStatus() != PaymentStatus.cancelled) {
-                    bookingToUpdate.setPaymentStatus(bookingUpdateDetail.getPaymentStatus());
-                }
-                bookingToUpdate.setPaymentMethod(bookingToUpdate.getPaymentMethod());
-                bookingToUpdate.setDiscountAmount(bookingUpdateDetail.getDiscountAmount());
-                bookingToUpdate.setVat(bookingUpdateDetail.getVat());
-                bookingToUpdate.setVatAmount(bookingToUpdate.getVat() * bookingToUpdate.getTotalAmount());
-                bookingToUpdate.setUpdatedBy(account);
-                float totalBookingAmount = 0;
-                List<BookingTourDetail> tourDetailOfBookingID = iBookingTourDetailRepository.showDetailOfBookingID(id);
-                for(BookingTourDetail b : tourDetailOfBookingID){
-                    totalBookingAmount += b.getTotalAmount();
-                }
-                bookingToUpdate.setTotalAmount(totalBookingAmount);
-                bookingToUpdate.setTotalAmountWithVAT(bookingToUpdate.getTotalAmount() + bookingToUpdate.getVatAmount() - bookingToUpdate.getDiscountAmount());
-                return bookingRepository.save(bookingToUpdate);
-            } else {
-                throw new NotUpdateException("Update booking id " + id + " failed");
-            }
-        } catch (Exception e) {
-            throw new GenericException(e.getMessage());
-        }
-    }
+//    @Override
+//    public Bookings updateTourBooking(Long id, Bookings bookingUpdateDetail) {
+//        try {
+//            Account account = authenticationService.getCurrentAccount();
+//            if (account.getRole() != Role.MANAGER){
+//                throw new NotUpdateException("Your Role Cannot Access");
+//            }
+//            Optional<Bookings> existingBooking = bookingRepository.findById(id);
+//            if (existingBooking.isPresent()) {
+//                Bookings bookingToUpdate = existingBooking.get();
+//                // Update fields except paymentStatus if it's pending or cancelled
+//                if (bookingToUpdate.getPaymentStatus() != PaymentStatus.pending &&
+//                        bookingToUpdate.getPaymentStatus() != PaymentStatus.cancelled) {
+//                    bookingToUpdate.setPaymentStatus(bookingUpdateDetail.getPaymentStatus());
+//                }
+//                bookingToUpdate.setPaymentMethod(bookingToUpdate.getPaymentMethod());
+//                bookingToUpdate.setDiscountAmount(bookingUpdateDetail.getDiscountAmount());
+//                bookingToUpdate.setVat(bookingUpdateDetail.getVat());
+//                bookingToUpdate.setVatAmount(bookingToUpdate.getVat() * bookingToUpdate.getTotalAmount());
+//                bookingToUpdate.setUpdatedBy(account);
+//                float totalBookingAmount = 0;
+//                List<BookingTourDetail> tourDetailOfBookingID = iBookingTourDetailRepository.showDetailOfBookingID(id);
+//                for(BookingTourDetail b : tourDetailOfBookingID){
+//                    totalBookingAmount += b.getTotalAmount();
+//                }
+//                bookingToUpdate.setTotalAmount(totalBookingAmount);
+//                bookingToUpdate.setTotalAmountWithVAT(bookingToUpdate.getTotalAmount() + bookingToUpdate.getVatAmount() - bookingToUpdate.getDiscountAmount());
+//                return bookingRepository.save(bookingToUpdate);
+//            } else {
+//                throw new NotUpdateException("Update booking id " + id + " failed");
+//            }
+//        } catch (Exception e) {
+//            throw new GenericException(e.getMessage());
+//        }
+//    }
 
     @Override
     public BookingTourResponse updateTourBookingResponse(Bookings bookingDetails) {
@@ -241,7 +241,7 @@ public class BookingService implements IBookingService{
     }
 
     @Override
-    public BookingTourResponse responseForStaff(BookingUpdateRequestStaff bookingUpdateRequestStaff) {
+    public BookingTourResponse responseUpdateForStaff(BookingUpdateRequestStaff bookingUpdateRequestStaff) {
         try {
             Account account = authenticationService.getCurrentAccount();
 //            if (account.getRole() != Role.MANAGER){
@@ -268,17 +268,19 @@ public class BookingService implements IBookingService{
         }
     }
 
-    //delete means update payment_status to cancelled
+    //delete booking Vinh Vien only for MANAGER
     @Override
-    public Bookings deleteBooking(Long id) {
+    public void deleteBookingForManager(Long id) {
         try {
-            Optional<Bookings> existingBooking = bookingRepository.findById(id);
-            if (existingBooking.isPresent()) {
-                Bookings bookingToUpdate = existingBooking.get();
-                bookingToUpdate.setPaymentStatus(PaymentStatus.cancelled); // Update status to cancelled
-                return bookingRepository.save(bookingToUpdate); // Save the updated booking
-            } else {
-                throw new NotDeleteException("Can not DELETE booking " + id);
+            Account account = authenticationService.getCurrentAccount();
+            if (account.getRole()!=Role.MANAGER){
+                throw new NotCreateException("Your Role cannot access");
+            }
+            Bookings bookings = bookingRepository.findById(id)
+                    .orElseThrow(() -> new NotFoundEntity("Booking not FOUND to DELETE"));
+            if (bookings.getPaymentStatus()==PaymentStatus.cancelled){
+                iBookingTourDetailRepository.deleteBTDByBooking_Id(bookings.getId());
+                bookingRepository.deleteById(bookings.getId());
             }
         } catch (Exception e) {
             throw new GenericException(e.getMessage());

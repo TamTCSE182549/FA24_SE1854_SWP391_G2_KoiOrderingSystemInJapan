@@ -13,6 +13,6 @@ public class KoiFarmResponse {
     private String koiFarmEmail;
     private String koiFarmAddress;
     private String website;
-    private List<KoiFarmImage> koiFarmImages;
+    private List<KoiFarmImageResponse> koiFarmImages;
     private List<KoiOfFarmResponse> koiOfFarms;
 }

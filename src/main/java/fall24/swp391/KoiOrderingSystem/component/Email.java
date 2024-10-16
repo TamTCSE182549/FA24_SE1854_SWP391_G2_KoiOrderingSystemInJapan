@@ -29,7 +29,7 @@ public class Email {
            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
             //setting up necessary details
-           mimeMessageHelper.setFrom("minhvqse181556@fpt.edu.vn");
+           mimeMessageHelper.setFrom("minh1032024@gmail.com");
            mimeMessageHelper.setTo(emailDetail.getReceiver().getEmail());
            mimeMessageHelper.setText(template,true);
            mimeMessageHelper.setSubject(emailDetail.getSubject());
