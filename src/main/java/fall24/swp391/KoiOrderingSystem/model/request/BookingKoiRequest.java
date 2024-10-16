@@ -9,8 +9,9 @@ import java.util.List;
 
 @Data
 public class BookingKoiRequest {
-    Long koiId;
+//    Long koiId;
+//    int quantity;
+//   float unitPrice;
     PaymentMethod paymentMethod;
-    int quantity;
-
+    private List<BookingKoiDetailRequest> details;
 }

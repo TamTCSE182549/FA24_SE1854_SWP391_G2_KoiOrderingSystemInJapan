@@ -2,17 +2,17 @@ package fall24.swp391.KoiOrderingSystem.service;
 
 
 
+import fall24.swp391.KoiOrderingSystem.model.request.BookingKoiDetailRequest;
+import fall24.swp391.KoiOrderingSystem.model.response.BookingKoiDetailResponse;
 import fall24.swp391.KoiOrderingSystem.pojo.BookingKoiDetail;
 
 import java.util.List;
 
 public interface IBookingKoiDetailService {
 
-    List<BookingKoiDetail> findAll();
+    BookingKoiDetailResponse createKoiDetail(BookingKoiDetailRequest bookingKoiDetailRequest, Long bookingId);
 
-    BookingKoiDetail createKoiDetail(BookingKoiDetail bookingKoiDetail);
-
-    void deletebyBookingKoiDetail(Long theId);
+    void deletebyBookingKoiDetail(Long bookingKoiDetailId);
 
     List<BookingKoiDetail> bookingKoiDetails(Long bookingID);
 

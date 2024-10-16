@@ -38,11 +38,13 @@ public interface IBookingService {
     // Delete a booking by ID (update status to 'cancelled' and return a boolean)
     void deleteBookingForManager(Long id);
 
-    BookingTourResponse createKoiBooking(BookingKoiRequest bookingKoiRequest) throws Exception;
+    BookingTourResponse createKoiBooking(BookingKoiRequest bookingKoiRequest,Long bookingId) ;
 
     Bookings updateKoiBooking(Long id, Bookings bookingDetails);
 
-    List<Bookings> getKoiBooking(Long accountID);
+    List<BookingTourResponse> getKoiBookingById(Long accountID);
+
+    List<BookingTourResponse> getKoiBooking();
 
     BookingTourResponse deleteBookingResponse(Long bookingID);
 

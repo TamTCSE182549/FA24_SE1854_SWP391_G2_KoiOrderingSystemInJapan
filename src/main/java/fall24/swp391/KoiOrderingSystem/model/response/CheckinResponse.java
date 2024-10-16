@@ -1,5 +1,6 @@
 package fall24.swp391.KoiOrderingSystem.model.response;
 
+import fall24.swp391.KoiOrderingSystem.enums.CheckinStatus;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -28,4 +29,6 @@ public class CheckinResponse {
         private  String createBy;
 
         private String updateBy;
+
+        private CheckinStatus status;
 }

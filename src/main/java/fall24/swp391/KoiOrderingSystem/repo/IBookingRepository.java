@@ -28,6 +28,9 @@ public interface IBookingRepository extends JpaRepository<Bookings, Long> {
             "where  b.booking_type = 'BookingForKoi'  and b.account_id = ?1", nativeQuery = true)
     List<Bookings> listKoiBooking(Long idAccount);
 
-   Bookings findBookingsById(Long bookingId);
+    @Query(value = "select b.* " +
+            "from bookings b " +
+            "where b.booking_type = 'BookingForKoi'", nativeQuery = true)
+    List<Bookings> listBookingForKoi();
 
 }

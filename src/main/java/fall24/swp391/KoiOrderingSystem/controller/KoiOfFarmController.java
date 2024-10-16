@@ -3,6 +3,7 @@ package fall24.swp391.KoiOrderingSystem.controller;
 
 
 import fall24.swp391.KoiOrderingSystem.model.request.KoiOfFarmRequest;
+import fall24.swp391.KoiOrderingSystem.model.response.KoiOfFarmResponse;
 import fall24.swp391.KoiOrderingSystem.pojo.KoiOfFarm;
 import fall24.swp391.KoiOrderingSystem.service.IKoiOfFarmService;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,16 +35,16 @@ public class KoiOfFarmController {
         return ResponseEntity.ok(koiOfFarm);
     }
 
-    @GetMapping
-    public ResponseEntity<?> getAll(){
-        List<KoiOfFarm> koiOfFarms =iKoiOfFarmService.getAll();
+    @GetMapping("/koi/{koiId}")
+    public ResponseEntity<?> findKoiOfFarmByKoiId(@PathVariable Long koiId){
+        List<KoiOfFarmResponse> koiOfFarms =iKoiOfFarmService.findKoiOfFarmByKoiId(koiId);
         return  ResponseEntity.ok(koiOfFarms);
     }
 
-    @GetMapping("/{Id}")
-    public ResponseEntity<?> getById(@PathVariable Long Id){
-        KoiOfFarm koiOfFarm = iKoiOfFarmService.getById(Id);
-        return ResponseEntity.ok(koiOfFarm);
+    @GetMapping("/farm/{farmId}")
+    public ResponseEntity<?> findKoiOfFarmByFarmId(@PathVariable Long farmId){
+        List<KoiOfFarmResponse> koiOfFarmResponses= iKoiOfFarmService.findKoiOfFarmByFarmId(farmId);
+        return ResponseEntity.ok(koiOfFarmResponses);
     }
 
     @DeleteMapping("/{Id}")

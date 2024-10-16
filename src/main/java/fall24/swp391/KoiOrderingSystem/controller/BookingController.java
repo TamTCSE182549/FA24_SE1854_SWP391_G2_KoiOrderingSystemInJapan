@@ -89,32 +89,49 @@ public class BookingController {
         return new ResponseEntity<>(bookingTourResponse, HttpStatus.OK);
     }
     // Delete a booking by ID
+
+//    @DeleteMapping("/{id}")
+//    public ResponseEntity<Bookings> deleteBooking(@PathVariable Long id) {
+//        Bookings bookings = bookingService.deleteBooking(id);
+//        return new ResponseEntity<>(bookings, HttpStatus.OK);
+//    }
+
+
+
+    @PostMapping("/koi/create/{bookingId}")
+    public ResponseEntity<?> createKoiBooking(@RequestBody BookingKoiRequest bookingKoiRequest,@PathVariable Long bookingId) throws Exception{
+        BookingTourResponse bookingResponse = bookingService.createKoiBooking(bookingKoiRequest,bookingId);
+        return ResponseEntity.ok(bookingResponse);
+    }
     @DeleteMapping("/manager/delete/{bookingId}")
     public ResponseEntity<String> deleteBooking(@PathVariable Long bookingId) {
         bookingService.deleteBookingForManager(bookingId);
         return new ResponseEntity<>("Delete booking complete", HttpStatus.OK);
     }
-    @PostMapping("/koi/create")
-    public ResponseEntity<?> createKoiBooking(@RequestBody BookingKoiRequest bookingKoiRequest) throws Exception{
-        BookingTourResponse bookingResponse = bookingService.createKoiBooking(bookingKoiRequest);
-        return ResponseEntity.ok(bookingResponse);
-    }
 
-    @PutMapping("/koi/{id}")
-    public ResponseEntity<?> updateKoiBooking(@PathVariable Long id,@RequestBody Bookings bookings){
-        bookingService.updateKoiBooking(id,bookings);
-        return new ResponseEntity<>("Update Complete",HttpStatus.OK);
-    }
+     
+
+//    @PutMapping("/koi/{id}")
+//    public ResponseEntity<?> updateKoiBooking(@PathVariable Long id,@RequestBody Bookings bookings){
+//        bookingService.updateKoiBooking(id,bookings);
+//        return new ResponseEntity<>("Update Complete",HttpStatus.OK);
+//    }
 
     @GetMapping("/koi/list/{accountID}")
-    public ResponseEntity<List<Bookings>> getKoiBookings(@PathVariable Long accountID) {
-        List<Bookings> bookings = bookingService.getKoiBooking(accountID);
+    public ResponseEntity<?> getKoiBookings(@PathVariable Long accountID) {
+        List<BookingTourResponse> bookings = bookingService.getKoiBookingById(accountID);
         return ResponseEntity.ok(bookings);
     }
-    @DeleteMapping("/deleteResponseForm/{id}")
-    public ResponseEntity<BookingTourResponse> deleteBookingResponse(@PathVariable Long id) {
-        BookingTourResponse bookingTourResponse = bookingService.deleteBookingResponse(id);
-        return new ResponseEntity<>(bookingTourResponse, HttpStatus.OK);
 
+    @GetMapping("/BookingForKoi")
+    public ResponseEntity<?> showBookingForKoi(){
+        List<BookingTourResponse> bookingTourResponses = bookingService.getKoiBooking();
+        return ResponseEntity.ok(bookingTourResponses);
     }
+//    @DeleteMapping("/deleteResponseForm/{id}")
+//    public ResponseEntity<BookingTourResponse> deleteBookingResponse(@PathVariable Long id) {
+//        BookingTourResponse bookingTourResponse = bookingService.deleteBookingResponse(id);
+//        return new ResponseEntity<>(bookingTourResponse, HttpStatus.OK);
+//
+//    }
 }
