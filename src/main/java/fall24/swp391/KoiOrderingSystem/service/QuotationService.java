@@ -17,6 +17,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -95,8 +96,9 @@ public class QuotationService implements IQuotationService{
             if (quotations == null) {
                 throw new NotFoundEntity("Quotation not found");
             }
-            quotations.setIsApprove(approveStatus);
+//            quotations.setIsApprove(approveStatus);
             quotations.setApproveBy(account);
+            quotations.setApproveTime(LocalDateTime.now());
             quotationRepository.save(quotations);
             quotationResponse = modelMapper.map(quotations, QuotationResponse.class);
             quotationResponse.setBookingId(quotations.getBooking().getId());

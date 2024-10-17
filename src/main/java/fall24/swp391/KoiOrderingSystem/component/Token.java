@@ -31,8 +31,8 @@ public class Token {
     public String generateToken(Account account){
         String token = Jwts.builder().subject(account.getId()+"")
                 .claim("role", account.getRole())
-                .claim("last_name",account.getLastName())
-                .claim("first_name",account.getFirstName())
+                .claim("lastName",account.getLastName())
+                .claim("firstName",account.getFirstName())
                 .claim("email",account.getEmail())
                 .claim("phone",account.getPhone())
                 .claim("address",account.getAddress())

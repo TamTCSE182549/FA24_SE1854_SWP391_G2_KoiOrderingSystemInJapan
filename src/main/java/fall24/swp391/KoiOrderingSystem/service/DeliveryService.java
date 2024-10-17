@@ -40,7 +40,7 @@ public class DeliveryService implements IDeliveryService {
             float remainAmount = 0;
             for (Deposit deposit : deposits) {
                 if(deposit.getDepositStatus().equals("complete"))
-                    remainAmount = deposit.getRemainAmount();
+                    remainAmount = deposit.getRemainAmount()+deposit.getShippingFee();
             }
             if (bookings!= null) {
                 //tim duoc booking
