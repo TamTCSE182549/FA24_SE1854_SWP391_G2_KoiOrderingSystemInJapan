@@ -61,6 +61,15 @@ public class KoiFarmController {
         return ResponseEntity.ok(koiFarms);
     }
 
+    @GetMapping("/list-farm-active")
+    public ResponseEntity<List<KoiFarmResponse>> getKoiFarmActive() {
+        List<KoiFarmResponse> koiFarms = iKoiFarmsService.getFarmIsActive();
+        if (koiFarms.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(koiFarms);
+    }
+
     @PutMapping("/update/{id}")
     public ResponseEntity<?> updateKoiFarms(@PathVariable Long id,
                                             @RequestBody KoiFarmRequest

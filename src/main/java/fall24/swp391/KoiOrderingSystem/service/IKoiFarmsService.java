@@ -26,5 +26,5 @@ public interface IKoiFarmsService {
 
     KoiFarmResponse convertToKoiFarmResponse(KoiFarms koiFarm);
 
-
+    List<KoiFarmResponse> getFarmIsActive();
 }
