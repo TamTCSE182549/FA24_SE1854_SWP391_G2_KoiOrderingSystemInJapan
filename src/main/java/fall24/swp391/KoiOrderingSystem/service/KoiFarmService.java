@@ -150,4 +150,10 @@ public class KoiFarmService implements IKoiFarmsService{
         response.setKoiFarmImages(koiFarmImageResponses);
         return response;
     }
+
+    @Override
+    public List<KoiFarmResponse> getFarmIsActive() {
+        List<KoiFarms> koiFarmsList = iKoiFarmsRepository.findKoiFarmIsActive();
+        return koiFarmsList.stream().map(this::convertToKoiFarmResponse).collect(Collectors.toList());
+    }
 }
