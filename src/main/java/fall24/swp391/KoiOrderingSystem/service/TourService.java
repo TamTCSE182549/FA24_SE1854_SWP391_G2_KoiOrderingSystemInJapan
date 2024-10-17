@@ -90,6 +90,13 @@ public class TourService implements ITourService{
             }
             Tours tours = iTourRepository.findById(id)
                     .orElseThrow(() -> new NotFoundEntity("Tour not FOUND to UPDATE"));
+            tours.setTourName(tourRequest.getTourName());
+            tours.setUnitPrice(tourRequest.getUnitPrice());
+            tours.setMaxParticipants(tourRequest.getMaxParticipants());
+            tours.setDescription(tourRequest.getDescription());
+            tours.setStartTime(tourRequest.getStartTime());
+            tours.setEndTime(tourRequest.getEndTime());
+            tours.setTourImg(tourRequest.getTourImg());
             tours.setUpdatedBy(account);
             iTourRepository.save(tours);
             TourResponse tourResponse = modelMapper.map(tours, TourResponse.class);
@@ -170,6 +177,21 @@ public class TourService implements ITourService{
     public Page<TourResponse> showAllPageable(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return iTourRepository.showAllPageable(pageable).map(tours -> {
+            TourResponse tourResponse = modelMapper.map(tours, TourResponse.class);
+            tourResponse.setCreatedBy(tours.getCreatedBy().getFirstName() + " " + tours.getCreatedBy().getLastName());
+            if (tours.getUpdatedBy()!=null){
+                tourResponse.setUpdatedBy(tours.getUpdatedBy().getFirstName() + " " + tours.getUpdatedBy().getLastName());
+            } else {
+                tourResponse.setUpdatedBy("");
+            }
+            return tourResponse;
+        });
+    }
+
+    @Override
+    public Page<TourResponse> showTourByName(int page, int size, String nameTour) {
+        Pageable pageable = PageRequest.of(page, size);
+        return iTourRepository.showTourByName(nameTour, pageable).map(tours -> {
             TourResponse tourResponse = modelMapper.map(tours, TourResponse.class);
             tourResponse.setCreatedBy(tours.getCreatedBy().getFirstName() + " " + tours.getCreatedBy().getLastName());
             if (tours.getUpdatedBy()!=null){

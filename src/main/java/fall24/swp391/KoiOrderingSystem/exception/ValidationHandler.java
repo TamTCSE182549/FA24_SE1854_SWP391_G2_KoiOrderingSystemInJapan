@@ -54,4 +54,9 @@ public class ValidationHandler {
     public ResponseEntity<?> handleReadException(NotReadException exception){
         return new ResponseEntity<>("Error Read Data: " + exception.getMessage(), HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(GenericException.class)
+    public ResponseEntity<?> handleGenericException(Exception exception){
+        return new ResponseEntity<>("Error System: " + exception.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }

@@ -62,6 +62,15 @@ public class TourController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/showTourByName/{tourName}")
+    public ResponseEntity<?> showTourByName(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "2") int size, @PathVariable String tourName){
+        Map<String, Object> response = new HashMap<>();
+        response.put("totalPage", iTourService.showTourByName(page,size,tourName).getTotalPages());
+        response.put("pageNumber", iTourService.showTourByName(page,size,tourName).getNumber());
+        response.put("content", iTourService.showTourByName(page, size,tourName).get());
+        return ResponseEntity.ok(response);
+    }
+
 //    @PostMapping("/create")
 //    public ResponseEntity<?> createTour(@RequestBody Tours tours) {
 //        iTourService.createTour(tours);
@@ -71,7 +80,7 @@ public class TourController {
     @PostMapping("/createTourRes")
     public ResponseEntity<?> createTourRes(@RequestBody TourRequest tourRequest) {
         TourResponse tourResponse = iTourService.createTourRes(tourRequest);
-        return new ResponseEntity<>(tourResponse, HttpStatus.CREATED);
+        return new ResponseEntity<>(tourResponse, HttpStatus.OK);
     }
 
 //    @DeleteMapping("/{id}")

@@ -13,7 +13,7 @@ public interface IBookingRepository extends JpaRepository<Bookings, Long> {
     //list booking type 1
     @Query(value = "select b.* " +
             "from bookings b " +
-            "where b.booking_type = 'BookingForTour' and b.account_id = ?1", nativeQuery = true)
+            "where b.booking_type = 'BookingForTour' and b.account_id = ?1 and b.payment_status!='cancelled'", nativeQuery = true)
     List<Bookings> listTourBookingByID(Long idAccount);
 
     @Query(value = "select b.* " +
@@ -28,6 +28,10 @@ public interface IBookingRepository extends JpaRepository<Bookings, Long> {
             "where  b.booking_type = 'BookingForKoi'  and b.account_id = ?1", nativeQuery = true)
     List<Bookings> listKoiBooking(Long idAccount);
 
-   Bookings findBookingsById(Long bookingId);
+    @Query(value = "select b.* " +
+            "from bookings b " +
+            "where b.booking_type = 'BookingForKoi'", nativeQuery = true)
+    List<Bookings> listBookingForKoi();
 
+    Bookings findBookingsById(Long id);
 }

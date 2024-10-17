@@ -3,6 +3,7 @@ package fall24.swp391.KoiOrderingSystem.service;
 import fall24.swp391.KoiOrderingSystem.exception.NotFoundEntity;
 import fall24.swp391.KoiOrderingSystem.exception.NotUpdateException;
 import fall24.swp391.KoiOrderingSystem.model.request.KoiFarmRequest;
+import fall24.swp391.KoiOrderingSystem.model.response.KoiFarmImageResponse;
 import fall24.swp391.KoiOrderingSystem.model.response.KoiFarmResponse;
 import fall24.swp391.KoiOrderingSystem.model.response.KoiOfFarmResponse;
 import fall24.swp391.KoiOrderingSystem.pojo.KoiFarms;
@@ -139,6 +140,20 @@ public class KoiFarmService implements IKoiFarmsService{
                 }).collect(Collectors.toList());
 
         response.setKoiOfFarms(koiOfFarmResponses);
+
+        List<KoiFarmImageResponse> koiFarmImageResponses = koiFarm.getKoiFarmImages().stream()
+                .map(koiFarmImage -> {
+                    KoiFarmImageResponse koiFarmImageResponse = new KoiFarmImageResponse();
+                    koiFarmImageResponse.setImageUrl(koiFarmImage.getImageUrl());
+                    return koiFarmImageResponse;
+                }).collect(Collectors.toList());
+        response.setKoiFarmImages(koiFarmImageResponses);
         return response;
+    }
+
+    @Override
+    public List<KoiFarmResponse> getFarmIsActive() {
+        List<KoiFarms> koiFarmsList = iKoiFarmsRepository.findKoiFarmIsActive();
+        return koiFarmsList.stream().map(this::convertToKoiFarmResponse).collect(Collectors.toList());
     }
 }

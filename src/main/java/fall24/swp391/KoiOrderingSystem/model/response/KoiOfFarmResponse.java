@@ -8,6 +8,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class KoiOfFarmResponse {
+    private Long Id;
+    private Long farmId;
     private Long koiId;
     private int quantity;
+    private boolean available;
 }
