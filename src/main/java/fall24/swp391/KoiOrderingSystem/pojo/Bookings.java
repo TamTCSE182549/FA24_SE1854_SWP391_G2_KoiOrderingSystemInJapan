@@ -102,11 +102,4 @@ public class Bookings {
         updatedDate = LocalDateTime.now();
     }
 
-//    public void addBookingDetail(BookingTourDetail bookingTourDetail) {
-//        if (bookingTourDetails == null) {
-//            bookingTourDetails = new ArrayList<>();
-//        }
-//        bookingTourDetails.add(bookingTourDetail);
-//        bookingTourDetail.setBooking(this);
-//    }
 }
