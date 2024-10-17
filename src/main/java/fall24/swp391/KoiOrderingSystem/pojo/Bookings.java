@@ -72,6 +72,12 @@ public class Bookings {
     @OneToMany(mappedBy = "booking", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     private Set<Checkin> checkins;
 
+    @OneToMany(mappedBy = "booking", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    private Set<DeliveryHistory> deliveryHistory;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private Delivery delivery;
+
     @Column(name = "created_at")
     private LocalDateTime createdDate;
 
