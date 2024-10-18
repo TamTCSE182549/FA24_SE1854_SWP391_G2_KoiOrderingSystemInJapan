@@ -4,12 +4,9 @@ import fall24.swp391.KoiOrderingSystem.enums.BookingType;
 import fall24.swp391.KoiOrderingSystem.enums.PaymentStatus;
 import fall24.swp391.KoiOrderingSystem.enums.Role;
 import fall24.swp391.KoiOrderingSystem.exception.*;
-import fall24.swp391.KoiOrderingSystem.model.request.BookingKoiRequest;
-import fall24.swp391.KoiOrderingSystem.model.request.BookingUpdateRequestCus;
-import fall24.swp391.KoiOrderingSystem.model.request.BookingUpdateRequestStaff;
+import fall24.swp391.KoiOrderingSystem.model.request.*;
 import fall24.swp391.KoiOrderingSystem.pojo.*;
 import fall24.swp391.KoiOrderingSystem.repo.*;
-import fall24.swp391.KoiOrderingSystem.model.request.BookingTourRequest;
 import fall24.swp391.KoiOrderingSystem.model.response.BookingTourResponse;
 import fall24.swp391.KoiOrderingSystem.pojo.Account;
 import fall24.swp391.KoiOrderingSystem.pojo.BookingTourDetail;
@@ -18,11 +15,9 @@ import fall24.swp391.KoiOrderingSystem.pojo.Tours;
 import fall24.swp391.KoiOrderingSystem.repo.IBookingRepository;
 import fall24.swp391.KoiOrderingSystem.repo.IBookingTourDetailRepository;
 import fall24.swp391.KoiOrderingSystem.repo.ITourRepository;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.net.URLEncoder;
@@ -62,7 +57,7 @@ public class BookingService implements IBookingService{
     private ModelMapper modelMapper;
 
     @Override
-    public BookingTourResponse createTourBooking(BookingTourRequest bookingTourRequest) throws Exception{
+    public BookingTourResponse createTourBooking(BookingTourRequest bookingTourRequest) {
         try {
             Account account = authenticationService.getCurrentAccount();
             if(account.getRole() == Role.CUSTOMER){
@@ -99,10 +94,10 @@ public class BookingService implements IBookingService{
         }
     }
 
-    @Override
-    public List<Bookings> getTourBooking(Long accountID) {
-        return bookingRepository.listTourBookingByID(accountID);
-    }
+//    @Override
+//    public List<Bookings> getTourBooking(Long accountID) {
+//        return bookingRepository.listTourBookingByID(accountID);
+//    }
 
     @Override
     public List<BookingTourResponse> bookingForTour() {
@@ -156,41 +151,41 @@ public class BookingService implements IBookingService{
         }).toList();
     }
 
-    @Override
-    public Bookings updateTourBooking(Long id, Bookings bookingUpdateDetail) {
-        try {
-            Account account = authenticationService.getCurrentAccount();
-            if (account.getRole() != Role.MANAGER){
-                throw new NotUpdateException("Your Role Cannot Access");
-            }
-            Optional<Bookings> existingBooking = bookingRepository.findById(id);
-            if (existingBooking.isPresent()) {
-                Bookings bookingToUpdate = existingBooking.get();
-                // Update fields except paymentStatus if it's pending or cancelled
-                if (bookingToUpdate.getPaymentStatus() != PaymentStatus.pending &&
-                        bookingToUpdate.getPaymentStatus() != PaymentStatus.cancelled) {
-                    bookingToUpdate.setPaymentStatus(bookingUpdateDetail.getPaymentStatus());
-                }
-                bookingToUpdate.setPaymentMethod(bookingToUpdate.getPaymentMethod());
-                bookingToUpdate.setDiscountAmount(bookingUpdateDetail.getDiscountAmount());
-                bookingToUpdate.setVat(bookingUpdateDetail.getVat());
-                bookingToUpdate.setVatAmount(bookingToUpdate.getVat() * bookingToUpdate.getTotalAmount());
-                bookingToUpdate.setUpdatedBy(account);
-                float totalBookingAmount = 0;
-                List<BookingTourDetail> tourDetailOfBookingID = iBookingTourDetailRepository.showDetailOfBookingID(id);
-                for(BookingTourDetail b : tourDetailOfBookingID){
-                    totalBookingAmount += b.getTotalAmount();
-                }
-                bookingToUpdate.setTotalAmount(totalBookingAmount);
-                bookingToUpdate.setTotalAmountWithVAT(bookingToUpdate.getTotalAmount() + bookingToUpdate.getVatAmount() - bookingToUpdate.getDiscountAmount());
-                return bookingRepository.save(bookingToUpdate);
-            } else {
-                throw new NotUpdateException("Update booking id " + id + " failed");
-            }
-        } catch (Exception e) {
-            throw new GenericException(e.getMessage());
-        }
-    }
+//    @Override
+//    public Bookings updateTourBooking(Long id, Bookings bookingUpdateDetail) {
+//        try {
+//            Account account = authenticationService.getCurrentAccount();
+//            if (account.getRole() != Role.MANAGER){
+//                throw new NotUpdateException("Your Role Cannot Access");
+//            }
+//            Optional<Bookings> existingBooking = bookingRepository.findById(id);
+//            if (existingBooking.isPresent()) {
+//                Bookings bookingToUpdate = existingBooking.get();
+//                // Update fields except paymentStatus if it's pending or cancelled
+//                if (bookingToUpdate.getPaymentStatus() != PaymentStatus.pending &&
+//                        bookingToUpdate.getPaymentStatus() != PaymentStatus.cancelled) {
+//                    bookingToUpdate.setPaymentStatus(bookingUpdateDetail.getPaymentStatus());
+//                }
+//                bookingToUpdate.setPaymentMethod(bookingToUpdate.getPaymentMethod());
+//                bookingToUpdate.setDiscountAmount(bookingUpdateDetail.getDiscountAmount());
+//                bookingToUpdate.setVat(bookingUpdateDetail.getVat());
+//                bookingToUpdate.setVatAmount(bookingToUpdate.getVat() * bookingToUpdate.getTotalAmount());
+//                bookingToUpdate.setUpdatedBy(account);
+//                float totalBookingAmount = 0;
+//                List<BookingTourDetail> tourDetailOfBookingID = iBookingTourDetailRepository.showDetailOfBookingID(id);
+//                for(BookingTourDetail b : tourDetailOfBookingID){
+//                    totalBookingAmount += b.getTotalAmount();
+//                }
+//                bookingToUpdate.setTotalAmount(totalBookingAmount);
+//                bookingToUpdate.setTotalAmountWithVAT(bookingToUpdate.getTotalAmount() + bookingToUpdate.getVatAmount() - bookingToUpdate.getDiscountAmount());
+//                return bookingRepository.save(bookingToUpdate);
+//            } else {
+//                throw new NotUpdateException("Update booking id " + id + " failed");
+//            }
+//        } catch (Exception e) {
+//            throw new GenericException(e.getMessage());
+//        }
+//    }
 
     @Override
     public BookingTourResponse updateTourBookingResponse(Bookings bookingDetails) {
@@ -255,12 +250,12 @@ public class BookingService implements IBookingService{
     }
 
     @Override
-    public BookingTourResponse responseForStaff(BookingUpdateRequestStaff bookingUpdateRequestStaff) {
+    public BookingTourResponse responseUpdateForStaff(BookingUpdateRequestStaff bookingUpdateRequestStaff) {
         try {
             Account account = authenticationService.getCurrentAccount();
-            if (account.getRole() != Role.MANAGER){
-                throw new NotUpdateException("Your Role cannot access");
-            }
+//            if (account.getRole() != Role.MANAGER){
+//                throw new NotUpdateException("Your Role cannot access");
+//            }
             Bookings bookings = bookingRepository.findById(bookingUpdateRequestStaff.getBookingID())
                     .orElseThrow(() -> new NotFoundEntity("Booking ID not FOUND"));
             bookings.setPaymentMethod(bookingUpdateRequestStaff.getPaymentMethod());
@@ -268,8 +263,8 @@ public class BookingService implements IBookingService{
             bookings.setVat(bookingUpdateRequestStaff.getVat());
             bookings.setDiscountAmount(bookingUpdateRequestStaff.getDiscountAmount());
             bookings.setUpdatedBy(account);
-            bookings.setVatAmount(bookingUpdateRequestStaff.getVat() * bookings.getTotalAmount());
             bookings.setDiscountAmount(bookingUpdateRequestStaff.getDiscountAmount());
+            bookings.setVatAmount(bookingUpdateRequestStaff.getVat() * (bookings.getTotalAmount() - bookingUpdateRequestStaff.getDiscountAmount()));
             bookings.setTotalAmountWithVAT(bookings.getTotalAmount() + bookings.getVatAmount() - bookings.getDiscountAmount());
             bookingRepository.save(bookings);
             BookingTourResponse bookingTourResponse = modelMapper.map(bookings, BookingTourResponse.class);
@@ -282,17 +277,19 @@ public class BookingService implements IBookingService{
         }
     }
 
-    //delete means update payment_status to cancelled
+    //delete booking Vinh Vien only for MANAGER
     @Override
-    public Bookings deleteBooking(Long id) {
+    public void deleteBookingForManager(Long id) {
         try {
-            Optional<Bookings> existingBooking = bookingRepository.findById(id);
-            if (existingBooking.isPresent()) {
-                Bookings bookingToUpdate = existingBooking.get();
-                bookingToUpdate.setPaymentStatus(PaymentStatus.cancelled); // Update status to cancelled
-                return bookingRepository.save(bookingToUpdate); // Save the updated booking
-            } else {
-                throw new NotDeleteException("Can not DELETE booking " + id);
+            Account account = authenticationService.getCurrentAccount();
+            if (account.getRole()!=Role.MANAGER){
+                throw new NotCreateException("Your Role cannot access");
+            }
+            Bookings bookings = bookingRepository.findById(id)
+                    .orElseThrow(() -> new NotFoundEntity("Booking not FOUND to DELETE"));
+            if (bookings.getPaymentStatus()==PaymentStatus.cancelled){
+                iBookingTourDetailRepository.deleteBTDByBooking_Id(bookings.getId());
+                bookingRepository.deleteById(bookings.getId());
             }
         } catch (Exception e) {
             throw new GenericException(e.getMessage());
@@ -300,13 +297,15 @@ public class BookingService implements IBookingService{
     }
 
     @Override
-    public BookingTourResponse createKoiBooking(BookingKoiRequest bookingKoiRequest) {
+    public BookingTourResponse createKoiBooking(BookingKoiRequest bookingKoiRequest,Long bookingId) {
         try{
             Account account = authenticationService.getCurrentAccount();
-            if(account.getRole()!=Role.SALES_STAFF){
-                Kois kois = iKoisRepository.findById(bookingKoiRequest.getKoiId())
-                        .orElseThrow(() -> new NotFoundEntity("Koi Tour not found"));
+//            if(account.getRole() ==Role.SALES_STAFF){
+//                Kois kois = iKoisRepository.findById(bookingKoiRequest.getKoiId())
+//                        .orElseThrow(() -> new NotFoundEntity("Koi Tour not found"));
 
+                Bookings bookingTour = bookingRepository.findById(bookingId)
+                        .orElseThrow(() -> new NotFoundEntity("Booking Tour not found"));
 
                 Bookings booking = new Bookings();
                 booking.setPaymentMethod(bookingKoiRequest.getPaymentMethod());
@@ -316,25 +315,39 @@ public class BookingService implements IBookingService{
                 bookingRepository.save(booking);
 
 
-                    BookingKoiDetail bookingKoiDetail = new BookingKoiDetail(booking, kois, bookingKoiRequest.getQuantity());
-//                    bookingKoiDetail.setTotalAmount(kois.getUnitPrice() * bookingKoiRequest.getQuantity());
+//                    BookingKoiDetail bookingKoiDetail = new BookingKoiDetail(booking, kois, bookingKoiRequest.getQuantity(), bookingKoiRequest.getUnitPrice());
+//                    bookingKoiDetail.setTotalAmount(bookingKoiRequest.getUnitPrice() * bookingKoiRequest.getQuantity());
+//                    iBookingKoiDetailRepository.save(bookingKoiDetail);
+                float totalBookingAmount = 0;
+                for (BookingKoiDetailRequest detailRequest : bookingKoiRequest.getDetails()) {
+                    Kois kois = iKoisRepository.findById(detailRequest.getKoiId())
+                            .orElseThrow(() -> new NotFoundEntity("Koi not found"));
+                    BookingKoiDetail bookingKoiDetail = new BookingKoiDetail(booking, kois, detailRequest.getQuantity(), detailRequest.getUnitPrice());
+                    float totalAmount = detailRequest.getUnitPrice() * detailRequest.getQuantity();
+                    bookingKoiDetail.setTotalAmount(totalAmount);
                     iBookingKoiDetailRepository.save(bookingKoiDetail);
 
-                    float totalBookingAmount = 0;
-                    List<BookingKoiDetail> koiDetailOfBookingID = iBookingKoiDetailRepository.showDetailOfBookingID(booking.getId());
-                    for (BookingKoiDetail b : koiDetailOfBookingID) {
-                        totalBookingAmount += b.getTotalAmount();
-                    }
+                    totalBookingAmount += totalAmount;
+                }
+
+//                    float totalBookingAmount = 0;
+//                    List<BookingKoiDetail> koiDetailOfBookingID = iBookingKoiDetailRepository.showDetailOfBookingID(booking.getId());
+//                    for (BookingKoiDetail b : koiDetailOfBookingID) {
+//                        totalBookingAmount += b.getTotalAmount();
+//                    }
                     booking.setTotalAmount(totalBookingAmount);
                     booking.setTotalAmountWithVAT(booking.getTotalAmount() + booking.getVatAmount() - booking.getDiscountAmount());
+                    booking.setAccount(bookingTour.getCreatedBy());
                     bookingRepository.save(booking);
 
                     BookingTourResponse bookingResponse = modelMapper.map(booking, BookingTourResponse.class);
+                    bookingResponse.setCustomerID(bookingTour.getCreatedBy().getId());
+                    bookingResponse.setNameCus(bookingTour.getAccount().getFirstName()+" "+bookingTour.getAccount().getLastName());
                     bookingResponse.setCreatedBy(account.getFirstName() + " " + account.getLastName());
                     return bookingResponse;
-            }else{
-                throw new NotCreateException("Create Booking Only Role STAFF");
-            }
+//            }else{
+//                throw new NotCreateException("Create Booking Only Role STAFF");
+//            }
         }catch (Exception e) {
             throw new GenericException(e.getMessage());
         }
@@ -373,9 +386,58 @@ public class BookingService implements IBookingService{
        }
     }
 
+
     @Override
-    public List<Bookings> getKoiBooking(Long accountID) {
-        return bookingRepository.listKoiBooking(accountID);
+    public List<BookingTourResponse> getKoiBookingById(Long accountID) {
+        Account account = authenticationService.getCurrentAccount();
+        List<Bookings> bookingsList = bookingRepository.listKoiBooking(accountID);
+        return bookingsList.stream().map(bookings -> {
+            BookingTourResponse bookingTourResponse = modelMapper.map(bookings, BookingTourResponse.class);
+            if (bookings.getUpdatedBy() == null) {
+                bookingTourResponse.setUpdatedBy("");
+            } else {
+                bookingTourResponse.setUpdatedBy(bookings.getUpdatedBy().getFirstName() + " " + bookings.getUpdatedBy().getLastName());
+            }
+
+            if (bookings.getCreatedBy() == null) {
+                bookingTourResponse.setCreatedBy("");
+            } else {
+                bookingTourResponse.setCreatedBy(bookings.getCreatedBy().getFirstName() + " " + bookings.getCreatedBy().getLastName());
+            }
+            bookingTourResponse.setCustomerID(bookings.getAccount().getId());
+            bookingTourResponse.setNameCus(bookings.getAccount().getFirstName() + " " + bookings.getAccount().getLastName());
+            return bookingTourResponse;
+        }).toList();
+    }
+
+
+    @Override
+    public List<BookingTourResponse> getKoiBooking() {
+        Account account = authenticationService.getCurrentAccount();
+        List<Bookings> bookingTourResponses = null;
+//        if (account.getRole() == Role.MANAGER){
+            bookingTourResponses = bookingRepository.listBookingForKoi();
+//       } else {
+//            throw new NotFoundEntity("Account not FOUND");
+//        }
+
+        return bookingTourResponses.stream().map(bookings -> {
+            BookingTourResponse bookingTourResponse = modelMapper.map(bookings, BookingTourResponse.class);
+            if (bookings.getUpdatedBy() == null) {
+                bookingTourResponse.setUpdatedBy("");
+            } else {
+                bookingTourResponse.setUpdatedBy(bookings.getUpdatedBy().getFirstName() + " " + bookings.getUpdatedBy().getLastName());
+            }
+
+            if (bookings.getCreatedBy() == null) {
+                bookingTourResponse.setCreatedBy("");
+            } else {
+                bookingTourResponse.setCreatedBy(bookings.getCreatedBy().getFirstName() + " " + bookings.getCreatedBy().getLastName());
+            }
+            bookingTourResponse.setCustomerID(bookings.getAccount().getId());
+            bookingTourResponse.setNameCus(bookings.getAccount().getFirstName() + " " + bookings.getAccount().getLastName());
+            return bookingTourResponse;
+        }).toList();
     }
 
     public BookingTourResponse deleteBookingResponse(Long bookingID) {

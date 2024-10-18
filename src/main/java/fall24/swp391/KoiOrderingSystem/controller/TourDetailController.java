@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -29,19 +30,19 @@ public class TourDetailController {
         return ResponseEntity.ok(tourDetailResponse);
     }
 
-    @GetMapping("/{tourID}")
+    @GetMapping("/tour/{tourID}")
     public ResponseEntity<?> viewTourDetailByTourID(@PathVariable Long tourID){
-        Set<TourDetailResponse> tourDetailResponses = iTourDetailService.TOUR_DETAIL_RESPONSES_BY_TOUR(tourID);
+        List<TourDetailResponse> tourDetailResponses = iTourDetailService.TOUR_DETAIL_RESPONSES_BY_TOUR(tourID);
         return ResponseEntity.ok(tourDetailResponses);
     }
 
-    @GetMapping("/{farmID}")
+    @GetMapping("/farm/{farmID}")
     public ResponseEntity<?> viewTourDetailByFarmID(@PathVariable Long farmID){
-        Set<TourDetailResponse> tourDetailResponses = iTourDetailService.TOUR_RESPONSES_BY_FARM(farmID);
+        List<TourDetailResponse> tourDetailResponses = iTourDetailService.TOUR_RESPONSES_BY_FARM(farmID);
         return ResponseEntity.ok(tourDetailResponses);
     }
 
-    @DeleteMapping("{tourDetailID}")
+    @DeleteMapping("/{tourDetailID}")
     public ResponseEntity<?> deleteTourDetail(@PathVariable Long tourDetailID){
         iTourDetailService.DELETE_TOUR_DETAIL(tourDetailID);
         return ResponseEntity.ok("Delete Tour Detail complete");

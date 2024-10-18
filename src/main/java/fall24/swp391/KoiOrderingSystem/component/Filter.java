@@ -40,7 +40,8 @@ public class Filter extends OncePerRequestFilter {
             "/api/google",
             "/tour/listTourResponseActive",
             "/tour/showAll",
-            "/tour/showAllPageable"
+            "/tour/showAllPageable",
+            "/tour/showTourByName/{tourName}"
     );
 
     public boolean checkIsPublicAPI(String uri){

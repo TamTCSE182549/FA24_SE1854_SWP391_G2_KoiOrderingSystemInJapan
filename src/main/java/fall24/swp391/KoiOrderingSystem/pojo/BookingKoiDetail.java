@@ -32,10 +32,13 @@ public class BookingKoiDetail {
     @Column(name = "total_amount")
     private float totalAmount;
 
-    public BookingKoiDetail(Bookings booking, Kois koi, int quantity) {
+    @Column(name = "unit_Price")
+    private float unitPrice;
+
+    public BookingKoiDetail(Bookings booking, Kois koi, int quantity,float unitPrice) {
         this.booking =booking;
         this.koi=koi;
         this.quantity=quantity;
-
+        this.unitPrice=unitPrice;
     }
 }
