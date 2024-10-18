@@ -128,6 +128,7 @@ public class KoiFarmService implements IKoiFarmsService{
     @Override
     public KoiFarmResponse convertToKoiFarmResponse(KoiFarms koiFarm) {
         KoiFarmResponse response = new KoiFarmResponse();
+        response.setId(koiFarm.getId());
         response.setKoiFarmName(koiFarm.getFarmName());
         response.setKoiFarmPhone(koiFarm.getFarmPhoneNumber());
         response.setKoiFarmEmail(koiFarm.getFarmEmail());
