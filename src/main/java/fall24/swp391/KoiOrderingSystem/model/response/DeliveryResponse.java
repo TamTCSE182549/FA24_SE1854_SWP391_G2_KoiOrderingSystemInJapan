@@ -13,4 +13,5 @@ public class DeliveryResponse {
     private float remainAmount;
     private String staffName;
     private DeliveryStatus status;
+    private String reason;
 }
