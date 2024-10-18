@@ -8,6 +8,8 @@ import java.util.Date;
 public class DeliveryRequest {
     private String customerName;
 
+    private String reason;
+
     private Date receiveDate;
 
     private String healthKoiDescription;

@@ -1,13 +1,18 @@
 package fall24.swp391.KoiOrderingSystem.service;
 
+import fall24.swp391.KoiOrderingSystem.component.Email;
+import fall24.swp391.KoiOrderingSystem.enums.DeliveryStatus;
+import fall24.swp391.KoiOrderingSystem.enums.DepositStatus;
 import fall24.swp391.KoiOrderingSystem.enums.PaymentStatus;
 import fall24.swp391.KoiOrderingSystem.exception.AccountNotFoundException;
+import fall24.swp391.KoiOrderingSystem.exception.ExistingEntity;
 import fall24.swp391.KoiOrderingSystem.exception.NotFoundEntity;
+import fall24.swp391.KoiOrderingSystem.model.EmailDetail;
 import fall24.swp391.KoiOrderingSystem.model.request.DeliveryRequest;
 import fall24.swp391.KoiOrderingSystem.model.response.DeliveryResponse;
 import fall24.swp391.KoiOrderingSystem.pojo.*;
 import fall24.swp391.KoiOrderingSystem.repo.IBookingRepository;
-import fall24.swp391.KoiOrderingSystem.repo.IDeliveriesRepository;
+import fall24.swp391.KoiOrderingSystem.repo.IDeliveryRepository;
 import fall24.swp391.KoiOrderingSystem.repo.IDepositRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,38 +27,41 @@ public class DeliveryService implements IDeliveryService {
     ModelMapper modelMapper;
 
     @Autowired
-    IDeliveriesRepository deliveriesRepository;
+    IDeliveryRepository deliveriesRepository;
 
     @Autowired
     IBookingRepository bookingRepository;
 
     @Autowired
     IDepositRepository depositRepository;
+
     @Autowired
     AuthenticationService authenticationService;
+
+    @Autowired
+    Email email;
+
     @Override
     public DeliveryResponse addDelivery(DeliveryRequest deliveryRequest, Long bookingId) {
         try {
             Delivery delivery = modelMapper.map(deliveryRequest, Delivery.class);
+            EmailDetail emailDetail = new EmailDetail();
             Bookings bookings = bookingRepository.findBookingsById(bookingId);
+            Delivery oldDelivery = deliveriesRepository.findDeliveryByBooking(bookings);
+            if(oldDelivery != null) {
+                throw new ExistingEntity("Delivery this booking already exists!");
+            }
             List<Deposit> deposits = depositRepository.findByBookingId(bookingId);
+            if(deposits==null) {
+                throw new NotFoundEntity("Deposit not found!");
+            }
             float remainAmount = 0;
             for (Deposit deposit : deposits) {
-                if(deposit.getDepositStatus().equals("complete"))
-                    remainAmount = deposit.getRemainAmount()+deposit.getShippingFee();
-            }
-            if (bookings!= null) {
-                //tim duoc booking
-                if(bookings.getPaymentStatus()== PaymentStatus.shipped)
-                {
-                    bookings.setPaymentStatus(PaymentStatus.complete);
-                    bookingRepository.save(bookings);
-                    delivery.setBooking(bookings);
+                if(deposit.getDepositStatus()== DepositStatus.complete){
+                    remainAmount = deposit.getRemainAmount();
                 }
-                else throw new NotFoundEntity("Booking isn't shipped");
-            } else {
-                throw new NotFoundEntity("Booking not found");
             }
+
             //tim account cua staff
             Account staffAccount = authenticationService.getCurrentAccount();
             if (staffAccount == null) {
@@ -61,8 +69,41 @@ public class DeliveryService implements IDeliveryService {
             } else {
                 delivery.setDeliveryStaff(staffAccount);
                 delivery.setRemainAmount(remainAmount);
+                if(deliveryRequest.getStatus()== DeliveryStatus.CANCELLED && deliveryRequest.getReason().isEmpty()){
+                        throw new NotFoundEntity("CANCELLED must have a reason!");
+                }
+
+                //gui mail den khach hang
+                if(deliveryRequest.getStatus()== DeliveryStatus.COMPLETED){
+                 //   emailDetail.setReceiver(newAccount);
+//            emailDetail.setSubject("Thank you for using our system!");
+//            emailDetail.setLink("http:/localhost:3000/home");
+                } else {
+                    //   emailDetail.setReceiver(newAccount);
+//            emailDetail.setSubject("Thank you for using our system!");
+//            emailDetail.setLink("http:/localhost:3000/home");
+                }
+                if (bookings!= null) {
+                    //tim duoc booking
+                    if(bookings.getPaymentStatus()== PaymentStatus.shipped)
+                    {
+                        bookings.setPaymentStatus(PaymentStatus.complete);
+                        bookingRepository.save(bookings);
+                        delivery.setBooking(bookings);
+                    }
+                    else throw new NotFoundEntity("Booking isn't shipped");
+                } else {
+                    throw new NotFoundEntity("Booking not found");
+                }
+                deliveriesRepository.save(delivery);
             }
-            deliveriesRepository.save(delivery);
+
+
+//            emailDetail.setReceiver(newAccount);
+//            emailDetail.setSubject("Hello");
+//            emailDetail.setLink("fb.com");
+//            email.sendEmail(emailDetail);
+
             DeliveryResponse deliveryResponse = new DeliveryResponse();
             deliveryResponse.setCustomerName(deliveryRequest.getCustomerName());
             deliveryResponse.setReceiveDate(deliveryRequest.getReceiveDate());
@@ -70,6 +111,7 @@ public class DeliveryService implements IDeliveryService {
             deliveryResponse.setRemainAmount(remainAmount);
             deliveryResponse.setHealthKoiDescription(deliveryRequest.getHealthKoiDescription());
             deliveryResponse.setBookingId(bookingId);
+            deliveryResponse.setReason(deliveryRequest.getReason());
             deliveryResponse.setStatus(deliveryRequest.getStatus());
             return deliveryResponse;
         } catch (Exception e) {
@@ -78,17 +120,22 @@ public class DeliveryService implements IDeliveryService {
     }
 
     @Override
-    public DeliveryResponse updateDeliveryHistory(Long deliveryId, DeliveryRequest deliveryRequest) throws Exception {
-        Delivery delivery = deliveriesRepository.findDeliveriesById(deliveryId);
-        if (delivery == null) {
+    public DeliveryResponse updateDeliveryHistory(Long bookingId, DeliveryRequest deliveryRequest) throws Exception {
+        Bookings bookings = bookingRepository.findBookingsById(bookingId);
+        Delivery delivery = deliveriesRepository.findDeliveryByBooking(bookings);
+        if(delivery == null) {
             throw new NotFoundEntity("Delivery not found");
         }
         delivery.setCustomerName(deliveryRequest.getCustomerName());
         delivery.setReceiveDate(deliveryRequest.getReceiveDate());
         delivery.setHealthKoiDescription(deliveryRequest.getHealthKoiDescription());
+        if(deliveryRequest.getStatus()== DeliveryStatus.CANCELLED){
+            if(deliveryRequest.getReason().isEmpty())
+                throw new NotFoundEntity("CANCELLED must have a reason!");
+        }
+        delivery.setReason(deliveryRequest.getReason());
         delivery.setStatus(deliveryRequest.getStatus());
         deliveriesRepository.save(delivery);
-
         DeliveryResponse deliveryResponse = new DeliveryResponse();
         deliveryResponse.setCustomerName(deliveryRequest.getCustomerName());
         deliveryResponse.setReceiveDate(deliveryRequest.getReceiveDate());
@@ -111,12 +158,14 @@ public class DeliveryService implements IDeliveryService {
     }
 
     @Override
-    public DeliveryResponse getDelivery(Long deliveryId) {
-        Delivery delivery = deliveriesRepository.findDeliveriesById(deliveryId);
+    public DeliveryResponse getDelivery(Long bookingId) {
+        Bookings bookings = bookingRepository.findBookingsById(bookingId);
+        Delivery delivery = deliveriesRepository.findDeliveryByBooking(bookings);
         if (delivery == null) {
             throw new NotFoundEntity("Delivery not found");
         }
         DeliveryResponse deliveryResponse = new DeliveryResponse();
+        deliveryResponse.setReason(delivery.getReason());
         deliveryResponse.setCustomerName(delivery.getCustomerName());
         deliveryResponse.setReceiveDate(delivery.getReceiveDate());
         deliveryResponse.setStaffName(delivery.getDeliveryStaff().getFirstName() + " " + delivery.getDeliveryStaff().getLastName());
@@ -140,6 +189,7 @@ public class DeliveryService implements IDeliveryService {
             deliveryResponse.setBookingId(delivery.getBooking().getId());
             deliveryResponse.setStaffName(delivery.getDeliveryStaff().getFirstName() + " " + delivery.getDeliveryStaff().getLastName());
             deliveryResponse.setStatus(delivery.getStatus());
+            deliveryResponse.setReason(delivery.getReason());
             deliveryResponses.add(deliveryResponse);
         }
         return deliveryResponses;
