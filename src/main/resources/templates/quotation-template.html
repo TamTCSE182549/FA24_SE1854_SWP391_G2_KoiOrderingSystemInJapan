@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Thank You for Your Payment</title>
+  <style>
+    /* Thêm một số kiểu CSS cơ bản */
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f9f9f9;
+        padding: 20px;
+    }
+    .container {
+        background-color: #ffffff;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        max-width: 600px;
+        margin: auto;
+    }
+    .button {
+        background-color: #007bff;
+        color: white;
+        padding: 10px 15px;
+        text-decoration: none;
+        border-radius: 5px;
+    }
+    .email-signature {
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+        color: #333;
+        line-height: 1.6;
+    }
+    .email-signature .name {
+        font-weight: bold;
+        font-size: 16px;
+    }
+    .email-signature .contact-info {
+        margin-top: 10px;
+    }
+    .email-signature .logo {
+        max-width: 100px;
+        margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>Thank You, <span th:text="${FirstName}">Customer</span>!</h1>
+  <p>We appreciate your payment for the following product:</p>
+  <p>Your order is now being completed. You can track your order status by clicking the button below:</p>
+  <a th:href="${trackingLink}" class="button">Track Your Order</a>
+  <p>If you have any questions, feel free to contact our support team.</p>
+  <p>Thank you for choosing us!</p>
+  <p>Regards,</p>
+  <p><i>KoiOderingSystemInJapan</i></p>
+</div>
+<div class="email-signature">
+  <img src="https://yourcompany.com/logo.png" alt="Company Logo" class="logo">
+  <div class="name">KOIORDERINGSYSTEMINJAPAN</div>
+  <div class="contact-info">
+    <div>Phone Number: (012) 345-6789</div>
+    <div>Email: mail@koiorsij.com</div>
+    <div>Website: www.koioderingsysteminjapan.com</div>
+  </div>
+  <div>Address: XXX, XXX, XXX, XXX</div>
+</div>
+</body>
+</html>
