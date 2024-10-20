@@ -33,6 +33,9 @@ public class Tours{
     @Min(value = 1)
     private int maxParticipants;
 
+    @Column(name = "remaining")
+    private Integer remaining;
+
     @Column(name = "description")
     private String description;
 

@@ -3,6 +3,7 @@ package fall24.swp391.KoiOrderingSystem.service;
 import fall24.swp391.KoiOrderingSystem.enums.BookingType;
 import fall24.swp391.KoiOrderingSystem.enums.PaymentStatus;
 import fall24.swp391.KoiOrderingSystem.enums.Role;
+import fall24.swp391.KoiOrderingSystem.enums.TourStatus;
 import fall24.swp391.KoiOrderingSystem.exception.*;
 import fall24.swp391.KoiOrderingSystem.model.request.*;
 import fall24.swp391.KoiOrderingSystem.pojo.*;
@@ -73,6 +74,11 @@ public class BookingService implements IBookingService{
                 booking.setTotalAmount(totalBookingAmount);
                 booking.setTotalAmountWithVAT(booking.getTotalAmount() + booking.getVatAmount() - booking.getDiscountAmount());
                 bookingRepository.save(booking);
+                tours.setRemaining(tours.getRemaining() - bookingTourRequest.getParticipants());
+                if(tours.getRemaining()==0){
+                    tours.setStatus(TourStatus.inactive);
+                }
+                iTourRepository.save(tours);
                 BookingTourResponse bookingTourResponse = modelMapper.map(booking, BookingTourResponse.class);
                 bookingTourResponse.setCustomerID(account.getId());
                 bookingTourResponse.setNameCus(account.getFirstName() + " " + account.getLastName());

@@ -13,6 +13,7 @@ public class TourResponse {
     String tourName;
     float unitPrice;
     int maxParticipants;
+    Integer remaining;
     String description;
     LocalDateTime startTime;
     LocalDateTime endTime;
