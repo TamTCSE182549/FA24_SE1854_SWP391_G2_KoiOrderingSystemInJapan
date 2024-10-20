@@ -30,4 +30,6 @@ public interface ITourService {
     Page<TourResponse> showAllPageable(int page, int size);
 
     Page<TourResponse> showTourByName(int page, int size, String nameTour);
+
+    TourResponse findById(Long tourID);
 }
