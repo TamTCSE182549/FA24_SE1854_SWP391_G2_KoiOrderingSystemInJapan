@@ -44,6 +44,7 @@ public class TourService implements ITourService{
             }
             Tours tours = modelMapper.map(tourRequest, Tours.class);
             tours.setCreatedBy(account);
+            tours.setRemaining(tours.getMaxParticipants());
             tours.setStatus(TourStatus.active);
             iTourRepository.save(tours);
             TourResponse tourResponse = modelMapper.map(tours, TourResponse.class);
