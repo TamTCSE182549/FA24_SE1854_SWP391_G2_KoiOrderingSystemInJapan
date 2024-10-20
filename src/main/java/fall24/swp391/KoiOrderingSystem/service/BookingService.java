@@ -56,6 +56,9 @@ public class BookingService implements IBookingService{
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    CurrencyConversionService currencyConversionService;
+
     @Override
     public BookingTourResponse createTourBooking(BookingTourRequest bookingTourRequest) {
         try {
@@ -473,7 +476,7 @@ public class BookingService implements IBookingService{
         String formattedCreateDate = createDate.format(formatter);
 
         Bookings booking = bookingRepository.findBookingsById(bookingId);
-        float money = booking.getTotalAmountWithVAT() *100;
+        float money = currencyConversionService.convertUsdToVnd(booking.getTotalAmountWithVAT()) *100;
         String amount = String.valueOf((int) money);
 
         String tmnCode = "JH4XT293";

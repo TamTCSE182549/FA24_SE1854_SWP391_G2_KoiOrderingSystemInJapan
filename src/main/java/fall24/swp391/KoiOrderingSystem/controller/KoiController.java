@@ -35,13 +35,13 @@ public class KoiController {
         return ResponseEntity.ok(kois);
     }
 
-    @GetMapping("/{Id}")
+    @GetMapping("/getby/{Id}")
     public ResponseEntity<?> getKoisById(@PathVariable Long Id){
         KoiResponse kois = iKoisService.getKoiById(Id);
         return ResponseEntity.ok(kois);
     }
 
-    @GetMapping
+    @GetMapping("all")
     public ResponseEntity<?> getAllKois(){
         List<KoiResponse> koisList =iKoisService.findAll();
         return ResponseEntity.ok(koisList);
