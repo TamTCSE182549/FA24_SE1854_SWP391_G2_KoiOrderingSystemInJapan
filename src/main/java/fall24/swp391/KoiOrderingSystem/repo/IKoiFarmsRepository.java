@@ -19,6 +19,9 @@ public interface IKoiFarmsRepository extends JpaRepository<KoiFarms, Long>{
     @Query(value = "select * from koi_farms where is_active = '1' ", nativeQuery = true)
     List<KoiFarms> findKoiFarmIsActive();
 
-    @Query(value = "select * from koi_farms where farm_name like %?1%", nativeQuery = true)
+    @Query(value = "select * from koi_farms where is_active = '1' and farm_name like %?1%", nativeQuery = true)
     Page<KoiFarms> showFarmByName(String farmName, Pageable pageable);
+
+    @Query(value = "select * from koi_farms where is_active = '1' ", nativeQuery = true)
+    Page<KoiFarms> showAllPageable(Pageable pageable);
 }

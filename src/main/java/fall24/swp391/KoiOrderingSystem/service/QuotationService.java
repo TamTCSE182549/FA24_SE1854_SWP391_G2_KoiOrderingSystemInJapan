@@ -2,7 +2,6 @@ package fall24.swp391.KoiOrderingSystem.service;
 
 import fall24.swp391.KoiOrderingSystem.component.Email;
 import fall24.swp391.KoiOrderingSystem.enums.ApproveStatus;
-import fall24.swp391.KoiOrderingSystem.enums.PaymentStatus;
 import fall24.swp391.KoiOrderingSystem.exception.GenericException;
 import fall24.swp391.KoiOrderingSystem.exception.NotFoundEntity;
 import fall24.swp391.KoiOrderingSystem.exception.NotUpdateException;
@@ -22,7 +21,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class QuotationService implements IQuotationService{
@@ -58,6 +56,15 @@ public class QuotationService implements IQuotationService{
         }
         return quotationResponses;
     } //Lấy Quotations từ Booking, để lấy amount từ BookingTourDetail
+
+    @Override
+    public List<QuotationResponse> getAllQuotation(){
+        List<Quotations> quotationsList = quotationRepository.findAll();
+        return quotationsList.stream().map(quotations -> {
+            QuotationResponse quotationResponse = modelMapper.map(quotations, QuotationResponse.class);
+            return quotationResponse;
+        }).toList();
+    }
 
     @Override
     public QuotationResponse createQuotations(QuotationRequest quotationRequest) {
@@ -158,7 +165,7 @@ public class QuotationService implements IQuotationService{
             if(quotations.getIsApprove()== ApproveStatus.FINISH){
                 EmailDetail emailDetail = new EmailDetail();
                 emailDetail.setReceiver(account);
-                emailDetail.setSubject("Delete Farm Complete");
+                emailDetail.setSubject("Thanks for complete your quotation");
                 emailService.sendEmailWhenCompleteQuotation(emailDetail);
             }
             quotationResponse = modelMapper.map(quotations, QuotationResponse.class);
