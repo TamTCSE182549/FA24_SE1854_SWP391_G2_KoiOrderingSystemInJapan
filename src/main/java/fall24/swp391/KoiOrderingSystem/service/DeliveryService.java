@@ -1,5 +1,6 @@
 package fall24.swp391.KoiOrderingSystem.service;
 
+
 import fall24.swp391.KoiOrderingSystem.component.Email;
 import fall24.swp391.KoiOrderingSystem.enums.DeliveryStatus;
 import fall24.swp391.KoiOrderingSystem.enums.DepositStatus;
@@ -57,6 +58,7 @@ public class DeliveryService implements IDeliveryService {
             }
             float remainAmount = 0;
             for (Deposit deposit : deposits) {
+
                 if(deposit.getDepositStatus()== DepositStatus.complete){
                     remainAmount = deposit.getRemainAmount();
                 }

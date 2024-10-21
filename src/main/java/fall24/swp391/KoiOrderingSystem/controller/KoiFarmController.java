@@ -32,7 +32,7 @@ public class KoiFarmController {
     @PostMapping("/create")
     public ResponseEntity<?> createKoiFarmRes(@RequestBody KoiFarmRequest koiFarmRequest) {
         KoiFarmResponse koiFarmResponse = iKoiFarmsService.createKoiFarm(koiFarmRequest);
-        return new ResponseEntity<>("Create Koi_Farm: "+ koiFarmRequest.getFarmName() + "Success\n" + koiFarmResponse, HttpStatus.CREATED);
+        return new ResponseEntity<>("Create Koi_Farm: "+ koiFarmRequest.getFarmName() + "Success\n" + koiFarmResponse, HttpStatus.OK);
     }
 
     @GetMapping("/get/{id}")
@@ -74,12 +74,22 @@ public class KoiFarmController {
 
     @GetMapping("/showKoiFarmByName/{farmName}")
     public ResponseEntity<?> showFarmByName(@RequestParam(defaultValue = "0") int page,
-                                            @RequestParam(defaultValue = "0") int size,
+                                            @RequestParam(defaultValue = "2") int size,
                                             @PathVariable String farmName){
         Map<String, Object> response = new HashMap<>();
         response.put("totalPage", iKoiFarmsService.showFarmByName(page, size, farmName).getTotalPages());
         response.put("pageNumber", iKoiFarmsService.showFarmByName(page, size, farmName).getNumber());
         response.put("content", iKoiFarmsService.showFarmByName(page, size, farmName).get());
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/showAllPageAble")
+    public ResponseEntity<?> showAllPageable(@RequestParam(defaultValue = "0") int page,
+                                             @RequestParam(defaultValue = "5") int size){
+        Map<String, Object> response = new HashMap<>();
+        response.put("totalPage", iKoiFarmsService.showAllPageable(page, size).getTotalPages());
+        response.put("pageNumber", iKoiFarmsService.showAllPageable(page, size).getNumber());
+        response.put("content", iKoiFarmsService.showAllPageable(page, size).get());
         return ResponseEntity.ok(response);
     }
 

@@ -11,6 +11,8 @@ public interface IQuotationService {
 
     List<QuotationResponse> getQuotationsByBookID(Long bookId);
 
+    List<QuotationResponse> getAllQuotation();
+
     QuotationResponse createQuotations(QuotationRequest quotations);
 
     QuotationResponse updateAmountQuotations(Long bookId, float amount);

@@ -30,4 +30,6 @@ public interface IKoiFarmsService {
     List<KoiFarmResponse> getFarmIsActive();
 
     Page<KoiFarmResponse> showFarmByName(int page, int size, String farmName);
+
+    Page<KoiFarmResponse> showAllPageable(int page, int size);
 }

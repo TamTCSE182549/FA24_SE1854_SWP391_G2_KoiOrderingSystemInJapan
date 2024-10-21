@@ -70,4 +70,10 @@ public class TourController {
         TourResponse tourResponse = iTourService.updateTourRes(id, tourRequest);
         return ResponseEntity.ok(tourResponse);
     }
+
+    @GetMapping("/findById/{tourId}")
+    public ResponseEntity<?> findById(@PathVariable @NotNull Long tourId){
+        TourResponse tourResponse = iTourService.findById(tourId);
+        return ResponseEntity.ok(tourResponse);
+    }
 }
