@@ -44,7 +44,7 @@ public class QuotationController {
         return ResponseEntity.ok(quotations);
     }
 
-    @GetMapping("/quotation/all")
+    @GetMapping("/all")
     public ResponseEntity<List<QuotationResponse>> showAllQuotation(){
         List<QuotationResponse> quotation = quotationService.getAllQuotation();
         if(quotation.isEmpty()){
