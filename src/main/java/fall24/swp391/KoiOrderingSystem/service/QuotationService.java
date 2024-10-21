@@ -59,11 +59,18 @@ public class QuotationService implements IQuotationService{
 
     @Override
     public List<QuotationResponse> getAllQuotation(){
+        List<QuotationResponse> quotationResponses = new ArrayList<>();
         List<Quotations> quotationsList = quotationRepository.findAll();
-        return quotationsList.stream().map(quotations -> {
-            QuotationResponse quotationResponse = modelMapper.map(quotations, QuotationResponse.class);
-            return quotationResponse;
-        }).toList();
+        for (Quotations quotation : quotationsList) {
+            QuotationResponse quotationResponse = modelMapper.map(quotation, QuotationResponse.class);
+            quotationResponse.setBookingId(quotation.getBooking().getId());
+            if(quotation.getCreatedBy()!=null)
+                quotationResponse.setStaffName(quotation.getCreatedBy().getFirstName()+" "+quotation.getCreatedBy().getLastName());
+            if(quotation.getApproveBy()!=null)
+                quotationResponse.setManagerName(quotation.getApproveBy().getFirstName()+" "+quotation.getApproveBy().getLastName());
+            quotationResponses.add(quotationResponse);
+        }
+        return quotationResponses;
     }
 
     @Override
@@ -108,9 +115,9 @@ public class QuotationService implements IQuotationService{
             if (quotations == null) {
                 throw new NotFoundEntity("Quotation not found");
             }
-//            quotations.setIsApprove(approveStatus);
-            quotations.setApproveBy(account);
-            quotations.setApproveTime(LocalDateTime.now());
+            quotations.setIsApprove(approveStatus);
+//            quotations.setApproveBy(account);
+//            quotations.setApproveTime(LocalDateTime.now());
             quotationRepository.save(quotations);
             quotationResponse = modelMapper.map(quotations, QuotationResponse.class);
             quotationResponse.setBookingId(quotations.getBooking().getId());

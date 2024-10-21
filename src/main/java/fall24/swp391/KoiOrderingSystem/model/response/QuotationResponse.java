@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 
 @Data
 public class QuotationResponse {
+    private Long id;
     private Long bookingId;
     private float amount;
     private String staffName;

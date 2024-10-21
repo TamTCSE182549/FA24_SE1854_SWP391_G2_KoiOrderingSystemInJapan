@@ -46,6 +46,7 @@ public class Filter extends OncePerRequestFilter {
             "/kois/getby/{Id}",
             "/koi-farm/list-farm-active",
             "/koi-farm/get/{id}",
+            "/quotations/all",
             "/tour/findById/{tourId}"
 
     );
