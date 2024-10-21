@@ -44,6 +44,15 @@ public class QuotationController {
         return ResponseEntity.ok(quotations);
     }
 
+    @GetMapping("/quotation/all")
+    public ResponseEntity<List<QuotationResponse>> showAllQuotation(){
+        List<QuotationResponse> quotation = quotationService.getAllQuotation();
+        if(quotation.isEmpty()){
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(quotation);
+    }
+
     @DeleteMapping("/delete/{quotationId}")
     public ResponseEntity<?> deleteQuotation(@PathVariable Long quotationId){
         try {

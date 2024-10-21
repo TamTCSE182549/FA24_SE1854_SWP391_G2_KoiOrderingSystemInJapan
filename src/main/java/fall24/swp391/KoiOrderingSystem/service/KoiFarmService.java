@@ -170,4 +170,13 @@ public class KoiFarmService implements IKoiFarmsService{
             return koiFarmResponse;
         });
     }
+
+    @Override
+    public Page<KoiFarmResponse> showAllPageable(int page, int size){
+        Pageable pageable = PageRequest.of(page, size);
+        return iKoiFarmsRepository.showAllPageable(pageable).map(koiFarms -> {
+            KoiFarmResponse koiFarmResponse = modelMapper.map(koiFarms, KoiFarmResponse.class);
+            return koiFarmResponse;
+        });
+    }
 }
