@@ -1,10 +1,12 @@
 package fall24.swp391.KoiOrderingSystem.service;
 
+import fall24.swp391.KoiOrderingSystem.component.Email;
 import fall24.swp391.KoiOrderingSystem.enums.ApproveStatus;
 import fall24.swp391.KoiOrderingSystem.enums.PaymentStatus;
 import fall24.swp391.KoiOrderingSystem.exception.GenericException;
 import fall24.swp391.KoiOrderingSystem.exception.NotFoundEntity;
 import fall24.swp391.KoiOrderingSystem.exception.NotUpdateException;
+import fall24.swp391.KoiOrderingSystem.model.EmailDetail;
 import fall24.swp391.KoiOrderingSystem.model.request.QuotationRequest;
 import fall24.swp391.KoiOrderingSystem.model.response.QuotationResponse;
 import fall24.swp391.KoiOrderingSystem.pojo.Account;
@@ -17,6 +19,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -36,6 +39,9 @@ public class QuotationService implements IQuotationService{
     private ModelMapper modelMapper;
     @Autowired
     private AuthenticationService authenticationService;
+
+    @Autowired
+    private Email emailService;
 
     @Override
     public List<QuotationResponse> getQuotationsByBookID(Long bookId) {
@@ -95,8 +101,9 @@ public class QuotationService implements IQuotationService{
             if (quotations == null) {
                 throw new NotFoundEntity("Quotation not found");
             }
-            quotations.setIsApprove(approveStatus);
+//            quotations.setIsApprove(approveStatus);
             quotations.setApproveBy(account);
+            quotations.setApproveTime(LocalDateTime.now());
             quotationRepository.save(quotations);
             quotationResponse = modelMapper.map(quotations, QuotationResponse.class);
             quotationResponse.setBookingId(quotations.getBooking().getId());
@@ -140,6 +147,7 @@ public class QuotationService implements IQuotationService{
     public QuotationResponse updateStatusQuotations(Long quotationId,ApproveStatus status) {
         Quotations quotations;
         QuotationResponse quotationResponse;
+        Account account = authenticationService.getCurrentAccount();
         try {
             quotations = quotationRepository.findQuotationsById(quotationId);
             if(quotations==null){
@@ -147,6 +155,12 @@ public class QuotationService implements IQuotationService{
             }
             quotations.setIsApprove(status);
             quotationRepository.save(quotations);
+            if(quotations.getIsApprove()== ApproveStatus.FINISH){
+                EmailDetail emailDetail = new EmailDetail();
+                emailDetail.setReceiver(account);
+                emailDetail.setSubject("Delete Farm Complete");
+                emailService.sendEmailWhenCompleteQuotation(emailDetail);
+            }
             quotationResponse = modelMapper.map(quotations, QuotationResponse.class);
             quotationResponse.setBookingId(quotations.getBooking().getId());
             quotationResponse.setStaffName(quotations.getCreatedBy().getFirstName() + " " + quotations.getCreatedBy().getLastName());

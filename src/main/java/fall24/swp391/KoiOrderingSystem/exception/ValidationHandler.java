@@ -25,6 +25,11 @@ public class ValidationHandler {
         return new ResponseEntity<>(exception.getMessage(),HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(AccountNotFoundException.class)
+    public ResponseEntity<String> handleAccountNotFoundException(AccountNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
+    }
+
     @ExceptionHandler(NotUpdateException.class)
     public ResponseEntity<?> handleUpdateException(NotUpdateException exception){
         return new ResponseEntity<>("Error Update: " + exception.getMessage(), HttpStatus.BAD_REQUEST);

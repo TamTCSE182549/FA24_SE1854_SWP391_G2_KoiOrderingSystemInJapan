@@ -10,6 +10,9 @@ import fall24.swp391.KoiOrderingSystem.pojo.KoiFarms;
 import fall24.swp391.KoiOrderingSystem.repo.IKoiFarmsRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -125,6 +128,7 @@ public class KoiFarmService implements IKoiFarmsService{
     @Override
     public KoiFarmResponse convertToKoiFarmResponse(KoiFarms koiFarm) {
         KoiFarmResponse response = new KoiFarmResponse();
+        response.setId(koiFarm.getId());
         response.setKoiFarmName(koiFarm.getFarmName());
         response.setKoiFarmPhone(koiFarm.getFarmPhoneNumber());
         response.setKoiFarmEmail(koiFarm.getFarmEmail());
@@ -149,5 +153,21 @@ public class KoiFarmService implements IKoiFarmsService{
                 }).collect(Collectors.toList());
         response.setKoiFarmImages(koiFarmImageResponses);
         return response;
+    }
+
+    @Override
+    public List<KoiFarmResponse> getFarmIsActive() {
+        List<KoiFarms> koiFarmsList = iKoiFarmsRepository.findKoiFarmIsActive();
+        return koiFarmsList.stream().map(this::convertToKoiFarmResponse).collect(Collectors.toList());
+    }
+
+    @Override
+    public Page<KoiFarmResponse> showFarmByName(int page, int size, String farmName){
+        Pageable pageable = PageRequest.of(page, size);
+        return iKoiFarmsRepository.showFarmByName(farmName, pageable).map(koiFarms -> {
+            KoiFarmResponse koiFarmResponse = modelMapper.map(koiFarms, KoiFarmResponse.class);
+            koiFarmResponse.setKoiFarmName(koiFarms.getFarmName());
+            return koiFarmResponse;
+        });
     }
 }

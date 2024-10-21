@@ -72,6 +72,12 @@ public class Bookings {
     @OneToMany(mappedBy = "booking", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     private Set<Checkin> checkins;
 
+    @OneToMany(mappedBy = "booking", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    private Set<DeliveryHistory> deliveryHistory;
+
+    @OneToOne(mappedBy = "booking",cascade = CascadeType.ALL)
+    private Delivery delivery;
+
     @Column(name = "created_at")
     private LocalDateTime createdDate;
 
@@ -96,11 +102,4 @@ public class Bookings {
         updatedDate = LocalDateTime.now();
     }
 
-//    public void addBookingDetail(BookingTourDetail bookingTourDetail) {
-//        if (bookingTourDetails == null) {
-//            bookingTourDetails = new ArrayList<>();
-//        }
-//        bookingTourDetails.add(bookingTourDetail);
-//        bookingTourDetail.setBooking(this);
-//    }
 }

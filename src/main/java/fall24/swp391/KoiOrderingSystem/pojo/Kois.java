@@ -26,10 +26,10 @@ public class Kois  {
     @Column(name = "id")
     private Long id;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
-    @JoinColumn(name = "category_id")
-    @JsonBackReference
-    private Categories category;
+//    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+//    @JoinColumn(name = "category_id")
+//    @JsonBackReference
+//    private Categories category;
 
     @Column(name = "koi_name")
     private String koiName;
@@ -48,6 +48,10 @@ public class Kois  {
 
     @Column(name = "is_active")
     private boolean isActive;
+
+    @OneToMany(mappedBy = "kois", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    @JsonBackReference
+    private List<KoiImage> koiImageList;
 
     @OneToMany(mappedBy = "kois", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JsonBackReference

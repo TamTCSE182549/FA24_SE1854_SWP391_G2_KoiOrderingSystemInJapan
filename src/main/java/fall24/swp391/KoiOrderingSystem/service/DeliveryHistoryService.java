@@ -58,6 +58,7 @@ public class DeliveryHistoryService implements IDeliveryHistoryService {
             }
              deliveryHistoryRepository.save(deliveryHistory);
             DeliveryHistoryResponse deliveryHistoryResponse = new DeliveryHistoryResponse();
+            deliveryHistoryResponse.setDeliveryId(deliveryHistory.getId());
             deliveryHistoryResponse.setBookingId(deliveryHistory.getBooking().getId());
             deliveryHistoryResponse.setTime(deliveryHistory.getCreatedDate());
             deliveryHistoryResponse.setStaffName(staffAccount.getLastName()+" "+staffAccount.getFirstName());
@@ -82,6 +83,7 @@ public class DeliveryHistoryService implements IDeliveryHistoryService {
         DeliveryHistoryResponse deliveryHistoryResponse = new DeliveryHistoryResponse();
         deliveryHistoryResponse.setBookingId(deliveryHistory.getBooking().getId());
         deliveryHistoryResponse.setTime(deliveryHistory.getCreatedDate());
+        deliveryHistoryResponse.setDeliveryId(deliveryHistory.getId());
         deliveryHistoryResponse.setStaffName(deliveryHistory.getDeliveryStaff().getLastName()+" "+deliveryHistory.getDeliveryStaff().getFirstName());
         deliveryHistoryResponse.setHealthKoiDescription(deliveryHistory.getHealthKoiDescription());
         deliveryHistoryResponse.setRoute(deliveryHistory.getRoute());
@@ -111,6 +113,7 @@ public class DeliveryHistoryService implements IDeliveryHistoryService {
                 for (DeliveryHistory deliveryHistory : deliveryHistorys) {
                     DeliveryHistoryResponse deliveryHistoryResponse = new DeliveryHistoryResponse();
                     deliveryHistoryResponse.setBookingId(deliveryHistory.getBooking().getId());
+                    deliveryHistoryResponse.setDeliveryId(deliveryHistory.getId());
                     deliveryHistoryResponse.setTime(deliveryHistory.getCreatedDate());
                     deliveryHistoryResponse.setStaffName(deliveryHistory.getDeliveryStaff().getLastName()+" "+deliveryHistory.getDeliveryStaff().getFirstName());
                     deliveryHistoryResponse.setHealthKoiDescription(deliveryHistory.getHealthKoiDescription());

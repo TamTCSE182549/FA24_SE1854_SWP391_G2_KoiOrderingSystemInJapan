@@ -15,8 +15,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.List;
 
 @Service
 public class TourDetailService implements ITourDetailService{
@@ -37,29 +36,29 @@ public class TourDetailService implements ITourDetailService{
     private AuthenticationService authenticationService;
 
     @Override
-    public Set<TourDetailResponse> TOUR_RESPONSES_BY_FARM(Long farmID) {
+    public List<TourDetailResponse> TOUR_RESPONSES_BY_FARM(Long farmID) {
         KoiFarms koiFarms = iKoiFarmsRepository.findById(farmID)
                 .orElseThrow(() -> new NotFoundEntity("Koi Farm not EXISTS"));
-        Set<TourDetail> tourDetails = iTourDetailRepository.findByFarm_Id(koiFarms.getId());
+        List<TourDetail> tourDetails = iTourDetailRepository.findByFarm_Id(koiFarms.getId());
         return tourDetails.stream().map(tourDetail -> {
             TourDetailResponse tourDetailResponse = modelMapper.map(tourDetail, TourDetailResponse.class);
-            tourDetailResponse.setTourName(tourDetailResponse.getTourName());
-            tourDetailResponse.setFarmName(tourDetailResponse.getFarmName());
+            tourDetailResponse.setTourName(tourDetail.getTour().getTourName());
+            tourDetailResponse.setFarmName(tourDetail.getFarm().getFarmName());
             return tourDetailResponse;
-        }).collect(Collectors.toSet());
+        }).toList();
     }
 
     @Override
-    public Set<TourDetailResponse> TOUR_DETAIL_RESPONSES_BY_TOUR(Long tourID) {
+    public List<TourDetailResponse> TOUR_DETAIL_RESPONSES_BY_TOUR(Long tourID) {
         Tours tours = iTourRepository.findById(tourID)
                 .orElseThrow(() -> new NotFoundEntity("Tour not EXISTS"));
-        Set<TourDetail> tourDetails = iTourDetailRepository.findByTour_Id(tours.getId());
+        List<TourDetail> tourDetails = iTourDetailRepository.findByTour_Id(tours.getId());
         return tourDetails.stream().map(tourDetail -> {
             TourDetailResponse tourDetailResponse = modelMapper.map(tourDetail, TourDetailResponse.class);
             tourDetailResponse.setTourName(tourDetailResponse.getTourName());
             tourDetailResponse.setFarmName(tourDetailResponse.getFarmName());
             return tourDetailResponse;
-        }).collect(Collectors.toSet());
+        }).toList();
     }
 
     @Override

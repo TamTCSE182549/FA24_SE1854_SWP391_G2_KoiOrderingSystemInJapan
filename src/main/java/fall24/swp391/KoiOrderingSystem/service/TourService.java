@@ -44,6 +44,7 @@ public class TourService implements ITourService{
             }
             Tours tours = modelMapper.map(tourRequest, Tours.class);
             tours.setCreatedBy(account);
+            tours.setRemaining(tours.getMaxParticipants());
             tours.setStatus(TourStatus.active);
             iTourRepository.save(tours);
             TourResponse tourResponse = modelMapper.map(tours, TourResponse.class);
@@ -91,6 +92,12 @@ public class TourService implements ITourService{
             Tours tours = iTourRepository.findById(id)
                     .orElseThrow(() -> new NotFoundEntity("Tour not FOUND to UPDATE"));
             tours.setTourName(tourRequest.getTourName());
+            tours.setUnitPrice(tourRequest.getUnitPrice());
+            tours.setMaxParticipants(tourRequest.getMaxParticipants());
+            tours.setDescription(tourRequest.getDescription());
+            tours.setStartTime(tourRequest.getStartTime());
+            tours.setEndTime(tourRequest.getEndTime());
+            tours.setTourImg(tourRequest.getTourImg());
             tours.setUpdatedBy(account);
             iTourRepository.save(tours);
             TourResponse tourResponse = modelMapper.map(tours, TourResponse.class);
@@ -195,5 +202,19 @@ public class TourService implements ITourService{
             }
             return tourResponse;
         });
+    }
+
+    @Override
+    public TourResponse findById(Long tourID) {
+        Tours tours = iTourRepository.findById(tourID).
+                orElseThrow(() -> new NotFoundEntity("Tour ID not FOUND"));
+        TourResponse tourResponse = modelMapper.map(tours, TourResponse.class);
+        tourResponse.setCreatedBy(tours.getCreatedBy().getFirstName() + " " + tours.getCreatedBy().getLastName());
+        if (tours.getUpdatedBy()!=null){
+            tourResponse.setUpdatedBy(tours.getUpdatedBy().getFirstName() + " " + tours.getUpdatedBy().getLastName());
+        } else {
+            tourResponse.setUpdatedBy("");
+        }
+        return tourResponse;
     }
 }

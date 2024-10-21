@@ -8,6 +8,7 @@ import java.util.List;
 
 @Data
 public class KoiFarmResponse {
+    private  Long id;
     private String koiFarmName;
     private String koiFarmPhone;
     private String koiFarmEmail;

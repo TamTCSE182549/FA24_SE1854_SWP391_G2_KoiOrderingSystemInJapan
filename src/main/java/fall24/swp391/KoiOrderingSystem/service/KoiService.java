@@ -3,12 +3,14 @@ package fall24.swp391.KoiOrderingSystem.service;
 import fall24.swp391.KoiOrderingSystem.exception.GenericException;
 import fall24.swp391.KoiOrderingSystem.exception.NotCreateException;
 import fall24.swp391.KoiOrderingSystem.exception.NotFoundEntity;
+import fall24.swp391.KoiOrderingSystem.model.request.KoiImageRequest;
 import fall24.swp391.KoiOrderingSystem.model.request.KoiRequest;
 import fall24.swp391.KoiOrderingSystem.model.response.KoiResponse;
 import fall24.swp391.KoiOrderingSystem.model.response.TourResponse;
 import fall24.swp391.KoiOrderingSystem.pojo.*;
-import fall24.swp391.KoiOrderingSystem.repo.ICategoriesRepository;
+//import fall24.swp391.KoiOrderingSystem.repo.ICategoriesRepository;
 import fall24.swp391.KoiOrderingSystem.repo.IKoiFarmsRepository;
+import fall24.swp391.KoiOrderingSystem.repo.IKoiImageRepository;
 import fall24.swp391.KoiOrderingSystem.repo.IKoisRepository;
 
 import org.modelmapper.ModelMapper;
@@ -16,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -31,7 +34,10 @@ public class KoiService implements IKoisService{
     private IKoiFarmsRepository iKoiFarmsRepository;
 
     @Autowired
-    private ICategoriesRepository iCategoriesRepository;
+    private IKoiImageRepository iKoiImageRepository;
+
+//    @Autowired
+//    private ICategoriesRepository iCategoriesRepository;
     @Override
     public List<KoiResponse> findAll() {
         List<Kois> koisList = iKoisRepository.findAll();
@@ -50,12 +56,21 @@ public class KoiService implements IKoisService{
         try {
             Kois kois = modelMapper.map(koiRequest, Kois.class);
             kois.setId(null);
-            Categories categories = iCategoriesRepository.findById(koiRequest.getCategoryId())
-                            .orElseThrow(() -> new NotFoundEntity("Not Found Category"));
-            kois.setCategory(categories);
-
+            List<KoiImageRequest> koiImageList = koiRequest.getKoiImageList();
+            List<KoiImage> koiImages = new ArrayList<>();
+            for (KoiImageRequest koiImageRequest : koiImageList) {
+                KoiImage koiImage = modelMapper.map(koiImageRequest, KoiImage.class);
+                koiImage.setId(null);
+                koiImage.setKois(kois);
+                koiImages.add(koiImage);
+            }
+//            Categories categories = iCategoriesRepository.findById(koiRequest.getCategoryId())
+//                            .orElseThrow(() -> new NotFoundEntity("Not Found Category"));
+//            kois.setCategory(categories);
+            kois.setKoiImageList(koiImages);
             Kois createKoi = iKoisRepository.save(kois);
             KoiResponse koiResponse =modelMapper.map(createKoi,KoiResponse.class);
+            koiResponse.setKoiImageList(koiImageList);
             return koiResponse;
         }catch (Exception e){
             throw new NotCreateException(e.getMessage());
@@ -67,16 +82,10 @@ public class KoiService implements IKoisService{
         try {
             Kois kois = iKoisRepository.findById(Id)
                     .orElseThrow(() -> new NotFoundEntity("Not Found Kois"));
-            if (koiRequest.getCategoryId() != null) {
-                Categories categories = iCategoriesRepository.findById(koiRequest.getCategoryId())
-                        .orElseThrow(() -> new RuntimeException("Category not found"));
-                kois.setCategory(categories);
-            }
             kois.setKoiName(koiRequest.getKoiName());
             kois.setOrigin(koiRequest.getOrigin());
             kois.setColor(koiRequest.getColor());
             kois.setDescription(koiRequest.getDescription());
-            kois.setKoiImage(koiRequest.getKoiImage());
             kois.setActive(koiRequest.isActive());
             Kois updatedKoi = iKoisRepository.save(kois);
             KoiResponse koiResponse = modelMapper.map(updatedKoi, KoiResponse.class);

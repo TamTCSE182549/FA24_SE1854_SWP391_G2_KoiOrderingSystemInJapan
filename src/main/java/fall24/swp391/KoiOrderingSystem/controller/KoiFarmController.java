@@ -13,7 +13,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin
@@ -59,6 +61,26 @@ public class KoiFarmController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(koiFarms);
+    }
+
+    @GetMapping("/list-farm-active")
+    public ResponseEntity<List<KoiFarmResponse>> getKoiFarmActive() {
+        List<KoiFarmResponse> koiFarms = iKoiFarmsService.getFarmIsActive();
+        if (koiFarms.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(koiFarms);
+    }
+
+    @GetMapping("/showKoiFarmByName/{farmName}")
+    public ResponseEntity<?> showFarmByName(@RequestParam(defaultValue = "0") int page,
+                                            @RequestParam(defaultValue = "0") int size,
+                                            @PathVariable String farmName){
+        Map<String, Object> response = new HashMap<>();
+        response.put("totalPage", iKoiFarmsService.showFarmByName(page, size, farmName).getTotalPages());
+        response.put("pageNumber", iKoiFarmsService.showFarmByName(page, size, farmName).getNumber());
+        response.put("content", iKoiFarmsService.showFarmByName(page, size, farmName).get());
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/update/{id}")

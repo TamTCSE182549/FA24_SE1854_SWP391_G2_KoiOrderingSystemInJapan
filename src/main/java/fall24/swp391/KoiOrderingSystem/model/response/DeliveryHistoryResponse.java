@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 @Data
 public class DeliveryHistoryResponse {
     private Long bookingId;
+    private Long deliveryId;
     private String route;
     private String healthKoiDescription;
     private String staffName;

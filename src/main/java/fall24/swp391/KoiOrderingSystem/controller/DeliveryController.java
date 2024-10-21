@@ -43,9 +43,9 @@ public class DeliveryController {
         return ResponseEntity.ok(deliveryHistory);
     }
 
-    @PutMapping("delivery/{deliveryId}")
-    public ResponseEntity<?> updateDelivery(@PathVariable Long deliveryId,@RequestBody DeliveryRequest deliveryRequest) throws Exception {
-        DeliveryResponse delivery = deliveryService.updateDeliveryHistory(deliveryId,deliveryRequest);
+    @PutMapping("delivery/{bookingId}")
+    public ResponseEntity<?> updateDelivery(@PathVariable Long bookingId,@RequestBody DeliveryRequest deliveryRequest) throws Exception {
+        DeliveryResponse delivery = deliveryService.updateDeliveryHistory(bookingId,deliveryRequest);
         return ResponseEntity.ok(delivery);
     }
 
@@ -73,9 +73,9 @@ public class DeliveryController {
         return ResponseEntity.ok(list);
     }
 
-    @GetMapping("delivery/{deliveryId}")
-    public ResponseEntity<?> getDeliveryById(@PathVariable Long deliveryId ) throws Exception {
-        DeliveryResponse deliveryResponse = deliveryService.getDelivery(deliveryId);
+    @GetMapping("delivery/{bookingId}")
+    public ResponseEntity<?> getDeliveryById(@PathVariable Long bookingId ) throws Exception {
+        DeliveryResponse deliveryResponse = deliveryService.getDelivery(bookingId);
         return ResponseEntity.ok(deliveryResponse);
     }
 }
