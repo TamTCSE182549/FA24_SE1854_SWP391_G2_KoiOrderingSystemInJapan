@@ -1,5 +1,6 @@
 package fall24.swp391.KoiOrderingSystem.service;
 
+import fall24.swp391.KoiOrderingSystem.enums.DepositStatus;
 import fall24.swp391.KoiOrderingSystem.enums.PaymentStatus;
 import fall24.swp391.KoiOrderingSystem.exception.AccountNotFoundException;
 import fall24.swp391.KoiOrderingSystem.exception.NotFoundEntity;
@@ -39,7 +40,7 @@ public class DeliveryService implements IDeliveryService {
             List<Deposit> deposits = depositRepository.findByBookingId(bookingId);
             float remainAmount = 0;
             for (Deposit deposit : deposits) {
-                if(deposit.getDepositStatus().equals("complete"))
+                if(deposit.getDepositStatus()== DepositStatus.complete);
                     remainAmount = deposit.getRemainAmount();
             }
             if (bookings!= null) {
