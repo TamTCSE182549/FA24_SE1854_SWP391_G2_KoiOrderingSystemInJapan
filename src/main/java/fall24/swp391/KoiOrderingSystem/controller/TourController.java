@@ -36,7 +36,7 @@ public class TourController {
     }
 
     @GetMapping("/showAllPageable")
-    public ResponseEntity<?> showAllPageable(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "2") int size){
+    public ResponseEntity<?> showAllPageable(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size){
         Map<String, Object> response = new HashMap<>();
         response.put("totalPage", iTourService.showAllPageable(page,size).getTotalPages());
         response.put("pageNumber", iTourService.showAllPageable(page,size).getNumber());
