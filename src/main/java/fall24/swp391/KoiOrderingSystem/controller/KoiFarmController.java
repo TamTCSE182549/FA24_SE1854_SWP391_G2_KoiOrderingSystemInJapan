@@ -35,9 +35,9 @@ public class KoiFarmController {
         return new ResponseEntity<>("Create Koi_Farm: "+ koiFarmRequest.getFarmName() + "Success\n" + koiFarmResponse, HttpStatus.OK);
     }
 
-    @GetMapping("/list-farm/{id}")
+    @GetMapping("/get/{id}")
     public ResponseEntity<?> getFarm(@PathVariable Long id){
-        List<KoiFarmResponse> koiFarmResponseList = iKoiFarmsService.getFarmById(id);
+        KoiFarmResponse koiFarmResponseList = iKoiFarmsService.getFarmById(id);
         if(koiFarmResponseList == null){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Farm not Found");
         }

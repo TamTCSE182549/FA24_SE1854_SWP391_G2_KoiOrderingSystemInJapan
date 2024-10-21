@@ -31,7 +31,7 @@ public class KoiFarms {
     @Column(name = "farmEmail")
     private String farmEmail;
 
-    @Column(name = "description")
+    @Column(name = "description",columnDefinition = "TEXT")
     private String description;
 
     @Column(name = "farmAddress")

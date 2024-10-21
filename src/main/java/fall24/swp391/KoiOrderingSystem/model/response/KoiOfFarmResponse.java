@@ -9,8 +9,8 @@ import lombok.Setter;
 @Setter
 public class KoiOfFarmResponse {
     private Long Id;
-    private Long farmId;
-    private Long koiId;
+    private Long farm_id;
+    private Long koi_id;
     private int quantity;
     private boolean available;
 }

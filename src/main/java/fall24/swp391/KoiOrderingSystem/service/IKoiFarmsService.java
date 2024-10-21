@@ -13,7 +13,7 @@ public interface IKoiFarmsService {
 
     List<KoiFarms> listKoiFarm();
 
-    List<KoiFarmResponse> getFarmById(Long id);
+    KoiFarmResponse getFarmById(Long id);
 
     KoiFarms updateKoiFarm(Long id, KoiFarms koiFarm);
 
