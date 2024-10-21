@@ -6,8 +6,15 @@ import fall24.swp391.KoiOrderingSystem.model.request.KoiFarmRequest;
 import fall24.swp391.KoiOrderingSystem.model.response.KoiFarmImageResponse;
 import fall24.swp391.KoiOrderingSystem.model.response.KoiFarmResponse;
 import fall24.swp391.KoiOrderingSystem.model.response.KoiOfFarmResponse;
+import fall24.swp391.KoiOrderingSystem.model.response.KoiResponse;
+import fall24.swp391.KoiOrderingSystem.pojo.KoiFarmImage;
 import fall24.swp391.KoiOrderingSystem.pojo.KoiFarms;
+import fall24.swp391.KoiOrderingSystem.pojo.KoiOfFarm;
+import fall24.swp391.KoiOrderingSystem.pojo.Kois;
+import fall24.swp391.KoiOrderingSystem.repo.IKoiFarmImageRepository;
 import fall24.swp391.KoiOrderingSystem.repo.IKoiFarmsRepository;
+import fall24.swp391.KoiOrderingSystem.repo.IKoiOfFarmRepository;
+import fall24.swp391.KoiOrderingSystem.repo.IKoisRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,6 +22,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -26,12 +34,29 @@ public class KoiFarmService implements IKoiFarmsService{
     private IKoiFarmsRepository iKoiFarmsRepository;
 
     @Autowired
+    private IKoiFarmImageRepository koiFarmImageRepository;
+
+    @Autowired
+    private IKoiOfFarmRepository koiOfFarmRepository;
+
+    @Autowired
+    private IKoisRepository koisRepository;
+
+    @Autowired
     private ModelMapper modelMapper;
 
     @Override
     public KoiFarmResponse createKoiFarm(KoiFarmRequest koiFarmRequest) {
         KoiFarms koiFarms = modelMapper.map(koiFarmRequest, KoiFarms.class);
         koiFarms.setActive(true);
+        List<KoiFarmImage> koiFarmImages = new ArrayList<>();
+        for (String url : koiFarmRequest.getImages()) {
+            KoiFarmImage koiFarmImage = new KoiFarmImage();
+            koiFarmImage.setImageUrl(url);
+            koiFarmImage.setKoiFarms(koiFarms);
+            koiFarmImages.add(koiFarmImage);
+        }
+        koiFarms.setKoiFarmImages(koiFarmImages);
         iKoiFarmsRepository.save(koiFarms);
         return modelMapper.map(koiFarms, KoiFarmResponse.class);
     }
@@ -42,12 +67,28 @@ public class KoiFarmService implements IKoiFarmsService{
     }
 
     @Override
-    public List<KoiFarmResponse> getFarmById(Long id) {
-        List<KoiFarms> koiFarmsList = iKoiFarmsRepository.findFarmById(id);
-        return koiFarmsList.stream().map(koiFarms -> {
-            KoiFarmResponse koiFarmResponse = modelMapper.map(koiFarms, KoiFarmResponse.class);
-            return koiFarmResponse;
-        }).toList();
+    public KoiFarmResponse getFarmById(Long id) {
+        KoiFarms koiFarms = iKoiFarmsRepository.findKoiFarmsById(id);
+        if(koiFarms ==null){
+            throw new NotFoundEntity("KoiFarms not found");
+        }
+        List<KoiOfFarm> koiOfFarms = koiOfFarmRepository.findKoiOfFarmBykoiFarms(koiFarms);
+        koiFarms.setKoiOfFarms(koiOfFarms);
+        KoiFarmResponse koiFarmResponse = modelMapper.map(koiFarms, KoiFarmResponse.class);
+        List<KoiOfFarmResponse> koiOfFarmResponses = new ArrayList<>();
+        List<KoiResponse> koiResponses = new ArrayList<>();
+        for(KoiOfFarm koi : koiOfFarms){
+            KoiOfFarmResponse koiOfFarmResponse = modelMapper.map(koi, KoiOfFarmResponse.class);
+            koiOfFarmResponse.setKoi_id(koi.getKois().getId());
+            koiOfFarmResponse.setFarm_id(koi.getKoiFarms().getId());
+            koiOfFarmResponses.add(koiOfFarmResponse);
+            Kois kois = koisRepository.findKoisById(koi.getKois().getId());
+            KoiResponse koiResponse = modelMapper.map(kois,KoiResponse.class);
+            koiResponses.add(koiResponse);
+        }
+        koiFarmResponse.setKoiOfFarms(koiOfFarmResponses);
+        koiFarmResponse.setKoiResponses(koiResponses);
+        return koiFarmResponse;
     }
 
     @Override
@@ -129,17 +170,20 @@ public class KoiFarmService implements IKoiFarmsService{
     public KoiFarmResponse convertToKoiFarmResponse(KoiFarms koiFarm) {
         KoiFarmResponse response = new KoiFarmResponse();
         response.setId(koiFarm.getId());
-        response.setKoiFarmName(koiFarm.getFarmName());
-        response.setKoiFarmPhone(koiFarm.getFarmPhoneNumber());
-        response.setKoiFarmEmail(koiFarm.getFarmEmail());
-        response.setKoiFarmAddress(koiFarm.getFarmAddress());
+        response.setFarmName(koiFarm.getFarmName());
+        response.setFarmPhoneNumber(koiFarm.getFarmPhoneNumber());
+        response.setFarmEmail(koiFarm.getFarmEmail());
+        response.setFarmAddress(koiFarm.getFarmAddress());
         response.setWebsite(koiFarm.getWebsite());
 
         List<KoiOfFarmResponse> koiOfFarmResponses = koiFarm.getKoiOfFarms().stream()
                 .map(koiOfFarm -> {
                     KoiOfFarmResponse koiOfFarmResponse = new KoiOfFarmResponse();
-                    koiOfFarmResponse.setKoiId(koiOfFarm.getKois().getId());
+                    koiOfFarmResponse.setKoi_id(koiOfFarm.getKois().getId());
                     koiOfFarmResponse.setQuantity(koiOfFarm.getQuantity());
+                    koiOfFarmResponse.setFarm_id(koiOfFarm.getKoiFarms().getId());
+                    koiOfFarmResponse.setAvailable(true);
+                    koiOfFarmResponse.setId(koiOfFarm.getId());
                     return koiOfFarmResponse;
                 }).collect(Collectors.toList());
 
@@ -166,7 +210,7 @@ public class KoiFarmService implements IKoiFarmsService{
         Pageable pageable = PageRequest.of(page, size);
         return iKoiFarmsRepository.showFarmByName(farmName, pageable).map(koiFarms -> {
             KoiFarmResponse koiFarmResponse = modelMapper.map(koiFarms, KoiFarmResponse.class);
-            koiFarmResponse.setKoiFarmName(koiFarms.getFarmName());
+            koiFarmResponse.setFarmName(koiFarms.getFarmName());
             return koiFarmResponse;
         });
     }

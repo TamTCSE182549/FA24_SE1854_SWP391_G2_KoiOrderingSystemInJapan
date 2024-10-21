@@ -9,11 +9,13 @@ import java.util.List;
 @Data
 public class KoiFarmResponse {
     private  Long id;
-    private String koiFarmName;
-    private String koiFarmPhone;
-    private String koiFarmEmail;
-    private String koiFarmAddress;
+    private String farmName;
+    private String farmPhoneNumber;
+    private String farmEmail;
+    private String farmAddress;
     private String website;
+    private String description;
     private List<KoiFarmImageResponse> koiFarmImages;
     private List<KoiOfFarmResponse> koiOfFarms;
+    private List<KoiResponse> koiResponses;
 }

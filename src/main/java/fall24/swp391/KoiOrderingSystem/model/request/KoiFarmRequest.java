@@ -1,6 +1,9 @@
 package fall24.swp391.KoiOrderingSystem.model.request;
 
+import fall24.swp391.KoiOrderingSystem.pojo.KoiFarmImage;
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 public class KoiFarmRequest {
@@ -9,4 +12,6 @@ public class KoiFarmRequest {
     private String farmEmail;
     private String farmAddress;
     private String website;
+    private String description;
+    private List<String> images;
 }

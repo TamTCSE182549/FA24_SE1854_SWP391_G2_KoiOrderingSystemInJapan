@@ -43,12 +43,17 @@ public class KoiOfFarmService implements IKoiOfFarmService{
 
     @Override
     public List<KoiOfFarmResponse> findKoiOfFarmByFarmId(Long farmId) {
-        List<KoiOfFarm> koiOfFarmsList = koiOfFarmRepository.findByKoiFarms_Id(farmId);
-        return koiOfFarmsList.stream().map(koiOfFarm -> {
-            KoiOfFarmResponse koiOfFarmResponse = modelMapper.map(koiOfFarm, KoiOfFarmResponse.class);
-            return koiOfFarmResponse;
-        }).toList();
+        return List.of();
     }
+//
+//    @Override
+//    public List<KoiOfFarmResponse> findKoiOfFarmByFarmId(Long farmId) {
+//        List<KoiOfFarm> koiOfFarmsList = koiOfFarmRepository.findByKoiFarms_Id(farmId);
+//        return koiOfFarmsList.stream().map(koiOfFarm -> {
+//            KoiOfFarmResponse koiOfFarmResponse = modelMapper.map(koiOfFarm, KoiOfFarmResponse.class);
+//            return koiOfFarmResponse;
+//        }).toList();
+//    }
 
     @Override
 

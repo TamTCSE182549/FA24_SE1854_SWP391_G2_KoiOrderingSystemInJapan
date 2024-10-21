@@ -19,7 +19,7 @@ public class KoiOfFarm {
     private KoiFarms koiFarms;
 
     @JoinColumn(name = "koi_id")
-    @JsonBackReference
+
     @ManyToOne(cascade = { CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     private Kois kois;
 

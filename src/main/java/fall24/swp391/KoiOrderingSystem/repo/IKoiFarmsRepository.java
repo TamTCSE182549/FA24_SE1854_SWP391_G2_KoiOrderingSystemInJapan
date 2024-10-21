@@ -14,7 +14,7 @@ public interface IKoiFarmsRepository extends JpaRepository<KoiFarms, Long>{
 
     KoiFarms findKoiFarmsById(Long id);
 
-    List<KoiFarms> findFarmById(Long id);
+    KoiFarms findFarmById(Long id);
 
     @Query(value = "select * from koi_farms where is_active = '1' ", nativeQuery = true)
     List<KoiFarms> findKoiFarmIsActive();
