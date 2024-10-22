@@ -192,8 +192,13 @@ public class TourService implements ITourService{
     @Override
     public Page<TourResponse> showTourByName(int page, int size, String nameTour) {
         Pageable pageable = PageRequest.of(page, size);
-        return iTourRepository.showTourByName(nameTour, pageable).map(tours -> {
+        return iTourRepository.showTourByName("%" + nameTour + "%", pageable).map(tours -> {
             TourResponse tourResponse = modelMapper.map(tours, TourResponse.class);
+            if (tours.getCreatedBy()!=null){
+                tourResponse.setCreatedBy(tours.getCreatedBy().getFirstName() + " " + tours.getCreatedBy().getLastName());
+            } else {
+                tourResponse.setCreatedBy("");
+            }
             tourResponse.setCreatedBy(tours.getCreatedBy().getFirstName() + " " + tours.getCreatedBy().getLastName());
             if (tours.getUpdatedBy()!=null){
                 tourResponse.setUpdatedBy(tours.getUpdatedBy().getFirstName() + " " + tours.getUpdatedBy().getLastName());
@@ -236,7 +241,7 @@ public class TourService implements ITourService{
     @Override
     public Page<TourResponse> findTourByKoiName(int page, int size, String koiName) {
         Pageable pageable = PageRequest.of(page, size);
-        return iTourRepository.findTourByKoiName(koiName, pageable).map(tours -> {
+        return iTourRepository.findTourByKoiName("%" + koiName + "%", pageable).map(tours -> {
             TourResponse tourResponse = modelMapper.map(tours, TourResponse.class);
             if (tours.getCreatedBy()!=null){
                 tourResponse.setCreatedBy(tours.getCreatedBy().getFirstName() + " " + tours.getCreatedBy().getLastName());

@@ -48,8 +48,8 @@ public class Filter extends OncePerRequestFilter {
             "/koi-farm/get/{id}",
             "/quotations/all",
             "/tour/findById/{tourId}",
-            "/tour/findFarmByKoiName/{koiName}"
-
+            "/tour/findTourByKoiName/{koiName}",
+            "/tour/showTourByName/**"
     );
 
     public boolean checkIsPublicAPI(String uri){
