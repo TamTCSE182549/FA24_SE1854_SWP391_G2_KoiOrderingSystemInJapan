@@ -217,4 +217,38 @@ public class TourService implements ITourService{
         }
         return tourResponse;
     }
+
+    @Override
+    public Page<TourResponse> findTourByKoiCategory(int page, int size, Integer categoryId) {
+        Pageable pageable = PageRequest.of(page, size);
+        return iTourRepository.findTourByKoiCategory(categoryId, pageable).map(tours -> {
+            TourResponse tourResponse = modelMapper.map(tours, TourResponse.class);
+            tourResponse.setCreatedBy(tours.getCreatedBy().getFirstName() + " " + tours.getCreatedBy().getLastName());
+            if (tours.getUpdatedBy()!=null){
+                tourResponse.setUpdatedBy(tours.getUpdatedBy().getFirstName() + " " + tours.getUpdatedBy().getLastName());
+            } else {
+                tourResponse.setUpdatedBy("");
+            }
+            return tourResponse;
+        });
+    }
+
+    @Override
+    public Page<TourResponse> findTourByKoiName(int page, int size, String koiName) {
+        Pageable pageable = PageRequest.of(page, size);
+        return iTourRepository.findTourByKoiName(koiName, pageable).map(tours -> {
+            TourResponse tourResponse = modelMapper.map(tours, TourResponse.class);
+            if (tours.getCreatedBy()!=null){
+                tourResponse.setCreatedBy(tours.getCreatedBy().getFirstName() + " " + tours.getCreatedBy().getLastName());
+            } else {
+                tourResponse.setCreatedBy("");
+            }
+            if (tours.getUpdatedBy()!=null){
+                tourResponse.setUpdatedBy(tours.getUpdatedBy().getFirstName() + " " + tours.getUpdatedBy().getLastName());
+            } else {
+                tourResponse.setUpdatedBy("");
+            }
+            return tourResponse;
+        });
+    }
 }
