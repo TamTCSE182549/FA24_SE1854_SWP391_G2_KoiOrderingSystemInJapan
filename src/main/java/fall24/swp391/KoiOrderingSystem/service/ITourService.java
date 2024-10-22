@@ -32,4 +32,8 @@ public interface ITourService {
     Page<TourResponse> showTourByName(int page, int size, String nameTour);
 
     TourResponse findById(Long tourID);
+
+    Page<TourResponse> findTourByKoiCategory(int page, int size, Integer categoryId);
+
+    Page<TourResponse> findTourByKoiName(int page, int size, String koiName);
 }

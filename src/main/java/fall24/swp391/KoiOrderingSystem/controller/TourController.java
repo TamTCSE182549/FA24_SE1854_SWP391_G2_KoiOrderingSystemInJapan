@@ -76,4 +76,13 @@ public class TourController {
         TourResponse tourResponse = iTourService.findById(tourId);
         return ResponseEntity.ok(tourResponse);
     }
+
+    @GetMapping("/findFarmByKoiName/{koiName}")
+    public ResponseEntity<?> showTourByKoiName(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "2") int size, @PathVariable String koiName){
+        Map<String, Object> response = new HashMap<>();
+        response.put("totalPage", iTourService.findTourByKoiName(page,size,koiName).getTotalPages());
+        response.put("currentPage", iTourService.findTourByKoiName(page,size,koiName).getNumber());
+        response.put("content", iTourService.findTourByKoiName(page, size,koiName).get());
+        return ResponseEntity.ok(response);
+    }
 }
