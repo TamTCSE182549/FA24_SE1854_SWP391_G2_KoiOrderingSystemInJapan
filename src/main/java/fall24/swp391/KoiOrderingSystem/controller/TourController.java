@@ -45,7 +45,7 @@ public class TourController {
     }
 
     @GetMapping("/showTourByName/{tourName}")
-    public ResponseEntity<?> showTourByName(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "2") int size, @PathVariable String tourName){
+    public ResponseEntity<?> showTourByName(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size, @PathVariable String tourName){
         Map<String, Object> response = new HashMap<>();
         response.put("totalPage", iTourService.showTourByName(page,size,tourName).getTotalPages());
         response.put("currentPage", iTourService.showTourByName(page,size,tourName).getNumber());
@@ -77,8 +77,8 @@ public class TourController {
         return ResponseEntity.ok(tourResponse);
     }
 
-    @GetMapping("/findFarmByKoiName/{koiName}")
-    public ResponseEntity<?> showTourByKoiName(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "2") int size, @PathVariable String koiName){
+    @GetMapping("/findTourByKoiName/{koiName}")
+    public ResponseEntity<?> showTourByKoiName(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size, @PathVariable String koiName){
         Map<String, Object> response = new HashMap<>();
         response.put("totalPage", iTourService.findTourByKoiName(page,size,koiName).getTotalPages());
         response.put("currentPage", iTourService.findTourByKoiName(page,size,koiName).getNumber());
