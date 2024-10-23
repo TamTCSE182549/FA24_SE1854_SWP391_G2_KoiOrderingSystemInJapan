@@ -1,5 +1,6 @@
 package fall24.swp391.KoiOrderingSystem.controller;
 
+import fall24.swp391.KoiOrderingSystem.model.request.FindTourRequest;
 import fall24.swp391.KoiOrderingSystem.model.request.TourRequest;
 import fall24.swp391.KoiOrderingSystem.model.response.TourResponse;
 import fall24.swp391.KoiOrderingSystem.service.ITourService;
@@ -83,6 +84,15 @@ public class TourController {
         response.put("totalPage", iTourService.findTourByKoiName(page,size,koiName).getTotalPages());
         response.put("currentPage", iTourService.findTourByKoiName(page,size,koiName).getNumber());
         response.put("content", iTourService.findTourByKoiName(page, size,koiName).get());
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/findTourByFarmNameAndKoiName")
+    public ResponseEntity<?> showTourByFarmNameAndKoiName(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size, @RequestBody FindTourRequest findTourRequest){
+        Map<String, Object> response = new HashMap<>();
+        response.put("totalPage", iTourService.findTourByKoiNameAndFarmName(page, size, findTourRequest).getTotalPages());
+        response.put("pageNumber", iTourService.findTourByKoiNameAndFarmName(page, size, findTourRequest).getNumber());
+        response.put("content", iTourService.findTourByKoiNameAndFarmName(page, size, findTourRequest).get());
         return ResponseEntity.ok(response);
     }
 }
