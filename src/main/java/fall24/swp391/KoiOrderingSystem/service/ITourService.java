@@ -1,5 +1,6 @@
 package fall24.swp391.KoiOrderingSystem.service;
 
+import fall24.swp391.KoiOrderingSystem.model.request.FindTourRequest;
 import fall24.swp391.KoiOrderingSystem.model.request.TourRequest;
 import fall24.swp391.KoiOrderingSystem.model.response.TourResponse;
 import fall24.swp391.KoiOrderingSystem.pojo.Tours;
@@ -31,9 +32,15 @@ public interface ITourService {
 
     Page<TourResponse> showTourByName(int page, int size, String nameTour);
 
+    Page<TourResponse> showTourByManyCondition(int page, int size, FindTourRequest findTourRequest);
+
+    Page<TourResponse> showTourByFarmName(int page, int size, FindTourRequest findTourRequest);
+
     TourResponse findById(Long tourID);
 
     Page<TourResponse> findTourByKoiCategory(int page, int size, Integer categoryId);
 
     Page<TourResponse> findTourByKoiName(int page, int size, String koiName);
+
+    Page<TourResponse> findTourByKoiNameAndFarmName(int page, int size, FindTourRequest findTourRequest);
 }

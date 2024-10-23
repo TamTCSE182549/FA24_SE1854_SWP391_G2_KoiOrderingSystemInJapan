@@ -3,6 +3,7 @@ package fall24.swp391.KoiOrderingSystem.service;
 import fall24.swp391.KoiOrderingSystem.enums.Role;
 import fall24.swp391.KoiOrderingSystem.enums.TourStatus;
 import fall24.swp391.KoiOrderingSystem.exception.*;
+import fall24.swp391.KoiOrderingSystem.model.request.FindTourRequest;
 import fall24.swp391.KoiOrderingSystem.model.request.TourRequest;
 import fall24.swp391.KoiOrderingSystem.model.response.TourResponse;
 import fall24.swp391.KoiOrderingSystem.pojo.Account;
@@ -210,6 +211,31 @@ public class TourService implements ITourService{
     }
 
     @Override
+    public Page<TourResponse> showTourByManyCondition(int page, int size, FindTourRequest findTourRequest) {
+        return null;
+    }
+
+    @Override
+    public Page<TourResponse> showTourByFarmName(int page, int size, FindTourRequest findTourRequest) {
+        Pageable pageable = PageRequest.of(page, size);
+        return iTourRepository.findTourByFarmName(findTourRequest.getFarmId(), pageable).map(tours -> {
+            TourResponse tourResponse = modelMapper.map(tours, TourResponse.class);
+            if (tours.getCreatedBy()!=null){
+                tourResponse.setCreatedBy(tours.getCreatedBy().getFirstName() + " " + tours.getCreatedBy().getLastName());
+            } else {
+                tourResponse.setCreatedBy("");
+            }
+            tourResponse.setCreatedBy(tours.getCreatedBy().getFirstName() + " " + tours.getCreatedBy().getLastName());
+            if (tours.getUpdatedBy()!=null){
+                tourResponse.setUpdatedBy(tours.getUpdatedBy().getFirstName() + " " + tours.getUpdatedBy().getLastName());
+            } else {
+                tourResponse.setUpdatedBy("");
+            }
+            return tourResponse;
+        });
+    }
+
+    @Override
     public TourResponse findById(Long tourID) {
         Tours tours = iTourRepository.findById(tourID).
                 orElseThrow(() -> new NotFoundEntity("Tour ID not FOUND"));
@@ -242,6 +268,25 @@ public class TourService implements ITourService{
     public Page<TourResponse> findTourByKoiName(int page, int size, String koiName) {
         Pageable pageable = PageRequest.of(page, size);
         return iTourRepository.findTourByKoiName("%" + koiName + "%", pageable).map(tours -> {
+            TourResponse tourResponse = modelMapper.map(tours, TourResponse.class);
+            if (tours.getCreatedBy()!=null){
+                tourResponse.setCreatedBy(tours.getCreatedBy().getFirstName() + " " + tours.getCreatedBy().getLastName());
+            } else {
+                tourResponse.setCreatedBy("");
+            }
+            if (tours.getUpdatedBy()!=null){
+                tourResponse.setUpdatedBy(tours.getUpdatedBy().getFirstName() + " " + tours.getUpdatedBy().getLastName());
+            } else {
+                tourResponse.setUpdatedBy("");
+            }
+            return tourResponse;
+        });
+    }
+
+    @Override
+    public Page<TourResponse> findTourByKoiNameAndFarmName(int page, int size, FindTourRequest findTourRequest) {
+        Pageable pageable = PageRequest.of(page, size);
+        return iTourRepository.findTourByKoiNameAndByFarmName(findTourRequest.getKoiId(), findTourRequest.getFarmId(), pageable).map(tours -> {
             TourResponse tourResponse = modelMapper.map(tours, TourResponse.class);
             if (tours.getCreatedBy()!=null){
                 tourResponse.setCreatedBy(tours.getCreatedBy().getFirstName() + " " + tours.getCreatedBy().getLastName());
