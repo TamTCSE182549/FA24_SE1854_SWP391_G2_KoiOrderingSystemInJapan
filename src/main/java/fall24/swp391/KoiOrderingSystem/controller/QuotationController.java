@@ -12,11 +12,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/quotations")
-@CrossOrigin(origins = "*")
+@CrossOrigin
 @SecurityRequirement(name = "api")
 public class QuotationController {
 
@@ -51,6 +53,16 @@ public class QuotationController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(quotation);
+    }
+
+    @GetMapping("/showAllPageable")
+    public ResponseEntity<?> showAllPageable(@RequestParam(defaultValue = "0") int page,
+                                             @RequestParam(defaultValue = "5") int size){
+        Map<String, Object> response = new HashMap<>();
+        response.put("totalPage", quotationService.showAllPageable(page,size).getTotalPages());
+        response.put("pageNumber", quotationService.showAllPageable(page,size).getNumber());
+        response.put("content", quotationService.showAllPageable(page, size).get());
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/delete/{quotationId}")

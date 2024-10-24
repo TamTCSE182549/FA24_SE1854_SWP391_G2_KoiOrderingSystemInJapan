@@ -4,7 +4,8 @@ import lombok.Data;
 
 @Data
 public class QuotationRequest {
-    long bookingId;
+    Long bookingId;
     float amount;
+    String description;
 
 }
