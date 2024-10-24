@@ -11,4 +11,6 @@ import java.util.List;
 public interface IKoiImageRepository extends JpaRepository<KoiImage, Long> {
     void deleteById(Long id);
     List<KoiImage> findKoiImageByKois(Kois kois);
+
+    void deleteByKois(Kois kois);
 }

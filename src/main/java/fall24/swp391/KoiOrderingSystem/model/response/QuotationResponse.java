@@ -7,11 +7,12 @@ import java.time.LocalDateTime;
 
 @Data
 public class QuotationResponse {
-    private Long id;
-    private Long bookingId;
-    private float amount;
-    private String staffName;
-    private String managerName;
-    private ApproveStatus isApprove;
-    private LocalDateTime approveTime;
+    Long id;
+    Long bookingId;
+    float amount;
+    String description;
+    String staffName;
+    String managerName;
+    ApproveStatus isApprove;
+    LocalDateTime approveTime;
 }

@@ -30,6 +30,9 @@ public class Quotations {
     @Column(name = "amount")
     private float amount;
 
+    @Column(name = "description")
+    private String description;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "is_approve")
     private ApproveStatus isApprove;

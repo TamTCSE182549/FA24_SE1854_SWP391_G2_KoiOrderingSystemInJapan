@@ -41,6 +41,12 @@ public class KoiController {
         return ResponseEntity.ok(kois);
     }
 
+    @GetMapping("all/active")
+    public ResponseEntity<?> getAllKoisActive(){
+        List<KoiResponse> koisList =iKoisService.findAllActive();
+        return ResponseEntity.ok(koisList);
+    }
+
     @GetMapping("all")
     public ResponseEntity<?> getAllKois(){
         List<KoiResponse> koisList =iKoisService.findAll();
