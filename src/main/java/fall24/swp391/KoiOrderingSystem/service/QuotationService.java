@@ -224,4 +224,23 @@ public class QuotationService implements IQuotationService{
         return quotationResponse;
     }
 
+    @Override
+    public QuotationResponse getQuotationById(Long quotationId) {
+        Quotations quotation = quotationRepository.findById(quotationId)
+            .orElseThrow(() -> new NotFoundEntity("Quotation ID not FOUND"));
+
+        QuotationResponse quotationResponse = modelMapper.map(quotation, QuotationResponse.class);
+        quotationResponse.setBookingId(quotation.getBooking().getId());
+
+        if (quotation.getCreatedBy() != null) {
+            quotationResponse.setStaffName(quotation.getCreatedBy().getFirstName() + " " + quotation.getCreatedBy().getLastName());
+        }
+
+        if (quotation.getApproveBy() != null) {
+            quotationResponse.setManagerName(quotation.getApproveBy().getFirstName() + " " + quotation.getApproveBy().getLastName());
+        }
+
+        return quotationResponse;
+    }
+
 }
