@@ -17,8 +17,8 @@ public class KoiRequest {
 
     private String origin;
 
+
 //    private Long categoryId;
 
-    private boolean isActive;
 
 }

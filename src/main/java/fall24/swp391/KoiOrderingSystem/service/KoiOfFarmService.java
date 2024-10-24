@@ -43,7 +43,18 @@ public class KoiOfFarmService implements IKoiOfFarmService{
 
     @Override
     public List<KoiOfFarmResponse> findKoiOfFarmByFarmId(Long farmId) {
-        return List.of();
+        KoiFarms koiFarms = iKoiFarmsRepository.findKoiFarmsById(farmId);
+        if(koiFarms == null){
+            throw new NotFoundEntity("Koi Farm Not Found");
+        }
+        List<KoiOfFarm> koiOfFarmList = koiOfFarmRepository.findKoiOfFarmBykoiFarms(koiFarms);
+        return koiOfFarmList.stream().map(koiOfFarm -> {
+            KoiOfFarmResponse koiOfFarmResponse = modelMapper.map(koiOfFarm, KoiOfFarmResponse.class);
+            koiOfFarmResponse.setKoi_id(koiOfFarm.getKois().getId());
+            koiOfFarmResponse.setFarm_id(farmId);
+            koiOfFarmResponse.setKoiName(koiOfFarm.getKois().getKoiName());
+            return koiOfFarmResponse;
+        }).toList();
     }
 //
 //    @Override
@@ -59,7 +70,13 @@ public class KoiOfFarmService implements IKoiOfFarmService{
 
     public KoiOfFarm createKoiOfFarm(KoiOfFarmRequest koiOfFarmRequest) {
         try {
-            KoiOfFarm koiOfFarms = new KoiOfFarm();
+            KoiOfFarm koiOfFarms = koiOfFarmRepository.findByFarmIdAndKoiId(koiOfFarmRequest.getFarmId(), koiOfFarmRequest.getKoiId());
+            if(koiOfFarms == null ){
+                koiOfFarms = new KoiOfFarm();
+            } else {
+                koiOfFarms.setQuantity(koiOfFarmRequest.getQuantity()+koiOfFarms.getQuantity());
+                return koiOfFarmRepository.save(koiOfFarms);
+            }
             koiOfFarms.setQuantity(koiOfFarmRequest.getQuantity());
             koiOfFarms.setAvailable(koiOfFarmRequest.isAvailable());
             Kois kois = iKoisRepository.findById(koiOfFarmRequest.getKoiId())

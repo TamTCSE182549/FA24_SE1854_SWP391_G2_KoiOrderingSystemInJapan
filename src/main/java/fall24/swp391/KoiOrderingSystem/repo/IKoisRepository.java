@@ -16,4 +16,6 @@ public interface IKoisRepository extends JpaRepository<Kois, Long>{
             " order by totalSold desc" +
             " limit 5")
     List<Object[]> findTop5BestSellingKoi();
+
+    List<Kois> findByIsActiveTrue();
 }

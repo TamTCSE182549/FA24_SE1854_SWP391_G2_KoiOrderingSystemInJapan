@@ -17,5 +17,5 @@ public interface IKoisService {
 
     KoiResponse getKoiById (Long Id);
 
-
+    List<KoiResponse> findAllActive();
 }

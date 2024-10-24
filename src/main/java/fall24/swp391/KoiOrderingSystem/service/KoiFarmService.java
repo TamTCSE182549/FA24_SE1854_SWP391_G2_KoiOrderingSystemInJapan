@@ -21,6 +21,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -113,13 +114,22 @@ public class KoiFarmService implements IKoiFarmsService{
             throw new NotUpdateException(e.getMessage());
         }
     }
-
+    @Transactional
     @Override
     public KoiFarmResponse updateKoiFarmRes(KoiFarmRequest koiFarmRequest, Long id) {
         KoiFarms koiFarms = iKoiFarmsRepository.findKoiFarmsById(id);
         if(koiFarms == null){
             throw new NotFoundEntity("Farm not found!");
         }
+        koiFarmImageRepository.deleteByKoiFarms(koiFarms);
+        List<KoiFarmImage> koiFarmImages = new ArrayList<>();
+        for (String url : koiFarmRequest.getImages()) {
+            KoiFarmImage koiFarmImage = new KoiFarmImage();
+            koiFarmImage.setImageUrl(url);
+            koiFarmImage.setKoiFarms(koiFarms);
+            koiFarmImages.add(koiFarmImage);
+        }
+        koiFarms.setKoiFarmImages(koiFarmImages);
         koiFarms.setFarmName(koiFarmRequest.getFarmName());
         koiFarms.setFarmPhoneNumber(koiFarmRequest.getFarmPhoneNumber());
         koiFarms.setFarmEmail(koiFarmRequest.getFarmEmail());
@@ -175,6 +185,7 @@ public class KoiFarmService implements IKoiFarmsService{
         response.setFarmEmail(koiFarm.getFarmEmail());
         response.setFarmAddress(koiFarm.getFarmAddress());
         response.setWebsite(koiFarm.getWebsite());
+        response.setDescription(koiFarm.getDescription());
 
         List<KoiOfFarmResponse> koiOfFarmResponses = koiFarm.getKoiOfFarms().stream()
                 .map(koiOfFarm -> {
@@ -192,6 +203,7 @@ public class KoiFarmService implements IKoiFarmsService{
         List<KoiFarmImageResponse> koiFarmImageResponses = koiFarm.getKoiFarmImages().stream()
                 .map(koiFarmImage -> {
                     KoiFarmImageResponse koiFarmImageResponse = new KoiFarmImageResponse();
+                    koiFarmImageResponse.setId(koiFarmImage.getId());
                     koiFarmImageResponse.setImageUrl(koiFarmImage.getImageUrl());
                     return koiFarmImageResponse;
                 }).collect(Collectors.toList());
