@@ -24,5 +24,5 @@ public interface IQuotationService {
 
     boolean deleteQuotations(Long quotationId);
 
-    QuotationResponse adminUpdateStatusQuotations(Long quotationId, ApproveStatus approveStatus);
+    QuotationResponse adminUpdateStatusQuotations(Long quotationId, ApproveStatus approveStatus, QuotationRequest quotationRequest);
 }
