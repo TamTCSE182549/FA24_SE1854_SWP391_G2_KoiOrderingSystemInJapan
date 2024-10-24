@@ -7,6 +7,7 @@ import fall24.swp391.KoiOrderingSystem.service.ITourService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -88,11 +89,12 @@ public class TourController {
     }
 
     @PostMapping("/findTourByFarmNameAndKoiName")
-    public ResponseEntity<?> showTourByFarmNameAndKoiName(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size, @RequestBody FindTourRequest findTourRequest){
+    public ResponseEntity<?> showTourByCondition(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size, @RequestBody FindTourRequest findTourRequest){
         Map<String, Object> response = new HashMap<>();
-        response.put("totalPage", iTourService.findTourByKoiNameAndFarmName(page, size, findTourRequest).getTotalPages());
-        response.put("pageNumber", iTourService.findTourByKoiNameAndFarmName(page, size, findTourRequest).getNumber());
-        response.put("content", iTourService.findTourByKoiNameAndFarmName(page, size, findTourRequest).get());
+        Page<TourResponse> tourResponses = iTourService.findTourByCondition(page, size, findTourRequest);
+        response.put("totalPage", tourResponses.getTotalPages());
+        response.put("pageNumber", tourResponses.getNumber());
+        response.put("content", tourResponses.get());
         return ResponseEntity.ok(response);
     }
 }

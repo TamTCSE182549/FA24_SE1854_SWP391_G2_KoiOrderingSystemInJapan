@@ -42,5 +42,5 @@ public interface ITourService {
 
     Page<TourResponse> findTourByKoiName(int page, int size, String koiName);
 
-    Page<TourResponse> findTourByKoiNameAndFarmName(int page, int size, FindTourRequest findTourRequest);
+    Page<TourResponse> findTourByCondition(int page, int size, FindTourRequest findTourRequest);
 }

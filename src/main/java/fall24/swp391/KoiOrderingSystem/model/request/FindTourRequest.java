@@ -10,6 +10,6 @@ public class FindTourRequest {
     Long koiId;
     Float minPrice;
     Float maxPrice;
-    Date startDate;
-    Date endDate;
+    String startDate;
+    String endDate;
 }
