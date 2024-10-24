@@ -51,6 +51,7 @@ public class Account implements UserDetails {
 
     @Column(name = "last_name",length = 50)
     private String lastName;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "gender")
     private Gender gender;
