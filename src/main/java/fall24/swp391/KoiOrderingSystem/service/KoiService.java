@@ -17,6 +17,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,12 +44,20 @@ public class KoiService implements IKoisService{
         List<Kois> koisList = iKoisRepository.findAll();
         return koisList.stream().map(kois -> modelMapper.map(kois, KoiResponse.class)).toList();
     }
+
+
     @Override
     public KoiResponse getKoiById(Long Id) {
             Kois kois =iKoisRepository.findById(Id)
                     .orElseThrow(() -> new NotFoundEntity("Not found Kois"));
             KoiResponse koiResponse =modelMapper.map(kois,KoiResponse.class);
             return koiResponse;
+    }
+
+    @Override
+    public List<KoiResponse> findAllActive() {
+        List<Kois> koisList = iKoisRepository.findByIsActiveTrue();
+        return koisList.stream().map(kois -> modelMapper.map(kois, KoiResponse.class)).toList();
     }
 
     @Override
@@ -67,6 +76,7 @@ public class KoiService implements IKoisService{
 //            Categories categories = iCategoriesRepository.findById(koiRequest.getCategoryId())
 //                            .orElseThrow(() -> new NotFoundEntity("Not Found Category"));
 //            kois.setCategory(categories);
+            kois.setActive(true);
             kois.setKoiImageList(koiImages);
             Kois createKoi = iKoisRepository.save(kois);
             KoiResponse koiResponse =modelMapper.map(createKoi,KoiResponse.class);
@@ -76,17 +86,26 @@ public class KoiService implements IKoisService{
             throw new NotCreateException(e.getMessage());
         }
     }
-
+    @Transactional
     @Override
     public KoiResponse updateKoi(Long Id, KoiRequest koiRequest) {
         try {
             Kois kois = iKoisRepository.findById(Id)
                     .orElseThrow(() -> new NotFoundEntity("Not Found Kois"));
+            iKoiImageRepository.deleteByKois(kois);
             kois.setKoiName(koiRequest.getKoiName());
             kois.setOrigin(koiRequest.getOrigin());
             kois.setColor(koiRequest.getColor());
             kois.setDescription(koiRequest.getDescription());
-            kois.setActive(koiRequest.isActive());
+            List<KoiImageRequest> koiImageList = koiRequest.getKoiImageList();
+            List<KoiImage> koiImages = new ArrayList<>();
+            for (KoiImageRequest koiImageRequest : koiImageList) {
+                KoiImage koiImage = modelMapper.map(koiImageRequest, KoiImage.class);
+                koiImage.setId(null);
+                koiImage.setKois(kois);
+                koiImages.add(koiImage);
+            }
+            kois.setKoiImageList(koiImages);
             Kois updatedKoi = iKoisRepository.save(kois);
             KoiResponse koiResponse = modelMapper.map(updatedKoi, KoiResponse.class);
             return koiResponse;

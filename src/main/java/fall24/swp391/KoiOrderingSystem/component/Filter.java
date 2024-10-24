@@ -42,7 +42,7 @@ public class Filter extends OncePerRequestFilter {
             "/tour/showAll",
             "/tour/showAllPageable",
             "/tour/showTourByName/{tourName}",
-            "/kois/all",
+            "/kois/all/active",
             "/kois/getby/{Id}",
             "/koi-farm/list-farm-active",
             "/koi-farm/get/{id}",
