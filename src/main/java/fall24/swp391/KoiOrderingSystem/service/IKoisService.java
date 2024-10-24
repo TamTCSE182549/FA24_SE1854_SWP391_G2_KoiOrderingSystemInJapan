@@ -16,4 +16,6 @@ public interface IKoisService {
     KoiResponse deletebyId(Long Id);
 
     KoiResponse getKoiById (Long Id);
+
+
 }

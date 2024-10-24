@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/quotations")
+@RequestMapping("/quotations")
 @CrossOrigin(origins = "*")
 @SecurityRequirement(name = "api")
 public class QuotationController {
@@ -44,7 +44,7 @@ public class QuotationController {
         return ResponseEntity.ok(quotations);
     }
 
-    @GetMapping("/quotation/all")
+    @GetMapping("/all")
     public ResponseEntity<List<QuotationResponse>> showAllQuotation(){
         List<QuotationResponse> quotation = quotationService.getAllQuotation();
         if(quotation.isEmpty()){

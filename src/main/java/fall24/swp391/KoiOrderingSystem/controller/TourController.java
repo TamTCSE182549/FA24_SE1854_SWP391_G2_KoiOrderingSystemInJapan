@@ -1,5 +1,6 @@
 package fall24.swp391.KoiOrderingSystem.controller;
 
+import fall24.swp391.KoiOrderingSystem.model.request.FindTourRequest;
 import fall24.swp391.KoiOrderingSystem.model.request.TourRequest;
 import fall24.swp391.KoiOrderingSystem.model.response.TourResponse;
 import fall24.swp391.KoiOrderingSystem.service.ITourService;
@@ -36,7 +37,7 @@ public class TourController {
     }
 
     @GetMapping("/showAllPageable")
-    public ResponseEntity<?> showAllPageable(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "2") int size){
+    public ResponseEntity<?> showAllPageable(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size){
         Map<String, Object> response = new HashMap<>();
         response.put("totalPage", iTourService.showAllPageable(page,size).getTotalPages());
         response.put("pageNumber", iTourService.showAllPageable(page,size).getNumber());
@@ -45,10 +46,10 @@ public class TourController {
     }
 
     @GetMapping("/showTourByName/{tourName}")
-    public ResponseEntity<?> showTourByName(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "2") int size, @PathVariable String tourName){
+    public ResponseEntity<?> showTourByName(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size, @PathVariable String tourName){
         Map<String, Object> response = new HashMap<>();
         response.put("totalPage", iTourService.showTourByName(page,size,tourName).getTotalPages());
-        response.put("pageNumber", iTourService.showTourByName(page,size,tourName).getNumber());
+        response.put("currentPage", iTourService.showTourByName(page,size,tourName).getNumber());
         response.put("content", iTourService.showTourByName(page, size,tourName).get());
         return ResponseEntity.ok(response);
     }
@@ -75,5 +76,23 @@ public class TourController {
     public ResponseEntity<?> findById(@PathVariable @NotNull Long tourId){
         TourResponse tourResponse = iTourService.findById(tourId);
         return ResponseEntity.ok(tourResponse);
+    }
+
+    @GetMapping("/findTourByKoiName/{koiName}")
+    public ResponseEntity<?> showTourByKoiName(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size, @PathVariable String koiName){
+        Map<String, Object> response = new HashMap<>();
+        response.put("totalPage", iTourService.findTourByKoiName(page,size,koiName).getTotalPages());
+        response.put("currentPage", iTourService.findTourByKoiName(page,size,koiName).getNumber());
+        response.put("content", iTourService.findTourByKoiName(page, size,koiName).get());
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/findTourByFarmNameAndKoiName")
+    public ResponseEntity<?> showTourByFarmNameAndKoiName(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size, @RequestBody FindTourRequest findTourRequest){
+        Map<String, Object> response = new HashMap<>();
+        response.put("totalPage", iTourService.findTourByKoiNameAndFarmName(page, size, findTourRequest).getTotalPages());
+        response.put("pageNumber", iTourService.findTourByKoiNameAndFarmName(page, size, findTourRequest).getNumber());
+        response.put("content", iTourService.findTourByKoiNameAndFarmName(page, size, findTourRequest).get());
+        return ResponseEntity.ok(response);
     }
 }
