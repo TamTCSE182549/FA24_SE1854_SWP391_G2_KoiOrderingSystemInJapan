@@ -284,21 +284,44 @@ public class TourService implements ITourService{
     }
 
     @Override
-    public Page<TourResponse> findTourByKoiNameAndFarmName(int page, int size, FindTourRequest findTourRequest) {
+    public Page<TourResponse> findTourByCondition(int page, int size, FindTourRequest findTourRequest) {
         Pageable pageable = PageRequest.of(page, size);
-        return iTourRepository.findTourByKoiNameAndByFarmName(findTourRequest.getKoiId(), findTourRequest.getFarmId(), pageable).map(tours -> {
-            TourResponse tourResponse = modelMapper.map(tours, TourResponse.class);
-            if (tours.getCreatedBy()!=null){
-                tourResponse.setCreatedBy(tours.getCreatedBy().getFirstName() + " " + tours.getCreatedBy().getLastName());
+        Page<Tours> tourResponses = null;
+        try {
+            if((findTourRequest.getKoiId()!=null||findTourRequest.getFarmId()!=null) && findTourRequest.getMinPrice() != null && findTourRequest.getMaxPrice() != null && findTourRequest.getStartDate() != null && findTourRequest.getEndDate() != null){
+                tourResponses = iTourRepository.findTourByKoiNameAndByFarmNameWithAllCondition(findTourRequest.getKoiId(), findTourRequest.getFarmId(), findTourRequest.getMinPrice(), findTourRequest.getMaxPrice(), findTourRequest.getStartDate(), findTourRequest.getEndDate(), pageable);
+            } else if((findTourRequest.getKoiId()!=null||findTourRequest.getFarmId()!=null) && findTourRequest.getMinPrice() != null && findTourRequest.getMaxPrice() != null){
+                tourResponses = iTourRepository.findTourByKoiNameAndByFarmNameWithUnitPrice(findTourRequest.getKoiId(), findTourRequest.getFarmId(), findTourRequest.getMinPrice(), findTourRequest.getMaxPrice(), pageable);
+            } else if ((findTourRequest.getKoiId()!=null||findTourRequest.getFarmId()!=null) && findTourRequest.getStartDate() != null && findTourRequest.getEndDate() != null) {
+                tourResponses = iTourRepository.findTourByKoiNameAndByFarmNameWithDate(findTourRequest.getKoiId(), findTourRequest.getFarmId(), findTourRequest.getStartDate(), findTourRequest.getEndDate(), pageable);
+            } else if (findTourRequest.getKoiId()!=null||findTourRequest.getFarmId()!=null){
+                tourResponses = iTourRepository.findTourByKoiNameAndByFarmName(findTourRequest.getKoiId(), findTourRequest.getFarmId(), pageable);
+            } else if(findTourRequest.getMinPrice()!=null && findTourRequest.getMaxPrice()!=null && findTourRequest.getStartDate() != null && findTourRequest.getEndDate() != null ) {
+                tourResponses = iTourRepository.findTourByPriceAndDatePageable(findTourRequest.getMinPrice(), findTourRequest.getMaxPrice(), findTourRequest.getStartDate(), findTourRequest.getEndDate(), pageable);
+            } else if(findTourRequest.getMinPrice()!=null && findTourRequest.getMaxPrice() != null) {
+                tourResponses = iTourRepository.findTourByPricePageable(findTourRequest.getMinPrice(), findTourRequest.getMaxPrice(), pageable);
+            } else if(findTourRequest.getStartDate()!=null && findTourRequest.getEndDate() != null){
+                tourResponses = iTourRepository.findTourByDatePageable(findTourRequest.getStartDate(), findTourRequest.getEndDate(), pageable);
             } else {
-                tourResponse.setCreatedBy("");
+                tourResponses = iTourRepository.showAllPageable(pageable);
             }
-            if (tours.getUpdatedBy()!=null){
-                tourResponse.setUpdatedBy(tours.getUpdatedBy().getFirstName() + " " + tours.getUpdatedBy().getLastName());
-            } else {
-                tourResponse.setUpdatedBy("");
-            }
-            return tourResponse;
-        });
+
+            return tourResponses.map(tours -> {
+                TourResponse tourResponse = modelMapper.map(tours, TourResponse.class);
+                if (tours.getCreatedBy()!=null){
+                    tourResponse.setCreatedBy(tours.getCreatedBy().getFirstName() + " " + tours.getCreatedBy().getLastName());
+                } else {
+                    tourResponse.setCreatedBy("");
+                }
+                if (tours.getUpdatedBy()!=null){
+                    tourResponse.setUpdatedBy(tours.getUpdatedBy().getFirstName() + " " + tours.getUpdatedBy().getLastName());
+                } else {
+                    tourResponse.setUpdatedBy("");
+                }
+                return tourResponse;
+            });
+        } catch (GenericException e) {
+            throw new GenericException(e.getMessage());
+        }
     }
 }
