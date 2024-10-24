@@ -49,6 +49,9 @@ public class BookingService implements IBookingService{
     private IKoisRepository iKoisRepository;
 
     @Autowired
+    private IKoiFarmsRepository iKoiFarmsRepository;
+
+    @Autowired
     private IBookingKoiDetailRepository iBookingKoiDetailRepository;
 
     @Autowired
@@ -90,10 +93,12 @@ public class BookingService implements IBookingService{
                 if(tours.getRemaining()==0){
                     tours.setStatus(TourStatus.inactive);
                 }
+                booking.setCreatedBy(account);
                 iTourRepository.save(tours);
                 BookingTourResponse bookingTourResponse = modelMapper.map(booking, BookingTourResponse.class);
                 bookingTourResponse.setCustomerID(account.getId());
                 bookingTourResponse.setNameCus(account.getFirstName() + " " + account.getLastName());
+                bookingTourResponse.setCreatedBy(account.getFirstName() + " " + account.getLastName());
                 return bookingTourResponse;
             } else {
                 throw new NotCreateException("Create Tour Booking Only Role Customer");
@@ -309,9 +314,9 @@ public class BookingService implements IBookingService{
     public BookingTourResponse createKoiBooking(BookingKoiRequest bookingKoiRequest,Long bookingId) {
         try{
             Account account = authenticationService.getCurrentAccount();
-//            if(account.getRole() ==Role.SALES_STAFF){
-//                Kois kois = iKoisRepository.findById(bookingKoiRequest.getKoiId())
-//                        .orElseThrow(() -> new NotFoundEntity("Koi Tour not found"));
+           if(account.getRole() ==Role.SALES_STAFF){
+                KoiFarms koiFarms = iKoiFarmsRepository.findById(bookingKoiRequest.getFarmId())
+                        .orElseThrow(() -> new NotFoundEntity("Koi Tour not found"));
 
                 Bookings bookingTour = bookingRepository.findById(bookingId)
                         .orElseThrow(() -> new NotFoundEntity("Booking Tour not found"));
@@ -323,30 +328,22 @@ public class BookingService implements IBookingService{
                 booking.setBookingType(BookingType.BookingForKoi);
                 bookingRepository.save(booking);
 
-
-//                    BookingKoiDetail bookingKoiDetail = new BookingKoiDetail(booking, kois, bookingKoiRequest.getQuantity(), bookingKoiRequest.getUnitPrice());
-//                    bookingKoiDetail.setTotalAmount(bookingKoiRequest.getUnitPrice() * bookingKoiRequest.getQuantity());
-//                    iBookingKoiDetailRepository.save(bookingKoiDetail);
                 float totalBookingAmount = 0;
                 for (BookingKoiDetailRequest detailRequest : bookingKoiRequest.getDetails()) {
                     Kois kois = iKoisRepository.findById(detailRequest.getKoiId())
                             .orElseThrow(() -> new NotFoundEntity("Koi not found"));
                     BookingKoiDetail bookingKoiDetail = new BookingKoiDetail(booking, kois, detailRequest.getQuantity(), detailRequest.getUnitPrice());
                     float totalAmount = detailRequest.getUnitPrice() * detailRequest.getQuantity();
+                    System.out.println("Total Amount for Koi ID " + detailRequest.getKoiId() + ": " + totalAmount);
                     bookingKoiDetail.setTotalAmount(totalAmount);
                     iBookingKoiDetailRepository.save(bookingKoiDetail);
 
                     totalBookingAmount += totalAmount;
                 }
 
-//                    float totalBookingAmount = 0;
-//                    List<BookingKoiDetail> koiDetailOfBookingID = iBookingKoiDetailRepository.showDetailOfBookingID(booking.getId());
-//                    for (BookingKoiDetail b : koiDetailOfBookingID) {
-//                        totalBookingAmount += b.getTotalAmount();
-//                    }
                     booking.setTotalAmount(totalBookingAmount);
                     booking.setTotalAmountWithVAT(booking.getTotalAmount() + booking.getVatAmount() - booking.getDiscountAmount());
-                    booking.setAccount(bookingTour.getCreatedBy());
+                    booking.setAccount(bookingTour.getAccount());
                     bookingRepository.save(booking);
 
                     BookingTourResponse bookingResponse = modelMapper.map(booking, BookingTourResponse.class);
@@ -354,9 +351,9 @@ public class BookingService implements IBookingService{
                     bookingResponse.setNameCus(bookingTour.getAccount().getFirstName()+" "+bookingTour.getAccount().getLastName());
                     bookingResponse.setCreatedBy(account.getFirstName() + " " + account.getLastName());
                     return bookingResponse;
-//            }else{
-//                throw new NotCreateException("Create Booking Only Role STAFF");
-//            }
+            }else{
+               throw new NotCreateException("Create Booking Only Role STAFF");
+            }
         }catch (Exception e) {
             throw new GenericException(e.getMessage());
         }

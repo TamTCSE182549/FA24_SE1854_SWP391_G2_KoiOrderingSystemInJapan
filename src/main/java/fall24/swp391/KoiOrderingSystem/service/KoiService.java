@@ -37,8 +37,7 @@ public class KoiService implements IKoisService{
     @Autowired
     private IKoiImageRepository iKoiImageRepository;
 
-//    @Autowired
-//    private ICategoriesRepository iCategoriesRepository;
+
     @Override
     public List<KoiResponse> findAll() {
         List<Kois> koisList = iKoisRepository.findAll();
