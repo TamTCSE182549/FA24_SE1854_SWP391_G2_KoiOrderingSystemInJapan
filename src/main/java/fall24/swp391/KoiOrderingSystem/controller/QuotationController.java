@@ -112,6 +112,17 @@ public class QuotationController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
+
+    @GetMapping("/{quotationId}")
+    public ResponseEntity<QuotationResponse> getQuotationById(@PathVariable Long quotationId) {
+        try {
+            QuotationResponse quotation = quotationService.getQuotationById(quotationId);
+            return ResponseEntity.ok(quotation);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
     //Lấy amount từ bookingTourDetail
 //    @PutMapping("/{id}/set-amount")
 //    public ResponseEntity<?> updateQuotation(@PathVariable Long id){
