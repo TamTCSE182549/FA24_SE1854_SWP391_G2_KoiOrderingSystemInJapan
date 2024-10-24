@@ -76,12 +76,20 @@ public class QuotationController {
     }
 
     @PutMapping("/admin/{quotationId}")
-    public ResponseEntity<QuotationResponse> updateAdminQuotation(@PathVariable Long quotationId, @RequestBody ApproveStatus approveStatus){
+    public ResponseEntity<QuotationResponse> updateAdminQuotation(
+            @PathVariable Long quotationId,
+            @RequestParam ApproveStatus approveStatus,
+            @RequestBody(required = false) QuotationRequest quotationRequest) {
         try {
-            QuotationResponse quotations= quotationService.adminUpdateStatusQuotations(quotationId, approveStatus);
+            if (quotationRequest == null) {
+                quotationRequest = new QuotationRequest();
+            }
+            QuotationResponse quotations = quotationService.adminUpdateStatusQuotations(quotationId, approveStatus, quotationRequest);
             return ResponseEntity.ok(quotations);
-        } catch (Exception e) {
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 

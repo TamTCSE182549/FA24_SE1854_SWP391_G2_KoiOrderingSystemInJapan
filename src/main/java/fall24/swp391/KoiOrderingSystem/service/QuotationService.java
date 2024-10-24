@@ -131,7 +131,7 @@ public class QuotationService implements IQuotationService{
     }
 
     @Override
-    public QuotationResponse adminUpdateStatusQuotations(Long quotationId, ApproveStatus approveStatus) {
+    public QuotationResponse adminUpdateStatusQuotations(Long quotationId, ApproveStatus approveStatus, QuotationRequest quotationRequest) {
         Quotations quotations;
         QuotationResponse quotationResponse;
         try {
@@ -140,16 +140,28 @@ public class QuotationService implements IQuotationService{
             if (quotations == null) {
                 throw new NotFoundEntity("Quotation not found");
             }
+            
+            // Handle description based on approveStatus
+            if (approveStatus == ApproveStatus.REJECTED) {
+                if (quotationRequest.getDescription() == null || quotationRequest.getDescription().trim().isEmpty()) {
+                    throw new IllegalArgumentException("Description is required when rejecting a quotation");
+                }
+                quotations.setDescription(quotationRequest.getDescription());
+            } else if (approveStatus == ApproveStatus.FINISH) {
+                quotations.setDescription("Quotation has been accepted");
+            }
+            
             quotations.setIsApprove(approveStatus);
             quotations.setApproveBy(account);
             quotations.setApproveTime(LocalDateTime.now());
             quotationRepository.save(quotations);
+            
             quotationResponse = modelMapper.map(quotations, QuotationResponse.class);
             quotationResponse.setBookingId(quotations.getBooking().getId());
             quotationResponse.setStaffName(quotations.getCreatedBy().getFirstName() + " " + quotations.getCreatedBy().getLastName());
-            if(quotations.getApproveBy()!=null)
+            if(quotations.getApproveBy() != null) {
                 quotationResponse.setManagerName(quotations.getApproveBy().getFirstName() + " " + quotations.getApproveBy().getLastName());
-
+            }
         } catch (NotUpdateException e) {
             throw new GenericException(e.getMessage());
         }
