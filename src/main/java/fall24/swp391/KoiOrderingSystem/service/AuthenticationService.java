@@ -99,6 +99,8 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
 //        if(accountUpdateRequest.getGender().equals("Male")) account.setGender(Gender.MALE);
 //        else if(accountUpdateRequest.getGender().equals("Female")) account.setGender(Gender.FEMALE);
 //        else account.setGender(Gender.OTHER);
+        Account currentAccount = getCurrentAccount();
+        account.setUpdatedBy(currentAccount.getId());
         account.setGender(Gender.valueOf(accountUpdateRequest.getGender()));
         account.setAddress(accountUpdateRequest.getAddress());
         account.setFirstName(accountUpdateRequest.getFirstName());
@@ -107,6 +109,18 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
         account.setPhone(accountUpdateRequest.getPhone());
         accountRepository.save(account);
         return true;
+    }
+
+    @Override
+    public void banAccount(Long accountId) {
+        Account account = accountRepository.findAccountById(accountId);
+        if (account == null) {
+            throw new AccountNotFoundException("Account not found");
+        }
+        Account currentAccount = getCurrentAccount();
+        account.setActive(false);
+        account.setUpdatedBy(currentAccount.getId());
+        accountRepository.save(account);
     }
 
     @Override

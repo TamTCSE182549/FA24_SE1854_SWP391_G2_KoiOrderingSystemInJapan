@@ -19,4 +19,6 @@ public interface IBookingTourDetailRepository extends JpaRepository<BookingTourD
 
     @Query(value = "delete from booking_tour_detail where booking_id = ?1", nativeQuery = true)
     void deleteBTDByBooking_Id(Long id);
+
+
 }

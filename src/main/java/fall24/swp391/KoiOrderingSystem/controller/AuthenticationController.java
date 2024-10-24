@@ -59,4 +59,10 @@ public class AuthenticationController {
         authenticationService.resetPassword(resetPasswordRequest);
         return ResponseEntity.ok("Reset Password successfully");
     }
+
+    @PutMapping("ban")
+    public ResponseEntity<?> banAccount(@RequestBody Long accountId){
+        authenticationService.banAccount(accountId);
+        return ResponseEntity.ok("Ban Account successfully");
+    }
 }

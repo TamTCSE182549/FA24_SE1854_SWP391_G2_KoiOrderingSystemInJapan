@@ -19,4 +19,6 @@ public interface IAuthenticationService {
     public String loginOrRegisterGoogle(GoogleRequest googleRequest);
 
     public boolean updateAccount(AccountUpdateRequest accountRequest);
+
+    public void banAccount(Long accountId);
 }

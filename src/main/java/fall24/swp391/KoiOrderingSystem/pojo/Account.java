@@ -51,12 +51,15 @@ public class Account implements UserDetails {
 
     @Column(name = "last_name",length = 50)
     private String lastName;
-
+    @Enumerated(EnumType.STRING)
     @Column(name = "gender")
     private Gender gender;
 
     @Column(name = "nationality")
     private String nationality;
+
+    @Column(name = "updated_by")
+    private long updatedBy;
 
     @Pattern(regexp = "(84|0[3|5|7|8|9])+(\\d{8})",message = "Phone invalid")
     @Column(name = "phone_number")
