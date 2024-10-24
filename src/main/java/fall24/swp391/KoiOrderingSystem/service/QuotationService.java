@@ -2,7 +2,9 @@ package fall24.swp391.KoiOrderingSystem.service;
 
 import fall24.swp391.KoiOrderingSystem.component.Email;
 import fall24.swp391.KoiOrderingSystem.enums.ApproveStatus;
+import fall24.swp391.KoiOrderingSystem.enums.BookingType;
 import fall24.swp391.KoiOrderingSystem.exception.GenericException;
+import fall24.swp391.KoiOrderingSystem.exception.NotCreateException;
 import fall24.swp391.KoiOrderingSystem.exception.NotFoundEntity;
 import fall24.swp391.KoiOrderingSystem.exception.NotUpdateException;
 import fall24.swp391.KoiOrderingSystem.model.EmailDetail;
@@ -16,6 +18,9 @@ import fall24.swp391.KoiOrderingSystem.repo.IBookingTourDetailRepository;
 import fall24.swp391.KoiOrderingSystem.repo.IQuotationRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -49,9 +54,9 @@ public class QuotationService implements IQuotationService{
             QuotationResponse quotationResponse = modelMapper.map(quotation, QuotationResponse.class);
             quotationResponse.setBookingId(bookId);
             if(quotation.getCreatedBy()!=null)
-            quotationResponse.setStaffName(quotation.getCreatedBy().getFirstName()+" "+quotation.getCreatedBy().getLastName());
+                quotationResponse.setStaffName(quotation.getCreatedBy().getFirstName()+" "+quotation.getCreatedBy().getLastName());
             if(quotation.getApproveBy()!=null)
-            quotationResponse.setManagerName(quotation.getApproveBy().getFirstName()+" "+quotation.getApproveBy().getLastName());
+                quotationResponse.setManagerName(quotation.getApproveBy().getFirstName()+" "+quotation.getApproveBy().getLastName());
             quotationResponses.add(quotationResponse);
         }
         return quotationResponses;
@@ -60,7 +65,7 @@ public class QuotationService implements IQuotationService{
     @Override
     public List<QuotationResponse> getAllQuotation(){
         List<QuotationResponse> quotationResponses = new ArrayList<>();
-        List<Quotations> quotationsList = quotationRepository.findAll();
+        List<Quotations> quotationsList = quotationRepository.getAllQuotation();
         for (Quotations quotation : quotationsList) {
             QuotationResponse quotationResponse = modelMapper.map(quotation, QuotationResponse.class);
             quotationResponse.setBookingId(quotation.getBooking().getId());
@@ -74,32 +79,52 @@ public class QuotationService implements IQuotationService{
     }
 
     @Override
+    public Page<QuotationResponse> showAllPageable(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return quotationRepository.showAllPageable(pageable).map(quotations -> {
+            QuotationResponse quotationResponse = modelMapper.map(quotations, QuotationResponse.class);
+            quotationResponse.setBookingId(quotations.getBooking().getId());
+            if(quotations.getCreatedBy()!=null)
+                quotationResponse.setStaffName(quotations.getCreatedBy().getFirstName()+" "+quotations.getCreatedBy().getLastName());
+            if(quotations.getApproveBy()!=null)
+                quotationResponse.setManagerName(quotations.getApproveBy().getFirstName()+" "+quotations.getApproveBy().getLastName());
+            return quotationResponse;
+        });
+    }
+
+    @Override
     public QuotationResponse createQuotations(QuotationRequest quotationRequest) {
         Bookings bookings = bookingRepository.findBookingsById(quotationRequest.getBookingId());
         if (bookings== null) {
             throw new NotFoundEntity("Booking not found");
         }
         Quotations quotation = new Quotations();
-        quotation.setAmount(quotationRequest.getAmount());
-        quotation.setBooking(bookings);
-        quotation.setIsApprove(ApproveStatus.PROCESS);
-        Account account = authenticationService.getCurrentAccount();
-        quotation.setCreatedBy(account);
-        //create initialization status
-        quotationRepository.save(quotation);
-        QuotationResponse quotationResponse = modelMapper.map(quotation, QuotationResponse.class);
-        quotationResponse.setBookingId(quotation.getBooking().getId());
-        quotationResponse.setStaffName(quotation.getCreatedBy().getFirstName()+" "+quotation.getCreatedBy().getLastName());
-        if(quotation.getApproveBy()!=null)
-        quotationResponse.setManagerName(quotation.getApproveBy().getFirstName()+" "+quotation.getApproveBy().getLastName());
-        return quotationResponse;
+        if (bookings.getBookingType() == BookingType.BookingForTour) {
+            quotation.setAmount(bookings.getTotalAmountWithVAT());
+            quotation.setBooking(bookings);
+            quotation.setDescription("Quotation being in Process");
+            quotation.setIsApprove(ApproveStatus.PROCESS);
+            Account account = authenticationService.getCurrentAccount();
+            quotation.setCreatedBy(account);
+            //create initialization status
+            quotationRepository.save(quotation);
+            QuotationResponse quotationResponse = modelMapper.map(quotation, QuotationResponse.class);
+            quotationResponse.setBookingId(quotation.getBooking().getId());
+            quotationResponse.setStaffName(quotation.getCreatedBy().getFirstName()+" "+quotation.getCreatedBy().getLastName());
+            if(quotation.getApproveBy()!=null){
+                quotationResponse.setManagerName(quotation.getApproveBy().getFirstName()+" "+quotation.getApproveBy().getLastName());
+            }
+            return quotationResponse;
+        } else {
+            throw new NotCreateException("Booking Type does not consistent to create Quotation");
+        }
     }
 
     @Override
     public boolean deleteQuotations(Long QuotationId) {
         Quotations quotations = quotationRepository.findQuotationsById(QuotationId);
         if(quotations==null) {
-           throw new NotFoundEntity("Quotation not found");
+            throw new NotFoundEntity("Quotation not found");
         }
         quotationRepository.deleteById(QuotationId);
         return true;
@@ -116,14 +141,14 @@ public class QuotationService implements IQuotationService{
                 throw new NotFoundEntity("Quotation not found");
             }
             quotations.setIsApprove(approveStatus);
-//            quotations.setApproveBy(account);
-//            quotations.setApproveTime(LocalDateTime.now());
+            quotations.setApproveBy(account);
+            quotations.setApproveTime(LocalDateTime.now());
             quotationRepository.save(quotations);
             quotationResponse = modelMapper.map(quotations, QuotationResponse.class);
             quotationResponse.setBookingId(quotations.getBooking().getId());
             quotationResponse.setStaffName(quotations.getCreatedBy().getFirstName() + " " + quotations.getCreatedBy().getLastName());
             if(quotations.getApproveBy()!=null)
-            quotationResponse.setManagerName(quotations.getApproveBy().getFirstName() + " " + quotations.getApproveBy().getLastName());
+                quotationResponse.setManagerName(quotations.getApproveBy().getFirstName() + " " + quotations.getApproveBy().getLastName());
 
         } catch (NotUpdateException e) {
             throw new GenericException(e.getMessage());
@@ -147,7 +172,7 @@ public class QuotationService implements IQuotationService{
                 quotationResponse.setBookingId(quotations.getBooking().getId());
                 quotationResponse.setStaffName(quotations.getCreatedBy().getFirstName() + " " + quotations.getCreatedBy().getLastName());
                 if(quotations.getApproveBy()!=null)
-                quotationResponse.setManagerName(quotations.getApproveBy().getFirstName() + " " + quotations.getApproveBy().getLastName());
+                    quotationResponse.setManagerName(quotations.getApproveBy().getFirstName() + " " + quotations.getApproveBy().getLastName());
 
             }
             else throw new GenericException("Price > 0");
@@ -179,7 +204,7 @@ public class QuotationService implements IQuotationService{
             quotationResponse.setBookingId(quotations.getBooking().getId());
             quotationResponse.setStaffName(quotations.getCreatedBy().getFirstName() + " " + quotations.getCreatedBy().getLastName());
             if(quotations.getApproveBy()!=null)
-            quotationResponse.setManagerName(quotations.getApproveBy().getFirstName() + " " + quotations.getApproveBy().getLastName());
+                quotationResponse.setManagerName(quotations.getApproveBy().getFirstName() + " " + quotations.getApproveBy().getLastName());
 
         } catch (NotUpdateException e) {
             throw new GenericException(e.getMessage());
