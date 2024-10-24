@@ -4,6 +4,7 @@ import fall24.swp391.KoiOrderingSystem.enums.CheckinStatus;
 import fall24.swp391.KoiOrderingSystem.enums.Role;
 import fall24.swp391.KoiOrderingSystem.exception.GenericException;
 import fall24.swp391.KoiOrderingSystem.exception.NotCreateException;
+import fall24.swp391.KoiOrderingSystem.exception.NotUpdateException;
 import fall24.swp391.KoiOrderingSystem.model.request.CheckinRequest;
 import fall24.swp391.KoiOrderingSystem.model.response.CheckinResponse;
 import fall24.swp391.KoiOrderingSystem.pojo.Account;
@@ -73,10 +74,6 @@ public class CheckinService implements ICheckinService {
                         .orElseThrow(() -> new RuntimeException("Checkin Id not found"));
 
                 checkin.setAirline(checkinRequest.getAirline());
-
-                if (checkin.getStatus() == CheckinStatus.NOTCHECKEDIN) {
-                    checkin.setStatus(CheckinStatus.CHECKED);
-                }
                 checkin.setAirport(checkinRequest.getAirport());
                 checkin.setCheckinDate(checkinRequest.getCheckinDate());
                 checkin.setFirstName(checkinRequest.getFirstName());
@@ -93,6 +90,31 @@ public class CheckinService implements ICheckinService {
         } catch (Exception e) {
             throw new GenericException(e.getMessage());
         }
+    }
+
+    @Override
+    public CheckinResponse updateCheckinStatus(Long Id) {
+        try{
+            Account account = authenticationService.getCurrentAccount();
+            if(account.getRole() == Role.SALES_STAFF){
+                Checkin checkin = checkinRepository.findById(Id)
+                        .orElseThrow(() -> new RuntimeException("Checkin Not Found"));
+                if(checkin.getStatus() == CheckinStatus.NOTCHECKEDIN){
+                    checkin.setStatus(CheckinStatus.CHECKED);
+                }
+                checkin.setUpdatedBy(account);
+                checkinRepository.save(checkin);
+
+                CheckinResponse checkinResponse =modelMapper.map(checkin,CheckinResponse.class);
+                checkinResponse.setUpdateBy(account.getFirstName()+" "+account.getLastName());
+                return checkinResponse;
+            }else{
+                throw new NotUpdateException("Only staff can update status");
+            }
+        }catch (Exception e){
+            throw new GenericException(e.getMessage());
+        }
+
     }
 
     @Override

@@ -43,7 +43,11 @@ public class CheckinController {
         CheckinResponse checkin = checkinService.updateCheckin(checkinId,checkinRequest);
         return new ResponseEntity<>(checkin,HttpStatus.OK);
     }
-
+    @PutMapping("/status/{checkinId}")
+    public ResponseEntity<?> updateCheckinStatus(@PathVariable Long checkinId) {
+        CheckinResponse checkin = checkinService.updateCheckinStatus(checkinId);
+        return new ResponseEntity<>(checkin,HttpStatus.OK);
+    }
 
     @DeleteMapping("/{checkId}")
     public ResponseEntity<?> deleteCheckin(@PathVariable Long checkId) {

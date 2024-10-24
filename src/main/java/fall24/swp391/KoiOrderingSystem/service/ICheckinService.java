@@ -14,5 +14,7 @@ public interface ICheckinService {
 
     CheckinResponse updateCheckin(Long Id, CheckinRequest checkinRequest);
 
+    CheckinResponse updateCheckinStatus(Long Id);
+
     CheckinResponse deleteCheckin(Long Id);
 }
