@@ -130,6 +130,7 @@ public class KoiFarmService implements IKoiFarmsService{
             koiFarmImages.add(koiFarmImage);
         }
         koiFarms.setKoiFarmImages(koiFarmImages);
+        koiFarms.setActive(koiFarmRequest.isActive());
         koiFarms.setFarmName(koiFarmRequest.getFarmName());
         koiFarms.setFarmPhoneNumber(koiFarmRequest.getFarmPhoneNumber());
         koiFarms.setFarmEmail(koiFarmRequest.getFarmEmail());
@@ -186,7 +187,7 @@ public class KoiFarmService implements IKoiFarmsService{
         response.setFarmAddress(koiFarm.getFarmAddress());
         response.setWebsite(koiFarm.getWebsite());
         response.setDescription(koiFarm.getDescription());
-
+        response.setActive(koiFarm.isActive());
         List<KoiOfFarmResponse> koiOfFarmResponses = koiFarm.getKoiOfFarms().stream()
                 .map(koiOfFarm -> {
                     KoiOfFarmResponse koiOfFarmResponse = new KoiOfFarmResponse();
