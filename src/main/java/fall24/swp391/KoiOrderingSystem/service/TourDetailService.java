@@ -71,7 +71,11 @@ public class TourDetailService implements ITourDetailService{
                 .orElseThrow(() -> new NotFoundEntity("Koi Farm not EXISTS"));
         Tours tours = iTourRepository.findById(tourDetailRequest.getTourID())
                 .orElseThrow(() -> new NotFoundEntity("Tour not EXISTS"));
-        TourDetail tourDetail = new TourDetail(tours, koiFarms, tourDetailRequest.getDescription());
+        TourDetail tourDetail = iTourDetailRepository.findByFarmAndTour(koiFarms, tours);
+        if(tourDetail!=null){
+            throw new NotFoundEntity("Tour already have farm");
+        }
+         tourDetail = new TourDetail(tours, koiFarms, tourDetailRequest.getDescription());
         iTourDetailRepository.save(tourDetail);
         TourDetailResponse tourDetailResponse = modelMapper.map(tourDetail, TourDetailResponse.class);
         tourDetailResponse.setTourName(tours.getTourName());

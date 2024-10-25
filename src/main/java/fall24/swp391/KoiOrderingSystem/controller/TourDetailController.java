@@ -25,7 +25,7 @@ public class TourDetailController {
     private IKoiFarmsRepository iKoiFarmsRepository;
 
     @PostMapping("/create")
-    public ResponseEntity<?> createTourDetail(TourDetailRequest tourDetailRequest){
+    public ResponseEntity<?> createTourDetail(@RequestBody TourDetailRequest tourDetailRequest){
         TourDetailResponse tourDetailResponse = iTourDetailService.CREATE_TOUR_DETAIL_RESPONSES(tourDetailRequest);
         return ResponseEntity.ok(tourDetailResponse);
     }
