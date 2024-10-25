@@ -81,10 +81,16 @@ public class KoiOfFarmService implements IKoiOfFarmService{
             koiOfFarms.setAvailable(koiOfFarmRequest.isAvailable());
             Kois kois = iKoisRepository.findById(koiOfFarmRequest.getKoiId())
                     .orElseThrow(() -> new NotFoundEntity("NOT FOUND KOI ID"));
+            if(!kois.isActive()){
+                throw new NotFoundEntity("Koi inactivated");
+            }
             koiOfFarms.setKois(kois);
             KoiFarms koiFarms = iKoiFarmsRepository.findById(koiOfFarmRequest.getFarmId())
                     .orElseThrow(() -> new NotFoundEntity("Not found Farm Id"));
             koiOfFarms.setKoiFarms(koiFarms);
+            if(!koiFarms.isActive()){
+                throw new NotFoundEntity("Koi Farm inactivated");
+            }
             return koiOfFarmRepository.save(koiOfFarms);
         }catch (Exception e){
             throw new GenericException(e.getMessage());
