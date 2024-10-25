@@ -2,6 +2,7 @@ package fall24.swp391.KoiOrderingSystem.controller;
 
 import fall24.swp391.KoiOrderingSystem.model.request.FindTourRequest;
 import fall24.swp391.KoiOrderingSystem.model.request.TourRequest;
+import fall24.swp391.KoiOrderingSystem.model.request.TourRequestAdmin;
 import fall24.swp391.KoiOrderingSystem.model.response.TourResponse;
 import fall24.swp391.KoiOrderingSystem.service.ITourService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -70,6 +71,12 @@ public class TourController {
     @PutMapping("/updateTourRes/{id}")
     public ResponseEntity<?> updateTourRes(@PathVariable @NotNull Long id, @RequestBody TourRequest tourRequest) {
         TourResponse tourResponse = iTourService.updateTourRes(id, tourRequest);
+        return ResponseEntity.ok(tourResponse);
+    }
+
+    @PutMapping("/updateTourAdmin/{id}")
+    public ResponseEntity<?> updateTourAdmin(@PathVariable @NotNull Long id, @RequestBody TourRequestAdmin tourRequest) {
+        TourResponse tourResponse = iTourService.updateTourAdmin(id,tourRequest);
         return ResponseEntity.ok(tourResponse);
     }
 

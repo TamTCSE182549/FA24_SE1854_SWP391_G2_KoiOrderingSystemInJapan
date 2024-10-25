@@ -138,7 +138,9 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
             account  = modelMapper.map(googleRequest,Account.class);
             account.setRole(Role.CUSTOMER);
             account.setActive(true);
+            account.setPassword(passwordEncoder.encode("newpassword"));
         }
+        accountRepository.save(account);
         System.out.println(account.toString());
         //return token to fe
         return getToken.generateToken(account);

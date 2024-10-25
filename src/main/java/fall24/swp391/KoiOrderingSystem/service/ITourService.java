@@ -2,6 +2,7 @@ package fall24.swp391.KoiOrderingSystem.service;
 
 import fall24.swp391.KoiOrderingSystem.model.request.FindTourRequest;
 import fall24.swp391.KoiOrderingSystem.model.request.TourRequest;
+import fall24.swp391.KoiOrderingSystem.model.request.TourRequestAdmin;
 import fall24.swp391.KoiOrderingSystem.model.response.TourResponse;
 import fall24.swp391.KoiOrderingSystem.pojo.Tours;
 import org.springframework.data.domain.Page;
@@ -19,6 +20,8 @@ public interface ITourService {
     void updateTour(Long id, Tours tours);
 
     TourResponse updateTourRes(Long id, TourRequest tourRequest);
+
+    TourResponse updateTourAdmin(Long id, TourRequestAdmin tourRequest);
 
     Tours deleteTourById(Long id);
 
