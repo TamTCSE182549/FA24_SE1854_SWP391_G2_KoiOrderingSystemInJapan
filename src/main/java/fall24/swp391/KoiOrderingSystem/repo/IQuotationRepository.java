@@ -15,7 +15,7 @@ public interface IQuotationRepository extends JpaRepository<Quotations, Long> {
 @Query("SELECT q FROM Quotations q WHERE q.booking.id = :bookingId")
 List<Quotations> findByBookingId(long bookingId);
 
-    Quotations findQuotationsById(Long quoctationId);
+    Quotations findQuotationsById(Long quotationId);
 
     @Query(value = "SELECT * FROM Quotations order by id DESC", nativeQuery = true)
     Page<Quotations> showAllPageable(Pageable pageable);

@@ -72,4 +72,27 @@ public class Email {
             System.out.println("ERROR SENT MAIL!!!");
         }
     }
+
+    public void sendEmailWhenForgotPassword(EmailDetail emailDetail) {
+        try {
+            Context context = new Context();
+            context.setVariable("name",emailDetail.getReceiver().getEmail());
+            
+            context.setVariable("link",emailDetail.getLink());
+            String template = templateEngine.process("forgot-password",context);
+            // creating a simple mail message
+            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
+            //setting up necessary details
+            mimeMessageHelper.setFrom("minh1032024@gmail.com");
+            mimeMessageHelper.setTo(emailDetail.getReceiver().getEmail());
+            mimeMessageHelper.setText(template,true);
+            mimeMessageHelper.setSubject(emailDetail.getSubject());
+            //send mail
+            javaMailSender.send(mimeMessage);
+
+        } catch (MessagingException e){
+            System.out.println("ERROR SENT MAIL!!!");
+        }
+    }
 }
