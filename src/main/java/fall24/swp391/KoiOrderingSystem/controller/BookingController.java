@@ -72,6 +72,12 @@ public class BookingController {
         return new ResponseEntity<>("Delete booking complete", HttpStatus.OK);
     }
 
+    @PutMapping("/delete/{bookingId}")
+    public ResponseEntity<String> deleteBookingFosCustomer(@PathVariable Long bookingId) {
+        bookingService.deleteBookingResponse(bookingId);
+        return new ResponseEntity<>("Delete booking complete", HttpStatus.OK);
+    }
+
     @GetMapping("/koi/list/{accountID}")
     public ResponseEntity<?> getKoiBookings(@PathVariable Long accountID) {
         List<BookingTourResponse> bookings = bookingService.getKoiBookingById(accountID);
