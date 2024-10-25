@@ -155,7 +155,8 @@ public class BookingTourDetailService implements IBookingTourDetailService {
             if (bTourDetail.isPresent()){
                 BookingTourDetail update = bTourDetail.get();
                 update.setParticipant(bookingTourDetail.getParticipant());
-                Tours tour = iTourRepository.findById(bookingTourDetail.getTourId().getId()).get();
+                Tours tour = iTourRepository.findById(bookingTourDetail.getTourId().getId()).
+                        orElseThrow(() -> new NotFoundEntity("Tour Not Found"));
                 update.setTotalAmount(tour.getUnitPrice() * update.getParticipant());
                 return iBookingTourDetailRepository.save(bookingTourDetail);
             } else {

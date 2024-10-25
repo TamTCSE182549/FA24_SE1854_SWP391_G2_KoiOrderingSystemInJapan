@@ -450,6 +450,9 @@ public class BookingService implements IBookingService{
         Bookings booking = bookingRepository.findById(bookingID)
                 .orElseThrow(() -> new NotFoundEntity("Booking not exist"));
         Account account = authenticationService.getCurrentAccount();
+        if(account.getRole() != Role.CUSTOMER) {
+            throw new NotDeleteException("Your role cannot delete");
+        }
         if(booking.getPaymentStatus()!=PaymentStatus.pending){
             throw new NotDeleteException("Your cannot delete this booking because it processing");
         }
