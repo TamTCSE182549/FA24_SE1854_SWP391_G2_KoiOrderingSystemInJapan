@@ -6,7 +6,6 @@ import fall24.swp391.KoiOrderingSystem.model.request.BookingTourRequest;
 import fall24.swp391.KoiOrderingSystem.model.request.BookingUpdateRequestCus;
 import fall24.swp391.KoiOrderingSystem.model.request.BookingUpdateRequestStaff;
 import fall24.swp391.KoiOrderingSystem.model.response.BookingTourResponse;
-import fall24.swp391.KoiOrderingSystem.pojo.Bookings;
 import fall24.swp391.KoiOrderingSystem.service.IBookingService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.modelmapper.ModelMapper;
@@ -49,7 +48,13 @@ public class BookingController {
         return ResponseEntity.ok(bookings);
     }
 
-    @PutMapping("/updateResponseFormStaff")
+    @GetMapping("/admin/dashboard")
+    public ResponseEntity<List<BookingTourResponse>> getTourBookingResponseForDashBoard() {
+        List<BookingTourResponse> bookings = bookingService.getBookingResponseForDashBoard();
+        return ResponseEntity.ok(bookings);
+    }
+
+    @PutMapping("/admin/updateResponseFormStaff")
     public ResponseEntity<?> updateBookingAndResponse(@RequestBody BookingUpdateRequestStaff bookingUpdateRequestStaff) {
         BookingTourResponse bookingTourResponse = bookingService.responseUpdateForStaff(bookingUpdateRequestStaff);
         return new ResponseEntity<>(bookingTourResponse, HttpStatus.OK);
