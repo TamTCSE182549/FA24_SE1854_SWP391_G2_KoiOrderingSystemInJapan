@@ -26,6 +26,8 @@ public interface IBookingService {
     //Get tour booking response by accountID for customer
     List<BookingTourResponse> getTourBookingResponse();
 
+    List<BookingTourResponse> getBookingResponseForDashBoard();
+
     // Update an existing booking (update status if not pending or cancelled)
 //    Bookings updateTourBooking(Long id, Bookings bookingDetails);
 

@@ -165,6 +165,32 @@ public class BookingService implements IBookingService{
         }).toList();
     }
 
+    @Override
+    public List<BookingTourResponse> getBookingResponseForDashBoard() {
+        Account account = authenticationService.getCurrentAccount();
+        if(account.getRole() != Role.MANAGER){
+            throw new NotReadException("Your role cannot access");
+        }
+        List<Bookings> bookingsList = bookingRepository.listBookingForDashBoard();
+        return bookingsList.stream().map(bookings -> {
+            BookingTourResponse bookingTourResponse = modelMapper.map(bookings, BookingTourResponse.class);
+            if (bookings.getUpdatedBy() == null) {
+                bookingTourResponse.setUpdatedBy("");
+            } else {
+                bookingTourResponse.setUpdatedBy(bookings.getUpdatedBy().getFirstName() + " " + bookings.getUpdatedBy().getLastName());
+            }
+
+            if (bookings.getCreatedBy() == null) {
+                bookingTourResponse.setCreatedBy("");
+            } else {
+                bookingTourResponse.setCreatedBy(bookings.getCreatedBy().getFirstName() + " " + bookings.getCreatedBy().getLastName());
+            }
+            bookingTourResponse.setCustomerID(bookings.getAccount().getId());
+            bookingTourResponse.setNameCus(bookings.getAccount().getFirstName() + " " + bookings.getAccount().getLastName());
+            return bookingTourResponse;
+        }).toList();
+    }
+
 //    @Override
 //    public Bookings updateTourBooking(Long id, Bookings bookingUpdateDetail) {
 //        try {
@@ -267,13 +293,16 @@ public class BookingService implements IBookingService{
     public BookingTourResponse responseUpdateForStaff(BookingUpdateRequestStaff bookingUpdateRequestStaff) {
         try {
             Account account = authenticationService.getCurrentAccount();
-//            if (account.getRole() != Role.MANAGER){
-//                throw new NotUpdateException("Your Role cannot access");
-//            }
+            if (account.getRole() != Role.MANAGER){
+                throw new NotUpdateException("Your Role cannot access");
+            }
             Bookings bookings = bookingRepository.findById(bookingUpdateRequestStaff.getBookingID())
                     .orElseThrow(() -> new NotFoundEntity("Booking ID not FOUND"));
             bookings.setPaymentMethod(bookingUpdateRequestStaff.getPaymentMethod());
             bookings.setPaymentStatus(bookingUpdateRequestStaff.getPaymentStatus());
+            if(bookings.getPaymentStatus() == PaymentStatus.complete){
+                bookings.setPaymentDate(LocalDateTime.now());
+            }
             bookings.setVat(bookingUpdateRequestStaff.getVat());
             bookings.setDiscountAmount(bookingUpdateRequestStaff.getDiscountAmount());
             bookings.setUpdatedBy(account);
@@ -445,7 +474,7 @@ public class BookingService implements IBookingService{
             return bookingTourResponse;
         }).toList();
     }
-
+    //Delete Booking for customer
     public BookingTourResponse deleteBookingResponse(Long bookingID) {
         Bookings booking = bookingRepository.findById(bookingID)
                 .orElseThrow(() -> new NotFoundEntity("Booking not exist"));
@@ -453,7 +482,7 @@ public class BookingService implements IBookingService{
         if(account.getRole() != Role.CUSTOMER) {
             throw new NotDeleteException("Your role cannot delete");
         }
-        if(booking.getPaymentStatus()!=PaymentStatus.pending){
+        if(booking.getPaymentStatus()!=PaymentStatus.pending && booking.getPaymentStatus()!=PaymentStatus.processing){
             throw new NotDeleteException("Your cannot delete this booking because it processing");
         }
         booking.setPaymentStatus(PaymentStatus.cancelled);

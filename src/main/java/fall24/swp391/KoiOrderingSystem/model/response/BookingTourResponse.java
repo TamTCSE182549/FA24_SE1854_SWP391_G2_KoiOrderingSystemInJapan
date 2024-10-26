@@ -20,6 +20,7 @@ public class BookingTourResponse {
     BookingType bookingType;
     PaymentMethod paymentMethod;
     PaymentStatus paymentStatus;
+    LocalDateTime paymentDate;
     String createdBy;
     LocalDateTime createdDate;
     String updatedBy;
