@@ -603,6 +603,9 @@ public class BookingService implements IBookingService{
         }
         if (paymentRequest.getVnp_ResponseCode().equals("00")){
             bookings.setPaymentStatus(PaymentStatus.complete);
+            bookings.setPaymentDate(LocalDateTime.now());
+        }   else {
+            bookings.setPaymentStatus(PaymentStatus.cancelled);
         }
         //luu them ngay
         bookingRepository.save(bookings);
