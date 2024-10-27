@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Delivery Confirmation</title>
+    <style>
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #ffffff;
+            background-color: #28a745;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+<p>Dear <span th:text="${customerName}">[Customer Name]</span>,</p>
+
+<p>We are pleased to inform you that your order <span th:text="${orderNumber}">[Order Number]</span> has been successfully delivered on <span th:text="${deliveryDate}">[Delivery Date]</span>.</p>
+
+<p>We hope you are satisfied with your purchase! If you have any questions or if there’s anything we can assist you with, please don’t hesitate to reach out to us.</p>
+
+<p>If you would like to review your order or leave feedback, please click the link below:</p>
+
+<a href="#" th:href="${reviewLink}" class="button">Leave a Review</a>
+
+<p>Thank you for choosing us!</p>
+
+<p>Best regards,<br>
+    <span th:text="${businessName}">[Your Business Name]</span></p>
+</body>
+</html>

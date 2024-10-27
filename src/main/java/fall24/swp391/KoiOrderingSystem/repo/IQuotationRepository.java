@@ -22,4 +22,7 @@ List<Quotations> findByBookingId(long bookingId);
 
     @Query(value = "SELECT * FROM quotations order by id DESC", nativeQuery = true)
     List<Quotations> getAllQuotation();
+
+    @Query(value = "Select * from quotations where created_by = ?1 order by id DESC", nativeQuery = true)
+    List<Quotations> getQuotationByAccountId(Long accountId);
 }

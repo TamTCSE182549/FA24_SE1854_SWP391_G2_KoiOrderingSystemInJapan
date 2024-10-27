@@ -3,6 +3,7 @@ package fall24.swp391.KoiOrderingSystem.service;
 import fall24.swp391.KoiOrderingSystem.component.Email;
 import fall24.swp391.KoiOrderingSystem.enums.ApproveStatus;
 import fall24.swp391.KoiOrderingSystem.enums.BookingType;
+import fall24.swp391.KoiOrderingSystem.enums.Role;
 import fall24.swp391.KoiOrderingSystem.exception.GenericException;
 import fall24.swp391.KoiOrderingSystem.exception.NotCreateException;
 import fall24.swp391.KoiOrderingSystem.exception.NotFoundEntity;
@@ -64,18 +65,35 @@ public class QuotationService implements IQuotationService{
 
     @Override
     public List<QuotationResponse> getAllQuotation(){
-        List<QuotationResponse> quotationResponses = new ArrayList<>();
-        List<Quotations> quotationsList = quotationRepository.getAllQuotation();
-        for (Quotations quotation : quotationsList) {
-            QuotationResponse quotationResponse = modelMapper.map(quotation, QuotationResponse.class);
-            quotationResponse.setBookingId(quotation.getBooking().getId());
-            if(quotation.getCreatedBy()!=null)
-                quotationResponse.setStaffName(quotation.getCreatedBy().getFirstName()+" "+quotation.getCreatedBy().getLastName());
-            if(quotation.getApproveBy()!=null)
-                quotationResponse.setManagerName(quotation.getApproveBy().getFirstName()+" "+quotation.getApproveBy().getLastName());
-            quotationResponses.add(quotationResponse);
+        Account account = authenticationService.getCurrentAccount();
+        if(account.getRole() == Role.CUSTOMER){
+            List<QuotationResponse> quotationResponses = new ArrayList<>();
+            List<Quotations> quotationsList = quotationRepository.getQuotationByAccountId(account.getId());
+            for (Quotations quotation : quotationsList) {
+                QuotationResponse quotationResponse = modelMapper.map(quotation, QuotationResponse.class);
+                quotationResponse.setBookingId(quotation.getBooking().getId());
+                if(quotation.getCreatedBy()!=null)
+                    quotationResponse.setStaffName(quotation.getCreatedBy().getFirstName()+" "+quotation.getCreatedBy().getLastName());
+                if(quotation.getApproveBy()!=null)
+                    quotationResponse.setManagerName(quotation.getApproveBy().getFirstName()+" "+quotation.getApproveBy().getLastName());
+                quotationResponses.add(quotationResponse);
+            }
+            return quotationResponses;
+        } else if(account.getRole() == Role.MANAGER || account.getRole() == Role.SALES_STAFF) {
+            List<QuotationResponse> quotationResponses = new ArrayList<>();
+            List<Quotations> quotationsList = quotationRepository.getAllQuotation();
+            for (Quotations quotation : quotationsList) {
+                QuotationResponse quotationResponse = modelMapper.map(quotation, QuotationResponse.class);
+                quotationResponse.setBookingId(quotation.getBooking().getId());
+                if(quotation.getCreatedBy()!=null)
+                    quotationResponse.setStaffName(quotation.getCreatedBy().getFirstName()+" "+quotation.getCreatedBy().getLastName());
+                if(quotation.getApproveBy()!=null)
+                    quotationResponse.setManagerName(quotation.getApproveBy().getFirstName()+" "+quotation.getApproveBy().getLastName());
+                quotationResponses.add(quotationResponse);
+            }
+            return quotationResponses;
         }
-        return quotationResponses;
+        throw new NotFoundEntity("Your role cannot do this service.");
     }
 
     @Override

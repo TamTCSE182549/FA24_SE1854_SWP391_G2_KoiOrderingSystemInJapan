@@ -2,7 +2,7 @@ package fall24.swp391.KoiOrderingSystem.controller;
 
 
 import fall24.swp391.KoiOrderingSystem.model.request.*;
-import fall24.swp391.KoiOrderingSystem.model.response.BookingTourRes;
+import fall24.swp391.KoiOrderingSystem.model.response.BookingResponseDetail;
 import fall24.swp391.KoiOrderingSystem.model.response.BookingTourResponse;
 import fall24.swp391.KoiOrderingSystem.service.IBookingService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -109,5 +109,23 @@ public class BookingController {
     public ResponseEntity<?> showBookingForKoi(){
         List<BookingTourResponse> bookingTourResponses = bookingService.getKoiBooking();
         return ResponseEntity.ok(bookingTourResponses);
+    }
+
+    @GetMapping("/ViewDetail/{bookingId}")
+    public ResponseEntity<?> viewDetail(@PathVariable Long bookingId){
+        BookingResponseDetail bookingResponse = bookingService.viewDetailBooking(bookingId);
+        return ResponseEntity.ok(bookingResponse);
+    }
+
+    @PutMapping("/update/{bookingId}")
+    public ResponseEntity<?> updateBookingId(@PathVariable Long bookingId, @RequestBody BookingUpdate bookingUpdate){
+        BookingTourResponse bookingResponse = bookingService.updateKoiBooking(bookingId,bookingUpdate);
+        return  ResponseEntity.ok(bookingResponse);
+    }
+
+    @PutMapping("/update/status/{bookingId}")
+    public ResponseEntity<?> updateStatus(@PathVariable Long bookingId){
+        BookingTourResponse bookingResponse = bookingService.updateStastus(bookingId);
+        return  ResponseEntity.ok(bookingResponse);
     }
 }
