@@ -1,10 +1,8 @@
 package fall24.swp391.KoiOrderingSystem.controller;
 
 
-import fall24.swp391.KoiOrderingSystem.model.request.BookingKoiRequest;
-import fall24.swp391.KoiOrderingSystem.model.request.BookingTourRequest;
-import fall24.swp391.KoiOrderingSystem.model.request.BookingUpdateRequestCus;
-import fall24.swp391.KoiOrderingSystem.model.request.BookingUpdateRequestStaff;
+import fall24.swp391.KoiOrderingSystem.model.request.*;
+import fall24.swp391.KoiOrderingSystem.model.response.BookingTourRes;
 import fall24.swp391.KoiOrderingSystem.model.response.BookingTourResponse;
 import fall24.swp391.KoiOrderingSystem.pojo.Bookings;
 import fall24.swp391.KoiOrderingSystem.service.IBookingService;
@@ -40,6 +38,24 @@ public class BookingController {
     @GetMapping("/BookingForTour")
     public ResponseEntity<?> showBookingForTour(){
         List<BookingTourResponse> bookingTourResponses = bookingService.bookingForTour();
+        return ResponseEntity.ok(bookingTourResponses);
+    }
+
+    @GetMapping("/paymentUrl/{bookingId}")
+    public ResponseEntity<?> getPaymentUrl(@PathVariable Long bookingId) throws Exception {
+        String url = bookingService.createUrl(bookingId);
+        return ResponseEntity.ok(url);
+    }
+    @PutMapping("/payment/confirm")
+    public ResponseEntity<?> updateBooking(@RequestBody PaymentRequest paymentRequest) {
+        bookingService.updatePayment(paymentRequest);
+        return ResponseEntity.ok("Success");
+    }
+
+
+    @GetMapping("/BookingForTour/{bookingId}")
+    public ResponseEntity<?> getBookingById(@PathVariable Long bookingId){
+        BookingTourRes bookingTourResponses = bookingService.getBookingById(bookingId);
         return ResponseEntity.ok(bookingTourResponses);
     }
 
