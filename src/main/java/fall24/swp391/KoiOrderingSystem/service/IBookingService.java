@@ -4,7 +4,9 @@ package fall24.swp391.KoiOrderingSystem.service;
 import fall24.swp391.KoiOrderingSystem.model.request.*;
 //import fall24.swp391.KoiOrderingSystem.model.request.BookingRequest;
 //import fall24.swp391.KoiOrderingSystem.model.response.BookingResponse;
+
 import fall24.swp391.KoiOrderingSystem.model.response.BookingResponseDetail;
+
 import fall24.swp391.KoiOrderingSystem.model.response.BookingTourResponse;
 import fall24.swp391.KoiOrderingSystem.pojo.Bookings;
 
@@ -23,6 +25,8 @@ public interface IBookingService {
 
     //Get tour booking response by accountID for customer
     List<BookingTourResponse> getTourBookingResponse();
+
+    List<BookingTourResponse> getBookingResponseForDashBoard();
 
     // Update an existing booking (update status if not pending or cancelled)
 //    Bookings updateTourBooking(Long id, Bookings bookingDetails);
@@ -48,6 +52,12 @@ public interface IBookingService {
 
     BookingTourResponse deleteBookingResponse(Long bookingID);
 
+
     BookingTourResponse updateStastus(Long bookingId);
+
+
+    String createUrl(Long bookingId) throws  Exception;
+
+    void updatePayment(PaymentRequest paymentRequest);
 
 }

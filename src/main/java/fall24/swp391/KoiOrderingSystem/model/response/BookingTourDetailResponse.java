@@ -7,6 +7,6 @@ public class BookingTourDetailResponse {
     Long bookingTourDetailID;
     Long bookingID;
     String tourName;
-    int participant;
-    float totalAmount;
+    Integer participant;
+    Float totalAmount;
 }

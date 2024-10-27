@@ -6,9 +6,8 @@ import fall24.swp391.KoiOrderingSystem.enums.PaymentStatus;
 import lombok.Data;
 
 import java.time.LocalDateTime;
-
 @Data
-public class BookingTourResponse {
+public class BookingTourRes {
     Long id;
     Long customerID;
     String nameCus;
@@ -20,9 +19,10 @@ public class BookingTourResponse {
     BookingType bookingType;
     PaymentMethod paymentMethod;
     PaymentStatus paymentStatus;
-    LocalDateTime paymentDate;
     String createdBy;
     LocalDateTime createdDate;
     String updatedBy;
     LocalDateTime updatedDate;
+    String email;
+    String phone;
 }

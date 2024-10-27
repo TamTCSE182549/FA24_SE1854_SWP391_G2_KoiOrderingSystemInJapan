@@ -138,7 +138,9 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
             account  = modelMapper.map(googleRequest,Account.class);
             account.setRole(Role.CUSTOMER);
             account.setActive(true);
+            account.setPassword(passwordEncoder.encode("newpassword"));
         }
+        accountRepository.save(account);
         System.out.println(account.toString());
         //return token to fe
         return getToken.generateToken(account);
@@ -153,16 +155,17 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
         return accountRepository.findAccountById(account.getId());
     }
 
-    public void forgotPassword(ForgotPassRequest forgotPassRequest){
+    public void forgotPassword(ForgotPassRequest forgotPassRequest) {
         Account account = accountRepository.findAccountByEmail(forgotPassRequest.getEmail());
-        if(account==null) {
+        if (account == null) {
             throw new AccountNotFoundException("Account not found");
-        } else{
+        } else {
             EmailDetail emailDetail = new EmailDetail();
             emailDetail.setReceiver(account);
-            emailDetail.setSubject(token.generateToken(account));
-            emailDetail.setLink("fb.com" );
-            emailService.sendEmail(emailDetail);
+            emailDetail.setSubject("Reset Password");
+            String tokenEmail = token.generateToken(account); // Generate token
+            emailDetail.setLink("http://localhost:3000/resetpassword?token=" + tokenEmail); // Include token in link
+            emailService.sendEmailWhenForgotPassword(emailDetail); // Send email
         }
     }
 

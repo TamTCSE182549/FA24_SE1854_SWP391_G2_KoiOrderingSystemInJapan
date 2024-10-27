@@ -5,6 +5,7 @@ import fall24.swp391.KoiOrderingSystem.enums.TourStatus;
 import fall24.swp391.KoiOrderingSystem.exception.*;
 import fall24.swp391.KoiOrderingSystem.model.request.FindTourRequest;
 import fall24.swp391.KoiOrderingSystem.model.request.TourRequest;
+import fall24.swp391.KoiOrderingSystem.model.request.TourRequestAdmin;
 import fall24.swp391.KoiOrderingSystem.model.response.TourResponse;
 import fall24.swp391.KoiOrderingSystem.pojo.Account;
 import fall24.swp391.KoiOrderingSystem.pojo.Tours;
@@ -99,6 +100,35 @@ public class TourService implements ITourService{
             tours.setStartTime(tourRequest.getStartTime());
             tours.setEndTime(tourRequest.getEndTime());
             tours.setTourImg(tourRequest.getTourImg());
+            tours.setUpdatedBy(account);
+            iTourRepository.save(tours);
+            TourResponse tourResponse = modelMapper.map(tours, TourResponse.class);
+            tourResponse.setMessage("Update Tour " + tourResponse.getTourName() + " Success");
+            tourResponse.setCreatedBy(tours.getCreatedBy().getFirstName() + " " + tours.getCreatedBy().getLastName());
+            tourResponse.setUpdatedBy(tours.getUpdatedBy().getFirstName() + " " + tours.getUpdatedBy().getLastName());
+            return tourResponse;
+        } catch (Exception e){
+            throw new GenericException(e.getMessage());
+        }
+    }
+
+    @Override
+    public TourResponse updateTourAdmin(Long id, TourRequestAdmin tourRequest) {
+        try {
+            Account account = authenticationService.getCurrentAccount();
+            if (account.getRole()!= Role.MANAGER){
+                throw new NotCreateException("Your role cannot access");
+            }
+            Tours tours = iTourRepository.findById(id)
+                    .orElseThrow(() -> new NotFoundEntity("Tour not FOUND to UPDATE"));
+            tours.setTourName(tourRequest.getTourName());
+            tours.setUnitPrice(tourRequest.getUnitPrice());
+            tours.setMaxParticipants(tourRequest.getMaxParticipants());
+            tours.setDescription(tourRequest.getDescription());
+            tours.setStartTime(tourRequest.getStartTime());
+            tours.setEndTime(tourRequest.getEndTime());
+            tours.setTourImg(tourRequest.getTourImg());
+            tours.setStatus(tourRequest.getStatus());
             tours.setUpdatedBy(account);
             iTourRepository.save(tours);
             TourResponse tourResponse = modelMapper.map(tours, TourResponse.class);

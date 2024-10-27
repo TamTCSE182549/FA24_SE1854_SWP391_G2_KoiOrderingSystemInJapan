@@ -13,5 +13,6 @@ public class KoiFarmRequest {
     private String farmAddress;
     private String website;
     private String description;
+    private boolean active;
     private List<String> images;
 }

@@ -58,6 +58,9 @@ public class Bookings {
     @Column(name = "payment_method")
     private PaymentMethod paymentMethod;
 
+    @Column(name = "paymentDate")
+    private LocalDateTime paymentDate;
+
     //here mapping quotation table
     @OneToMany(mappedBy = "booking", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     private List<Quotations> quotations;

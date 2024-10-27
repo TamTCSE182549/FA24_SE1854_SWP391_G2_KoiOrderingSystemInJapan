@@ -4,7 +4,6 @@ package fall24.swp391.KoiOrderingSystem.controller;
 import fall24.swp391.KoiOrderingSystem.model.request.*;
 import fall24.swp391.KoiOrderingSystem.model.response.BookingResponseDetail;
 import fall24.swp391.KoiOrderingSystem.model.response.BookingTourResponse;
-import fall24.swp391.KoiOrderingSystem.pojo.Bookings;
 import fall24.swp391.KoiOrderingSystem.service.IBookingService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.modelmapper.ModelMapper;
@@ -41,13 +40,37 @@ public class BookingController {
         return ResponseEntity.ok(bookingTourResponses);
     }
 
+    @GetMapping("/paymentUrl/{bookingId}")
+    public ResponseEntity<?> getPaymentUrl(@PathVariable Long bookingId) throws Exception {
+        String url = bookingService.createUrl(bookingId);
+        return ResponseEntity.ok(url);
+    }
+    @PutMapping("/payment/confirm")
+    public ResponseEntity<?> updateBooking(@RequestBody PaymentRequest paymentRequest) {
+        bookingService.updatePayment(paymentRequest);
+        return ResponseEntity.ok("Success");
+    }
+
+
+    @GetMapping("/BookingForTour/{bookingId}")
+    public ResponseEntity<?> getBookingById(@PathVariable Long bookingId){
+        BookingTourRes bookingTourResponses = bookingService.getBookingById(bookingId);
+        return ResponseEntity.ok(bookingTourResponses);
+    }
+
     @GetMapping("/listBookingTourResponse")
     public ResponseEntity<List<BookingTourResponse>> getTourBookingResponse() {
         List<BookingTourResponse> bookings = bookingService.getTourBookingResponse();
         return ResponseEntity.ok(bookings);
     }
 
-    @PutMapping("/updateResponseFormStaff")
+    @GetMapping("/admin/dashboard")
+    public ResponseEntity<List<BookingTourResponse>> getTourBookingResponseForDashBoard() {
+        List<BookingTourResponse> bookings = bookingService.getBookingResponseForDashBoard();
+        return ResponseEntity.ok(bookings);
+    }
+
+    @PutMapping("/admin/updateResponseFormStaff")
     public ResponseEntity<?> updateBookingAndResponse(@RequestBody BookingUpdateRequestStaff bookingUpdateRequestStaff) {
         BookingTourResponse bookingTourResponse = bookingService.responseUpdateForStaff(bookingUpdateRequestStaff);
         return new ResponseEntity<>(bookingTourResponse, HttpStatus.OK);
@@ -67,6 +90,12 @@ public class BookingController {
     @DeleteMapping("/manager/delete/{bookingId}")
     public ResponseEntity<String> deleteBooking(@PathVariable Long bookingId) {
         bookingService.deleteBookingForManager(bookingId);
+        return new ResponseEntity<>("Delete booking complete", HttpStatus.OK);
+    }
+
+    @PutMapping("/delete/{bookingId}")
+    public ResponseEntity<String> deleteBookingFosCustomer(@PathVariable Long bookingId) {
+        bookingService.deleteBookingResponse(bookingId);
         return new ResponseEntity<>("Delete booking complete", HttpStatus.OK);
     }
 
