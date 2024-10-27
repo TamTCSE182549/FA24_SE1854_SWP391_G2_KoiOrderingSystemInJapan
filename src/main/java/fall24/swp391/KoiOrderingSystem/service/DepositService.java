@@ -47,10 +47,17 @@ public class DepositService implements IDepositService{
             Deposit deposit =modelMapper.map(depositRequest,Deposit.class);
             Bookings booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
-            deposit.setDepositStatus(DepositStatus.processing);
+            deposit.setDepositStatus(DepositStatus.complete);
             deposit.setBooking(booking);
             deposit.setDepositAmount(booking.getTotalAmountWithVAT()*depositRequest.getDepositPercentage());
-            deposit.setRemainAmount(booking.getTotalAmountWithVAT()-deposit.getDepositAmount());
+            deposit.setRemainAmount(booking.getTotalAmountWithVAT()-deposit.getDepositAmount()+deposit.getShippingFee());
+            Bookings relateBooking = deposit.getBooking();
+            if (relateBooking != null) {
+                if (relateBooking.getBookingType() == BookingType.BookingForKoi) {
+                    relateBooking.setPaymentStatus(PaymentStatus.shipped);
+                    bookingRepository.save(relateBooking);
+                }
+            }
             depositRepository.save(deposit);
             DepositRespone depositRespone = modelMapper.map(deposit, DepositRespone.class);
             return depositRespone;

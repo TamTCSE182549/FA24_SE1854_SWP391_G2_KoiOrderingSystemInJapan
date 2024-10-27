@@ -2,6 +2,7 @@ package fall24.swp391.KoiOrderingSystem.controller;
 
 
 import fall24.swp391.KoiOrderingSystem.model.request.BookingKoiDetailRequest;
+import fall24.swp391.KoiOrderingSystem.model.request.UpdateBookingKoiDetailRequest;
 import fall24.swp391.KoiOrderingSystem.model.response.BookingKoiDetailResponse;
 import fall24.swp391.KoiOrderingSystem.pojo.BookingKoiDetail;
 import fall24.swp391.KoiOrderingSystem.service.IBookingKoiDetailService;
@@ -21,9 +22,9 @@ public class BookingKoiDetailController {
     @Autowired
     private IBookingKoiDetailService iBookingKoiDetailService;
 
-    @PutMapping("/update")
-    public ResponseEntity<?> updateKoiDetail(@RequestBody BookingKoiDetail bookingKoiDetail){
-        BookingKoiDetail updateKoiDetail = iBookingKoiDetailService.updateBookingKoiDetail(bookingKoiDetail);
+    @PutMapping("/update/{bookingId}")
+    public ResponseEntity<?> updateKoiDetail(@PathVariable Long bookingId,@RequestBody List<UpdateBookingKoiDetailRequest> updateBookingKoiDetailRequest){
+        List<BookingKoiDetail> updateKoiDetail = iBookingKoiDetailService.updateBookingKoiDetail(bookingId,updateBookingKoiDetailRequest);
         return ResponseEntity.ok(updateKoiDetail);
     }
 

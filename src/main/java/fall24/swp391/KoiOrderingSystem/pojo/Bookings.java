@@ -67,6 +67,10 @@ public class Bookings {
 
     //mapped By same name with ManyToOne annotation
     @OneToMany(mappedBy = "booking", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    private List<BookingKoiDetail> bookingKoiDetails;
+
+    //mapped By same name with ManyToOne annotation
+    @OneToMany(mappedBy = "booking", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     private List<BookingTourDetail> bookingTourDetails;
 
     @OneToMany(mappedBy = "booking", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})

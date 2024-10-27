@@ -4,7 +4,9 @@ package fall24.swp391.KoiOrderingSystem.service;
 import fall24.swp391.KoiOrderingSystem.model.request.*;
 //import fall24.swp391.KoiOrderingSystem.model.request.BookingRequest;
 //import fall24.swp391.KoiOrderingSystem.model.response.BookingResponse;
-import fall24.swp391.KoiOrderingSystem.model.response.BookingTourRes;
+
+import fall24.swp391.KoiOrderingSystem.model.response.BookingResponseDetail;
+
 import fall24.swp391.KoiOrderingSystem.model.response.BookingTourResponse;
 import fall24.swp391.KoiOrderingSystem.pojo.Bookings;
 
@@ -40,15 +42,19 @@ public interface IBookingService {
 
     BookingTourResponse createKoiBooking(BookingKoiRequest bookingKoiRequest,Long bookingId) ;
 
-    Bookings updateKoiBooking(Long id, Bookings bookingDetails);
+    BookingTourResponse updateKoiBooking(Long id, BookingUpdate bookingUpdate);
 
     List<BookingTourResponse> getKoiBookingById(Long accountID);
 
     List<BookingTourResponse> getKoiBooking();
 
+    BookingResponseDetail viewDetailBooking(Long bookingId);
+
     BookingTourResponse deleteBookingResponse(Long bookingID);
 
-    BookingTourRes getBookingById(Long bookingID);
+
+    BookingTourResponse updateStastus(Long bookingId);
+
 
     String createUrl(Long bookingId) throws  Exception;
 

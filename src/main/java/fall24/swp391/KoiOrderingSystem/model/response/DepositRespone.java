@@ -9,6 +9,8 @@ import java.util.Date;
 @Data
 public class DepositRespone {
 
+    private Long Id;
+
     private  float depositAmount;
 
     private float  remainAmount;
