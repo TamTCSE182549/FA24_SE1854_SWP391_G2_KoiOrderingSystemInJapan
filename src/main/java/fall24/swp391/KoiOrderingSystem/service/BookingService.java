@@ -124,7 +124,7 @@ public class BookingService implements IBookingService{
     public List<BookingTourResponse> bookingForTour() {
         Account account = authenticationService.getCurrentAccount();
         List<Bookings> bookingTourResponses = null;
-        if (account.getRole() == Role.MANAGER){
+        if (account.getRole() == Role.MANAGER || account.getRole() == Role.SALES_STAFF){
             bookingTourResponses = bookingRepository.listBookingForTour();
         } else {
             throw new NotFoundEntity("Account not FOUND");
