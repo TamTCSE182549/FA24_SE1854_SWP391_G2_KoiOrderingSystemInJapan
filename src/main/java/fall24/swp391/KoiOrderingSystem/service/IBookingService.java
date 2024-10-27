@@ -1,12 +1,10 @@
 package fall24.swp391.KoiOrderingSystem.service;
 
 
-import fall24.swp391.KoiOrderingSystem.model.request.BookingKoiRequest;
+import fall24.swp391.KoiOrderingSystem.model.request.*;
 //import fall24.swp391.KoiOrderingSystem.model.request.BookingRequest;
 //import fall24.swp391.KoiOrderingSystem.model.response.BookingResponse;
-import fall24.swp391.KoiOrderingSystem.model.request.BookingTourRequest;
-import fall24.swp391.KoiOrderingSystem.model.request.BookingUpdateRequestCus;
-import fall24.swp391.KoiOrderingSystem.model.request.BookingUpdateRequestStaff;
+import fall24.swp391.KoiOrderingSystem.model.response.BookingTourRes;
 import fall24.swp391.KoiOrderingSystem.model.response.BookingTourResponse;
 import fall24.swp391.KoiOrderingSystem.pojo.Bookings;
 
@@ -49,5 +47,11 @@ public interface IBookingService {
     List<BookingTourResponse> getKoiBooking();
 
     BookingTourResponse deleteBookingResponse(Long bookingID);
+
+    BookingTourRes getBookingById(Long bookingID);
+
+    String createUrl(Long bookingId) throws  Exception;
+
+    void updatePayment(PaymentRequest paymentRequest);
 
 }

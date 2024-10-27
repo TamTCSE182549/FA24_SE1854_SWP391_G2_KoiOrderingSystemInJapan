@@ -24,9 +24,12 @@ public class CurrencyConversionService {
         if (response.getStatusCode().is2xxSuccessful()) {
             Map<String, Object> responseBody = response.getBody();
 
-            if (responseBody != null && responseBody.containsKey("quotes")) {
+            if (responseBody != null && Boolean.TRUE.equals(responseBody.get("success")) && responseBody.containsKey("quotes")) {
                 Map<String, Float> quotes = (Map<String, Float>) responseBody.get("quotes");
-                return quotes.get("USDVND"); // Lấy tỷ giá USD -> VND
+                Float exchangeRate = Float.parseFloat(String.valueOf(quotes.get("USDVND")));
+                if (exchangeRate != null) {
+                    return exchangeRate;
+                }
             }
         }
 

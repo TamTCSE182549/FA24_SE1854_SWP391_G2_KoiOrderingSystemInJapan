@@ -6,6 +6,7 @@ import fall24.swp391.KoiOrderingSystem.enums.Role;
 import fall24.swp391.KoiOrderingSystem.enums.TourStatus;
 import fall24.swp391.KoiOrderingSystem.exception.*;
 import fall24.swp391.KoiOrderingSystem.model.request.*;
+import fall24.swp391.KoiOrderingSystem.model.response.BookingTourRes;
 import fall24.swp391.KoiOrderingSystem.pojo.*;
 import fall24.swp391.KoiOrderingSystem.repo.*;
 import fall24.swp391.KoiOrderingSystem.model.response.BookingTourResponse;
@@ -21,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
@@ -32,6 +34,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class BookingService implements IBookingService{
@@ -505,6 +509,32 @@ public class BookingService implements IBookingService{
         return modelMapper.map(booking, BookingTourResponse.class);
     }
 
+    @Override
+    public BookingTourRes getBookingById(Long bookingID) {
+        Bookings bookings = bookingRepository.findBookingsById(bookingID);
+        if(bookings==null){
+            throw new NotFoundEntity("Booking not exist");
+        }
+        BookingTourRes bookingTourResponse = modelMapper.map(bookings, BookingTourRes.class);
+        if (bookings.getUpdatedBy() == null) {
+            bookingTourResponse.setUpdatedBy("");
+        } else {
+            bookingTourResponse.setUpdatedBy(bookings.getUpdatedBy().getFirstName() + " " + bookings.getUpdatedBy().getLastName());
+        }
+
+        if (bookings.getCreatedBy() == null) {
+            bookingTourResponse.setCreatedBy("");
+        } else {
+            bookingTourResponse.setCreatedBy(bookings.getCreatedBy().getFirstName() + " " + bookings.getCreatedBy().getLastName());
+        }
+        bookingTourResponse.setCustomerID(bookings.getAccount().getId());
+        bookingTourResponse.setNameCus(bookings.getAccount().getFirstName() + " " + bookings.getAccount().getLastName());
+        bookingTourResponse.setPhone(bookings.getAccount().getPhone());
+        bookingTourResponse.setEmail(bookings.getAccount().getEmail());
+        return bookingTourResponse;
+
+    }
+@Override
     public String createUrl(Long bookingId) throws  Exception {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
         LocalDateTime createDate = LocalDateTime.now();
@@ -517,7 +547,7 @@ public class BookingService implements IBookingService{
         String tmnCode = "JH4XT293";
         String secretKey = "S5X7K9OKZQLCE1Z0VI2LYOV1SLEWTSZP";
         String vnpUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-        String returnUrl = "https://www.google.com/";
+        String returnUrl = "http://localhost:3000/paymentsuccess";
         String currCode = "VND";
 
         Map<String, String> vnpParams = new TreeMap<>();
@@ -560,6 +590,22 @@ public class BookingService implements IBookingService{
         urlBuilder.deleteCharAt(urlBuilder.length() - 1); // Remove last '&'
 
         return urlBuilder.toString();
+    }
+
+    @Override
+    public void updatePayment(PaymentRequest paymentRequest) {
+        String text = paymentRequest.getVnp_OrderInfo();
+        String bookingId = text.split(": ")[1];
+        // Tạo pattern để tìm số sau "ma GD:"
+        Bookings bookings = bookingRepository.findBookingsById(Long.parseLong(bookingId));
+        if(bookings == null) {
+            throw new NotFoundEntity("Not found Booking");
+        }
+        if (paymentRequest.getVnp_ResponseCode().equals("00")){
+            bookings.setPaymentStatus(PaymentStatus.complete);
+        }
+        //luu them ngay
+        bookingRepository.save(bookings);
     }
 
     private String generateHMAC(String secretKey, String signData) throws NoSuchAlgorithmException, InvalidKeyException {
