@@ -52,11 +52,11 @@ public class BookingController {
     }
 
 
-    @GetMapping("/BookingForTour/{bookingId}")
-    public ResponseEntity<?> getBookingById(@PathVariable Long bookingId){
-        BookingTourRes bookingTourResponses = bookingService.getBookingById(bookingId);
-        return ResponseEntity.ok(bookingTourResponses);
-    }
+//    @GetMapping("/BookingForTour/{bookingId}")
+//    public ResponseEntity<?> getBookingById(@PathVariable Long bookingId){
+//        BookingTourRes bookingTourResponses = bookingService.getBookingById(bookingId);
+//        return ResponseEntity.ok(bookingTourResponses);
+//    }
 
     @GetMapping("/listBookingTourResponse")
     public ResponseEntity<List<BookingTourResponse>> getTourBookingResponse() {
