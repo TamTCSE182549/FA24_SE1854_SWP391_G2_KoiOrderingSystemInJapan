@@ -30,6 +30,17 @@ public class CheckinController {
         return ResponseEntity.ok(checkins);
     }
 
+    @GetMapping("/account/{accountId}")
+    public ResponseEntity<List<CheckinResponse>> getCheckinByAccount(@PathVariable Long accountId) {
+        return ResponseEntity.ok(checkinService.getCheckinByAccount(accountId));
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<?> getCheckin() {
+        List<CheckinResponse> checkins = checkinService.getAllCheckin();
+        return ResponseEntity.ok(checkins);
+    }
+
 
     @PostMapping("/{bookingId}")
     public ResponseEntity<?> createCheckin(@RequestBody CheckinRequest checkinRequest, @PathVariable Long bookingId) {

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Payment Reminder</title>
+    <style>
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #ffffff;
+            background-color: #007bff;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+<p>Dear <span th:text="${customerName}">[Customer Name]</span>,</p>
+
+<p>We are reaching out to remind you about invoice number <span th:text="${invoiceNumber}">[Invoice Number]</span>, which we sent to you on <span th:text="${invoiceDate}">[Invoice Date]</span>. This invoice has a total amount of <span th:text="${amount}">$[Amount]</span> and the due date is <span th:text="${dueDate}">[Due Date]</span>.</p>
+
+<p>After reviewing our records, it appears we have not yet received payment from you. Timely payment is essential to maintain our mutually beneficial relationship.</p>
+
+<p>Please complete the payment at your earliest convenience to ensure smooth business operations and avoid any unnecessary delays.</p>
+
+<p>If you have already paid or have any questions or need assistance, please contact us at <span th:text="${supportEmail}">[Support Email]</span> or call <span th:text="${supportPhone}">[Support Phone]</span>.</p>
+
+<p>Thank you very much.</p>
+
+<p>Sincerely,<br>
+    <span th:text="${businessName}">[Your Business Name]</span></p>
+
+<a href="#" th:href="${paymentLink}" class="button">Pay Now</a>
+</body>
+</html>

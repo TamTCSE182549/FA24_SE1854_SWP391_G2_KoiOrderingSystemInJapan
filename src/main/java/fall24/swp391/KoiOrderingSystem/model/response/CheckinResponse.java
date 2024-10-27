@@ -9,6 +9,7 @@ import java.util.Date;
 
 @Data
 public class CheckinResponse {
+        private Long id;
 
         private String firstName;
 
