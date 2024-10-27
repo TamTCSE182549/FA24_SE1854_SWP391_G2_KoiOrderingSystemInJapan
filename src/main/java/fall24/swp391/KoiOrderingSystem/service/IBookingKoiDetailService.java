@@ -3,6 +3,7 @@ package fall24.swp391.KoiOrderingSystem.service;
 
 
 import fall24.swp391.KoiOrderingSystem.model.request.BookingKoiDetailRequest;
+import fall24.swp391.KoiOrderingSystem.model.request.UpdateBookingKoiDetailRequest;
 import fall24.swp391.KoiOrderingSystem.model.response.BookingKoiDetailResponse;
 import fall24.swp391.KoiOrderingSystem.pojo.BookingKoiDetail;
 
@@ -16,5 +17,5 @@ public interface IBookingKoiDetailService {
 
     List<BookingKoiDetail> bookingKoiDetails(Long bookingID);
 
-    BookingKoiDetail updateBookingKoiDetail(BookingKoiDetail bookingKoiDetail);
+    List<BookingKoiDetail> updateBookingKoiDetail(Long bookingId, List<UpdateBookingKoiDetailRequest> updateBookingKoiDetailRequest);
 }

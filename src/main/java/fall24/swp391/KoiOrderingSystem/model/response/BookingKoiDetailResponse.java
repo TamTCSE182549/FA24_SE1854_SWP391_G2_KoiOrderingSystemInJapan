@@ -5,7 +5,8 @@ import lombok.Data;
 @Data
 public class BookingKoiDetailResponse {
     Long bookingKoiDetailId;
-    String koiName;
+    Long bookingId;
+    Long koiId;
     int quantity;
     float totalAmount;
     float unitPrice;
