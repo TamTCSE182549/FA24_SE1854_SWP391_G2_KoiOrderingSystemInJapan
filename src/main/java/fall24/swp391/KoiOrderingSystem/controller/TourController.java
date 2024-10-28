@@ -39,7 +39,7 @@ public class TourController {
     }
 
     @GetMapping("/showAllPageable")
-    public ResponseEntity<?> showAllPageable(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size){
+    public ResponseEntity<?> showAllPageable(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "6") int size){
         Map<String, Object> response = new HashMap<>();
         response.put("totalPage", iTourService.showAllPageable(page,size).getTotalPages());
         response.put("pageNumber", iTourService.showAllPageable(page,size).getNumber());
@@ -48,7 +48,7 @@ public class TourController {
     }
 
     @GetMapping("/showTourByName/{tourName}")
-    public ResponseEntity<?> showTourByName(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size, @PathVariable String tourName){
+    public ResponseEntity<?> showTourByName(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "6") int size, @PathVariable String tourName){
         Map<String, Object> response = new HashMap<>();
         response.put("totalPage", iTourService.showTourByName(page,size,tourName).getTotalPages());
         response.put("currentPage", iTourService.showTourByName(page,size,tourName).getNumber());
@@ -87,7 +87,7 @@ public class TourController {
     }
 
     @GetMapping("/findTourByKoiName/{koiName}")
-    public ResponseEntity<?> showTourByKoiName(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size, @PathVariable String koiName){
+    public ResponseEntity<?> showTourByKoiName(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "6") int size, @PathVariable String koiName){
         Map<String, Object> response = new HashMap<>();
         response.put("totalPage", iTourService.findTourByKoiName(page,size,koiName).getTotalPages());
         response.put("currentPage", iTourService.findTourByKoiName(page,size,koiName).getNumber());
@@ -96,7 +96,7 @@ public class TourController {
     }
 
     @PostMapping("/findTourByFarmNameAndKoiName")
-    public ResponseEntity<?> showTourByCondition(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size, @RequestBody FindTourRequest findTourRequest){
+    public ResponseEntity<?> showTourByCondition(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "6") int size, @RequestBody FindTourRequest findTourRequest){
         Map<String, Object> response = new HashMap<>();
         Page<TourResponse> tourResponses = iTourService.findTourByCondition(page, size, findTourRequest);
         response.put("totalPage", tourResponses.getTotalPages());

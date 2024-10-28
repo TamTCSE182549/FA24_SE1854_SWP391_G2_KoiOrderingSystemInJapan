@@ -9,6 +9,7 @@ import fall24.swp391.KoiOrderingSystem.model.request.*;
 
 import fall24.swp391.KoiOrderingSystem.model.response.BookingResponseDetail;
 
+import fall24.swp391.KoiOrderingSystem.model.response.BookingTourRes;
 import fall24.swp391.KoiOrderingSystem.pojo.*;
 import fall24.swp391.KoiOrderingSystem.repo.*;
 import fall24.swp391.KoiOrderingSystem.model.response.BookingTourResponse;
@@ -24,7 +25,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
@@ -34,8 +34,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Service
 public class BookingService implements IBookingService{
@@ -179,6 +177,29 @@ public class BookingService implements IBookingService{
             throw new NotReadException("Your role cannot access");
         }
         List<Bookings> bookingsList = bookingRepository.listBookingForDashBoard();
+        return bookingsList.stream().map(bookings -> {
+            BookingTourResponse bookingTourResponse = modelMapper.map(bookings, BookingTourResponse.class);
+            if (bookings.getUpdatedBy() == null) {
+                bookingTourResponse.setUpdatedBy("");
+            } else {
+                bookingTourResponse.setUpdatedBy(bookings.getUpdatedBy().getFirstName() + " " + bookings.getUpdatedBy().getLastName());
+            }
+
+            if (bookings.getCreatedBy() == null) {
+                bookingTourResponse.setCreatedBy("");
+            } else {
+                bookingTourResponse.setCreatedBy(bookings.getCreatedBy().getFirstName() + " " + bookings.getCreatedBy().getLastName());
+            }
+            bookingTourResponse.setCustomerID(bookings.getAccount().getId());
+            bookingTourResponse.setNameCus(bookings.getAccount().getFirstName() + " " + bookings.getAccount().getLastName());
+            return bookingTourResponse;
+        }).toList();
+    }
+
+    @Override
+    public List<BookingTourResponse> getBookingResponseComplete() {
+        Account account = authenticationService.getCurrentAccount();
+        List<Bookings> bookingsList = bookingRepository.listTourBookingByIDOtherStatus(account.getId());
         return bookingsList.stream().map(bookings -> {
             BookingTourResponse bookingTourResponse = modelMapper.map(bookings, BookingTourResponse.class);
             if (bookings.getUpdatedBy() == null) {
@@ -548,7 +569,7 @@ public class BookingService implements IBookingService{
 
     @Override
 
-    public BookingTourResponse updateStastus(Long bookingId) {
+    public BookingTourResponse updateStatus(Long bookingId) {
         try{
             Account account = authenticationService.getCurrentAccount();
             if(account.getRole()!= Role.SALES_STAFF){
@@ -645,6 +666,13 @@ public class BookingService implements IBookingService{
         }
         //luu them ngay
         bookingRepository.save(bookings);
+    }
+
+    @Override
+    public BookingTourRes getBookingById(Long Id) {
+        Bookings bookings = bookingRepository.findById(Id)
+                .orElseThrow(() -> new NotFoundEntity("Cannot Found Booking"));
+        return modelMapper.map(bookings, BookingTourRes.class);
     }
 
     private String generateHMAC(String secretKey, String signData) throws NoSuchAlgorithmException, InvalidKeyException {
