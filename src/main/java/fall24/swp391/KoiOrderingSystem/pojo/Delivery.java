@@ -35,7 +35,7 @@ public class Delivery {
     @Enumerated(EnumType.STRING)
     private DeliveryStatus status;
 
-    @Column(name = "reason")
+    @Column(name = "reason",columnDefinition = "TEXT")
     private String reason;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})

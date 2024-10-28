@@ -160,7 +160,6 @@ public class BookingService implements IBookingService{
             } else {
                 bookingTourResponse.setUpdatedBy(bookings.getUpdatedBy().getFirstName() + " " + bookings.getUpdatedBy().getLastName());
             }
-
             if (bookings.getCreatedBy() == null) {
                 bookingTourResponse.setCreatedBy("");
             } else {

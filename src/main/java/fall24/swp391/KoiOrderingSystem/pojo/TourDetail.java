@@ -25,7 +25,7 @@ public class TourDetail {
     @JoinColumn(name = "farm_id")
     private KoiFarms farm;
 
-    @Column(name = "description")
+    @Column(name = "description",columnDefinition = "TEXT")
     private String description;
 
     public TourDetail(Tours tour, KoiFarms farm, String description) {
