@@ -61,8 +61,8 @@ public class AuthenticationController {
     }
 
     @PutMapping("ban")
-    public ResponseEntity<?> banAccount(@RequestBody Long accountId){
-        authenticationService.banAccount(accountId);
+    public ResponseEntity<?> banAccount(@RequestBody AccountIDRequest accountId){
+        authenticationService.banAccount(accountId.getAccountId());
         return ResponseEntity.ok("Ban Account successfully");
     }
 }
