@@ -3,6 +3,7 @@ package fall24.swp391.KoiOrderingSystem.controller;
 
 import fall24.swp391.KoiOrderingSystem.model.request.*;
 import fall24.swp391.KoiOrderingSystem.model.response.BookingResponseDetail;
+import fall24.swp391.KoiOrderingSystem.model.response.BookingTourRes;
 import fall24.swp391.KoiOrderingSystem.model.response.BookingTourResponse;
 import fall24.swp391.KoiOrderingSystem.service.IBookingService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -51,16 +52,21 @@ public class BookingController {
         return ResponseEntity.ok("Success");
     }
 
-
-//    @GetMapping("/BookingForTour/{bookingId}")
-//    public ResponseEntity<?> getBookingById(@PathVariable Long bookingId){
-//        BookingTourRes bookingTourResponses = bookingService.getBookingById(bookingId);
-//        return ResponseEntity.ok(bookingTourResponses);
-//    }
+    @GetMapping("/BookingForTour/{bookingId}")
+    public ResponseEntity<?> getBookingById(@PathVariable Long bookingId){
+        BookingTourRes bookingTourResponses = bookingService.getBookingById(bookingId);
+        return ResponseEntity.ok(bookingTourResponses);
+    }
 
     @GetMapping("/listBookingTourResponse")
     public ResponseEntity<List<BookingTourResponse>> getTourBookingResponse() {
         List<BookingTourResponse> bookings = bookingService.getTourBookingResponse();
+        return ResponseEntity.ok(bookings);
+    }
+
+    @GetMapping("/listBookingTourOtherStatus")
+    public ResponseEntity<List<BookingTourResponse>> getTourBookingOtherStatus() {
+        List<BookingTourResponse> bookings = bookingService.getBookingResponseComplete();
         return ResponseEntity.ok(bookings);
     }
 
@@ -125,7 +131,7 @@ public class BookingController {
 
     @PutMapping("/update/status/{bookingId}")
     public ResponseEntity<?> updateStatus(@PathVariable Long bookingId){
-        BookingTourResponse bookingResponse = bookingService.updateStastus(bookingId);
+        BookingTourResponse bookingResponse = bookingService.updateStatus(bookingId);
         return  ResponseEntity.ok(bookingResponse);
     }
 }
