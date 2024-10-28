@@ -25,4 +25,5 @@ public class BookingTourResponse {
     LocalDateTime createdDate;
     String updatedBy;
     LocalDateTime updatedDate;
+    String tourImg;
 }

@@ -30,7 +30,7 @@ public class Quotations {
     @Column(name = "amount")
     private float amount;
 
-    @Column(name = "description")
+    @Column(name = "description",columnDefinition = "TEXT")
     private String description;
 
     @Enumerated(EnumType.STRING)

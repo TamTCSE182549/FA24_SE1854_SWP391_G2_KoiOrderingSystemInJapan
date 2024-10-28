@@ -36,7 +36,7 @@ public class Tours{
     @Column(name = "remaining")
     private Integer remaining;
 
-    @Column(name = "description")
+    @Column(name = "description",columnDefinition = "TEXT")
     private String description;
 
     @Column(name = "start_time")

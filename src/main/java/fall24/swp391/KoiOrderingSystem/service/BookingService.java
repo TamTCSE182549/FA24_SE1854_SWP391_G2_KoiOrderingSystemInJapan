@@ -122,7 +122,7 @@ public class BookingService implements IBookingService{
     public List<BookingTourResponse> bookingForTour() {
         Account account = authenticationService.getCurrentAccount();
         List<Bookings> bookingTourResponses = null;
-        if (account.getRole() == Role.MANAGER){
+        if (account.getRole() == Role.MANAGER || account.getRole() == Role.SALES_STAFF){
             bookingTourResponses = bookingRepository.listBookingForTour();
         } else {
             throw new NotFoundEntity("Account not FOUND");
@@ -158,7 +158,6 @@ public class BookingService implements IBookingService{
             } else {
                 bookingTourResponse.setUpdatedBy(bookings.getUpdatedBy().getFirstName() + " " + bookings.getUpdatedBy().getLastName());
             }
-
             if (bookings.getCreatedBy() == null) {
                 bookingTourResponse.setCreatedBy("");
             } else {
@@ -663,6 +662,9 @@ public class BookingService implements IBookingService{
         }
         if (paymentRequest.getVnp_ResponseCode().equals("00")){
             bookings.setPaymentStatus(PaymentStatus.complete);
+            bookings.setPaymentDate(LocalDateTime.now());
+        }   else {
+            bookings.setPaymentStatus(PaymentStatus.cancelled);
         }
         //luu them ngay
         bookingRepository.save(bookings);

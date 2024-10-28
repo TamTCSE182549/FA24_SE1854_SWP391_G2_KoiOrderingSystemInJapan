@@ -19,6 +19,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -90,6 +91,7 @@ public class DeliveryService implements IDeliveryService {
                     if(bookings.getPaymentStatus()== PaymentStatus.shipped)
                     {
                         bookings.setPaymentStatus(PaymentStatus.complete);
+                        bookings.setPaymentDate(LocalDateTime.now());
                         bookingRepository.save(bookings);
                         delivery.setBooking(bookings);
                     }
