@@ -85,6 +85,7 @@ public class Account implements UserDetails {
     }
 
     @OneToMany(mappedBy = "account", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    @JsonIgnore
     private Set<Bookings> bookings;
 
 
