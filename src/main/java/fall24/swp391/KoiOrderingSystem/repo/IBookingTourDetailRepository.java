@@ -14,6 +14,9 @@ public interface IBookingTourDetailRepository extends JpaRepository<BookingTourD
     @Query(value = "select btd.* from booking_tour_detail as btd where booking_id = ?1", nativeQuery = true)
     List<BookingTourDetail> showDetailOfBookingID(Long bookingID);
 
+    @Query(value = "select btd.* from booking_tour_detail as btd where booking_id = ?1", nativeQuery = true)
+    BookingTourDetail showDetailOfBookingIDOne(Long bookingID);
+
     @Query(value = "select btd.total_amount from booking_tour_detail as btd where btd.booking_id = :bookingID", nativeQuery = true)
     Float findTotalAmount(@Param("bookingID") Long bookingID);//bookingID: cho phép truyền giá trị ? chưa rõ
 
