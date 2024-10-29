@@ -31,6 +31,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -129,7 +130,22 @@ public class BookingService implements IBookingService{
         }
 
         return bookingTourResponses.stream().map(bookings -> {
-            BookingTourResponse bookingTourResponse = modelMapper.map(bookings, BookingTourResponse.class);
+
+//            BookingTourResponse bookingTourResponse = modelMapper.map(bookings, BookingTourResponse.class);
+            BookingTourResponse bookingTourResponse = new BookingTourResponse();
+            bookingTourResponse.setBookingType(bookings.getBookingType());
+            bookingTourResponse.setPaymentStatus(bookings.getPaymentStatus());
+            bookingTourResponse.setPaymentDate(bookings.getPaymentDate());
+            bookingTourResponse.setTotalAmount(bookings.getTotalAmount());
+            bookingTourResponse.setTotalAmountWithVAT(bookings.getTotalAmountWithVAT());
+            bookingTourResponse.setVat(bookings.getVat());
+            bookingTourResponse.setVatAmount(bookings.getVatAmount());
+            bookingTourResponse.setDiscountAmount(bookings.getDiscountAmount());
+            bookingTourResponse.setPaymentMethod(bookings.getPaymentMethod());
+            bookingTourResponse.setCreatedDate(bookings.getCreatedDate());
+            bookingTourResponse.setUpdatedDate(bookings.getUpdatedDate());
+            bookingTourResponse.setId(bookings.getId());
+//            bookingTourResponse.set
             if (bookings.getUpdatedBy() == null) {
                 bookingTourResponse.setUpdatedBy("");
             } else {
@@ -152,7 +168,20 @@ public class BookingService implements IBookingService{
         Account account = authenticationService.getCurrentAccount();
         List<Bookings> bookingsList = bookingRepository.listTourBookingByID(account.getId());
         return bookingsList.stream().map(bookings -> {
-            BookingTourResponse bookingTourResponse = modelMapper.map(bookings, BookingTourResponse.class);
+//            BookingTourResponse bookingTourResponse = modelMapper.map(bookings, BookingTourResponse.class);
+            BookingTourResponse bookingTourResponse = new BookingTourResponse();
+            bookingTourResponse.setBookingType(bookings.getBookingType());
+            bookingTourResponse.setPaymentStatus(bookings.getPaymentStatus());
+            bookingTourResponse.setPaymentDate(bookings.getPaymentDate());
+            bookingTourResponse.setTotalAmount(bookings.getTotalAmount());
+            bookingTourResponse.setTotalAmountWithVAT(bookings.getTotalAmountWithVAT());
+            bookingTourResponse.setVat(bookings.getVat());
+            bookingTourResponse.setVatAmount(bookings.getVatAmount());
+            bookingTourResponse.setDiscountAmount(bookings.getDiscountAmount());
+            bookingTourResponse.setPaymentMethod(bookings.getPaymentMethod());
+            bookingTourResponse.setCreatedDate(bookings.getCreatedDate());
+            bookingTourResponse.setUpdatedDate(bookings.getUpdatedDate());
+            bookingTourResponse.setId(bookings.getId());
             if (bookings.getUpdatedBy() == null) {
                 bookingTourResponse.setUpdatedBy("");
             } else {
@@ -200,7 +229,19 @@ public class BookingService implements IBookingService{
         Account account = authenticationService.getCurrentAccount();
         List<Bookings> bookingsList = bookingRepository.listTourBookingByIDOtherStatus(account.getId());
         return bookingsList.stream().map(bookings -> {
-            BookingTourResponse bookingTourResponse = modelMapper.map(bookings, BookingTourResponse.class);
+            BookingTourResponse bookingTourResponse = new BookingTourResponse();
+            bookingTourResponse.setBookingType(bookings.getBookingType());
+            bookingTourResponse.setPaymentStatus(bookings.getPaymentStatus());
+            bookingTourResponse.setPaymentDate(bookings.getPaymentDate());
+            bookingTourResponse.setTotalAmount(bookings.getTotalAmount());
+            bookingTourResponse.setTotalAmountWithVAT(bookings.getTotalAmountWithVAT());
+            bookingTourResponse.setVat(bookings.getVat());
+            bookingTourResponse.setVatAmount(bookings.getVatAmount());
+            bookingTourResponse.setDiscountAmount(bookings.getDiscountAmount());
+            bookingTourResponse.setPaymentMethod(bookings.getPaymentMethod());
+            bookingTourResponse.setCreatedDate(bookings.getCreatedDate());
+            bookingTourResponse.setUpdatedDate(bookings.getUpdatedDate());
+            bookingTourResponse.setId(bookings.getId());
             if (bookings.getUpdatedBy() == null) {
                 bookingTourResponse.setUpdatedBy("");
             } else {
@@ -681,6 +722,22 @@ public class BookingService implements IBookingService{
         Bookings bookings = bookingRepository.findById(Id)
                 .orElseThrow(() -> new NotFoundEntity("Cannot Found Booking"));
         return modelMapper.map(bookings, BookingTourRes.class);
+    }
+
+    @Override
+    public List<BookingTourResponse> getKoiBookingShipping() {
+        List<Bookings> bookingsList = bookingRepository.listKoiBookingShipping();
+        if (bookingsList != null) {
+            List<BookingTourResponse> bookingTourResponses = new ArrayList<>();
+            for (Bookings bookings : bookingsList) {
+                BookingTourResponse bookingTourResponse = modelMapper.map(bookings, BookingTourResponse.class);
+                bookingTourResponse.setCustomerID(bookings.getAccount().getId());
+                bookingTourResponse.setNameCus(bookings.getAccount().getFirstName() + " " + bookings.getAccount().getLastName());
+                bookingTourResponses.add(bookingTourResponse);
+            }
+            return bookingTourResponses;
+        }
+        return List.of();
     }
 
     private String generateHMAC(String secretKey, String signData) throws NoSuchAlgorithmException, InvalidKeyException {

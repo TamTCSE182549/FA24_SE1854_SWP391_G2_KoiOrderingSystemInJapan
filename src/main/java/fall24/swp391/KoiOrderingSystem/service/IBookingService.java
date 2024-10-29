@@ -65,4 +65,6 @@ public interface IBookingService {
 
     BookingTourRes getBookingById(Long Id);
 
+    List<BookingTourResponse> getKoiBookingShipping();
+
 }
