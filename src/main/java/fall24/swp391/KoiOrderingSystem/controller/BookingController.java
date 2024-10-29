@@ -134,4 +134,10 @@ public class BookingController {
         BookingTourResponse bookingResponse = bookingService.updateStatus(bookingId);
         return  ResponseEntity.ok(bookingResponse);
     }
+
+    @GetMapping("/listbooking/shipping")
+    public ResponseEntity<?> showBookingForKoiShipping(){
+        List<BookingTourResponse> bookingTourResponses = bookingService.getKoiBookingShipping();
+        return ResponseEntity.ok(bookingTourResponses);
+    }
 }
