@@ -118,7 +118,7 @@ public class QuotationService implements IQuotationService{
         }
         Quotations quotation = new Quotations();
         if (bookings.getBookingType() == BookingType.BookingForTour) {
-            quotation.setAmount(bookings.getTotalAmountWithVAT());
+            quotation.setAmount(quotationRequest.getAmount());
             quotation.setBooking(bookings);
             quotation.setDescription("Quotation being in Process");
             quotation.setIsApprove(ApproveStatus.PROCESS);
