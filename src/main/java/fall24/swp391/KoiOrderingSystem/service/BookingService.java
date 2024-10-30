@@ -101,7 +101,19 @@ public class BookingService implements IBookingService{
                 }
                 booking.setCreatedBy(account);
                 iTourRepository.save(tours);
-                BookingTourResponse bookingTourResponse = modelMapper.map(booking, BookingTourResponse.class);
+                BookingTourResponse bookingTourResponse = new BookingTourResponse();
+                bookingTourResponse.setBookingType(booking.getBookingType());
+                bookingTourResponse.setPaymentStatus(booking.getPaymentStatus());
+                bookingTourResponse.setPaymentDate(booking.getPaymentDate());
+                bookingTourResponse.setTotalAmount(booking.getTotalAmount());
+                bookingTourResponse.setTotalAmountWithVAT(booking.getTotalAmountWithVAT());
+                bookingTourResponse.setVat(booking.getVat());
+                bookingTourResponse.setVatAmount(booking.getVatAmount());
+                bookingTourResponse.setDiscountAmount(booking.getDiscountAmount());
+                bookingTourResponse.setPaymentMethod(booking.getPaymentMethod());
+                bookingTourResponse.setCreatedDate(booking.getCreatedDate());
+                bookingTourResponse.setUpdatedDate(booking.getUpdatedDate());
+                bookingTourResponse.setId(booking.getId());
                 bookingTourResponse.setCustomerID(account.getId());
                 bookingTourResponse.setNameCus(account.getFirstName() + " " + account.getLastName());
                 bookingTourResponse.setCreatedBy(account.getFirstName() + " " + account.getLastName());
@@ -423,7 +435,7 @@ public class BookingService implements IBookingService{
     public BookingTourResponse createKoiBooking(BookingKoiRequest bookingKoiRequest,Long bookingId) {
         try{
             Account account = authenticationService.getCurrentAccount();
-           if(account.getRole() ==Role.SALES_STAFF){
+           if(account.getRole() ==Role.CONSULTING_STAFF){
                 KoiFarms koiFarms = iKoiFarmsRepository.findById(bookingKoiRequest.getFarmId())
                         .orElseThrow(() -> new NotFoundEntity("Koi farm not found"));
 
@@ -608,7 +620,19 @@ public class BookingService implements IBookingService{
         tour.setRemaining(tour.getRemaining() + bookingTourDetail.getParticipant());
         tour.setStatus(TourStatus.active);
         iTourRepository.save(tour);
-        BookingTourResponse bookingTourResponse = modelMapper.map(booking, BookingTourResponse.class);
+        BookingTourResponse bookingTourResponse = new BookingTourResponse();
+        bookingTourResponse.setBookingType(booking.getBookingType());
+        bookingTourResponse.setPaymentStatus(booking.getPaymentStatus());
+        bookingTourResponse.setPaymentDate(booking.getPaymentDate());
+        bookingTourResponse.setTotalAmount(booking.getTotalAmount());
+        bookingTourResponse.setTotalAmountWithVAT(booking.getTotalAmountWithVAT());
+        bookingTourResponse.setVat(booking.getVat());
+        bookingTourResponse.setVatAmount(booking.getVatAmount());
+        bookingTourResponse.setDiscountAmount(booking.getDiscountAmount());
+        bookingTourResponse.setPaymentMethod(booking.getPaymentMethod());
+        bookingTourResponse.setCreatedDate(booking.getCreatedDate());
+        bookingTourResponse.setUpdatedDate(booking.getUpdatedDate());
+        bookingTourResponse.setId(booking.getId());
         if (booking.getUpdatedBy() == null) {
             bookingTourResponse.setUpdatedBy("");
         } else {
@@ -622,7 +646,7 @@ public class BookingService implements IBookingService{
         }
         bookingTourResponse.setCustomerID(booking.getAccount().getId());
         bookingTourResponse.setNameCus(booking.getAccount().getFirstName() + " " + booking.getAccount().getLastName());
-        return modelMapper.map(booking, BookingTourResponse.class);
+        return bookingTourResponse;
     }
 
     @Override
