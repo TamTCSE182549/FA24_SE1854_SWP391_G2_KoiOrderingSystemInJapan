@@ -361,9 +361,11 @@ public class BookingService implements IBookingService{
     public BookingTourResponse responseUpdateForStaff(BookingUpdateRequestStaff bookingUpdateRequestStaff) {
         try {
             Account account = authenticationService.getCurrentAccount();
-//            if (account.getRole() != Role.MANAGER){
-//                throw new NotUpdateException("Your Role cannot access");
-//            }
+
+            if (account.getRole() == Role.SALES_STAFF){
+                throw new NotUpdateException("Your Role cannot access");
+            }
+
             Bookings bookings = bookingRepository.findById(bookingUpdateRequestStaff.getBookingID())
                     .orElseThrow(() -> new NotFoundEntity("Booking ID not FOUND"));
             bookings.setPaymentMethod(bookingUpdateRequestStaff.getPaymentMethod());
@@ -378,7 +380,19 @@ public class BookingService implements IBookingService{
             bookings.setVatAmount(bookingUpdateRequestStaff.getVat() * (bookings.getTotalAmount() - bookingUpdateRequestStaff.getDiscountAmount()));
             bookings.setTotalAmountWithVAT(bookings.getTotalAmount() + bookings.getVatAmount() - bookings.getDiscountAmount());
             bookingRepository.save(bookings);
-            BookingTourResponse bookingTourResponse = modelMapper.map(bookings, BookingTourResponse.class);
+            BookingTourResponse bookingTourResponse = new BookingTourResponse();
+            bookingTourResponse.setBookingType(bookings.getBookingType());
+            bookingTourResponse.setPaymentStatus(bookings.getPaymentStatus());
+            bookingTourResponse.setPaymentDate(bookings.getPaymentDate());
+            bookingTourResponse.setTotalAmount(bookings.getTotalAmount());
+            bookingTourResponse.setTotalAmountWithVAT(bookings.getTotalAmountWithVAT());
+            bookingTourResponse.setVat(bookings.getVat());
+            bookingTourResponse.setVatAmount(bookings.getVatAmount());
+            bookingTourResponse.setDiscountAmount(bookings.getDiscountAmount());
+            bookingTourResponse.setPaymentMethod(bookings.getPaymentMethod());
+            bookingTourResponse.setCreatedDate(bookings.getCreatedDate());
+            bookingTourResponse.setUpdatedDate(bookings.getUpdatedDate());
+            bookingTourResponse.setId(bookings.getId());
             bookingTourResponse.setUpdatedBy(account.getFirstName() + " " + account.getLastName());
             bookingTourResponse.setCustomerID(bookings.getAccount().getId());
             bookingTourResponse.setNameCus(bookings.getAccount().getFirstName() + " " + bookings.getAccount().getLastName());
@@ -721,7 +735,22 @@ public class BookingService implements IBookingService{
     public BookingTourRes getBookingById(Long Id) {
         Bookings bookings = bookingRepository.findById(Id)
                 .orElseThrow(() -> new NotFoundEntity("Cannot Found Booking"));
-        return modelMapper.map(bookings, BookingTourRes.class);
+        BookingTourRes bookingTourResponse = new BookingTourRes();
+        bookingTourResponse.setNameCus(bookings.getAccount().getFirstName() + " " + bookings.getAccount().getLastName());
+        bookingTourResponse.setBookingType(bookings.getBookingType());
+        bookingTourResponse.setPaymentStatus(bookings.getPaymentStatus());
+        bookingTourResponse.setTotalAmount(bookings.getTotalAmount());
+        bookingTourResponse.setTotalAmountWithVAT(bookings.getTotalAmountWithVAT());
+        bookingTourResponse.setVat(bookings.getVat());
+        bookingTourResponse.setEmail(bookings.getAccount().getEmail());
+        bookingTourResponse.setPhone(bookings.getAccount().getPhone());
+        bookingTourResponse.setVatAmount(bookings.getVatAmount());
+        bookingTourResponse.setDiscountAmount(bookings.getDiscountAmount());
+        bookingTourResponse.setPaymentMethod(bookings.getPaymentMethod());
+        bookingTourResponse.setCreatedDate(bookings.getCreatedDate());
+        bookingTourResponse.setUpdatedDate(bookings.getUpdatedDate());
+        bookingTourResponse.setId(bookings.getId());
+        return bookingTourResponse;
     }
 
     @Override
