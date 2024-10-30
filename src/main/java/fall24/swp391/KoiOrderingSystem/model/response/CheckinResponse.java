@@ -27,6 +27,8 @@ public class CheckinResponse {
 
         private LocalDateTime updateDate;
 
+        private Long customerId;
+
         private  String createBy;
 
         private String updateBy;

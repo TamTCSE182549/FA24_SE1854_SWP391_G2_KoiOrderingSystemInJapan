@@ -11,7 +11,8 @@ import java.util.List;
 public interface ICheckinRepository extends JpaRepository<Checkin, Long> {
     List<Checkin> findByBookingId(Long Id);
 
-    List<Checkin> findByCreatedById(Long accountId);
+    @Query(value = "Select * from checkin where customer_id = ?1 order by id desc", nativeQuery = true)
+    List<Checkin> findByCustomerId(Long customerId);
 
     @Query(value = "Select * from checkin order by id desc", nativeQuery = true)
     List<Checkin> findAllByOrderByIdDesc();

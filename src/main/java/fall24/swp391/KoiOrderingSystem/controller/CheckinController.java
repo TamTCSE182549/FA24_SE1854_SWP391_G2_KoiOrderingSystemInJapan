@@ -30,9 +30,9 @@ public class CheckinController {
         return ResponseEntity.ok(checkins);
     }
 
-    @GetMapping("/account/{accountId}")
-    public ResponseEntity<List<CheckinResponse>> getCheckinByAccount(@PathVariable Long accountId) {
-        return ResponseEntity.ok(checkinService.getCheckinByAccount(accountId));
+    @GetMapping("/account")
+    public ResponseEntity<List<CheckinResponse>> getCheckinByAccount() {
+        return ResponseEntity.ok(checkinService.getCheckinByAccount());
     }
 
     @GetMapping("/all")

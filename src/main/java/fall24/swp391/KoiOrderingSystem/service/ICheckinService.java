@@ -20,5 +20,5 @@ public interface ICheckinService {
 
     List<CheckinResponse> getAllCheckin();
 
-    List<CheckinResponse> getCheckinByAccount(Long accountId);
+    List<CheckinResponse> getCheckinByAccount();
 }
