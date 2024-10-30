@@ -361,9 +361,11 @@ public class BookingService implements IBookingService{
     public BookingTourResponse responseUpdateForStaff(BookingUpdateRequestStaff bookingUpdateRequestStaff) {
         try {
             Account account = authenticationService.getCurrentAccount();
-            if (account.getRole() != Role.SALES_STAFF){
+
+            if (account.getRole() == Role.SALES_STAFF){
                 throw new NotUpdateException("Your Role cannot access");
             }
+
             Bookings bookings = bookingRepository.findById(bookingUpdateRequestStaff.getBookingID())
                     .orElseThrow(() -> new NotFoundEntity("Booking ID not FOUND"));
             bookings.setPaymentMethod(bookingUpdateRequestStaff.getPaymentMethod());

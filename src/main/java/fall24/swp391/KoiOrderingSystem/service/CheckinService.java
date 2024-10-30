@@ -42,8 +42,9 @@ public class CheckinService implements ICheckinService {
     }
 
     @Override
-    public List<CheckinResponse> getCheckinByAccount(Long accountId) {
-        List<Checkin> checkinList = checkinRepository.findByCreatedById(accountId);
+    public List<CheckinResponse> getCheckinByAccount() {
+        Account account = authenticationService.getCurrentAccount();
+        List<Checkin> checkinList = checkinRepository.findByCustomerId(account.getId());
         if (checkinList.isEmpty()) {
             throw new GenericException("No check-ins found for this account");
         }
@@ -73,6 +74,7 @@ public class CheckinService implements ICheckinService {
                 checkin.setBooking(booking);
                 checkin.setStatus(CheckinStatus.NOTCHECKEDIN);
                 checkin.setCreatedBy(account);
+                checkin.setCustomerId(booking.getAccount());
                 checkinRepository.save(checkin);
                 CheckinResponse checkinResponse = modelMapper.map(checkin, CheckinResponse.class);
                 checkinResponse.setCreateBy(account.getFirstName() + " " + account.getLastName());

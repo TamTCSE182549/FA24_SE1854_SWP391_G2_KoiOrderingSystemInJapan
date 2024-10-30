@@ -62,6 +62,10 @@ public class Checkin extends BaseEntity{
     @JoinColumn(name = "updated_by")
     private Account updatedBy;
 
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    @JoinColumn(name = "customer_id")
+    private Account customerId;
+
     @PrePersist
     protected void onCreate(){
         createdDate = LocalDateTime.now();
