@@ -103,7 +103,7 @@ public class DepositService implements IDepositService{
 
             deposit.setDepositAmount(depositRequest.getDepositPercentage()*deposit.getBooking().getTotalAmountWithVAT());
 
-            deposit.setRemainAmount(deposit.getBooking().getTotalAmountWithVAT()-deposit.getDepositAmount());
+            deposit.setRemainAmount(deposit.getBooking().getTotalAmountWithVAT()-deposit.getDepositAmount()+deposit.getShippingFee());
 
             Bookings relateBooking = deposit.getBooking();
             if (relateBooking != null) {
