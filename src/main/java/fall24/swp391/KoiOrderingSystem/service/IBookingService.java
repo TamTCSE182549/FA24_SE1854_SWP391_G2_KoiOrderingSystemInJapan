@@ -47,7 +47,7 @@ public interface IBookingService {
 
     BookingTourResponse updateKoiBooking(Long id, BookingUpdate bookingUpdate);
 
-    List<BookingTourResponse> getKoiBookingById(Long accountID);
+    List<BookingTourResponse> getKoiBookingById();
 
     List<BookingTourResponse> getKoiBooking();
 

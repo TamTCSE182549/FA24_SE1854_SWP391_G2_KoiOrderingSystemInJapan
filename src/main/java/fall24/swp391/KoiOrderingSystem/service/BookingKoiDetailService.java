@@ -41,7 +41,7 @@ public class BookingKoiDetailService implements IBookingKoiDetailService {
     public BookingKoiDetailResponse createKoiDetail(BookingKoiDetailRequest bookingKoiDetailRequest, Long bookingId) {
         try {
             Account account = authenticationService.getCurrentAccount();
-            if (account.getRole() != Role.SALES_STAFF) {
+            if (account.getRole() != Role.CONSULTING_STAFF) {
                 throw new NotCreateException("Your role cannot access");
             }
             Bookings bookings = iBookingRepository.findById(bookingId)
@@ -104,6 +104,7 @@ public class BookingKoiDetailService implements IBookingKoiDetailService {
     @Override
     public List<BookingKoiDetail> updateBookingKoiDetail(Long bookingId, List<UpdateBookingKoiDetailRequest> updateBookingKoiDetailRequest) {
         try {
+            Account account = authenticationService.getCurrentAccount();
             Bookings booking = iBookingRepository.findById(bookingId)
                     .orElseThrow(() -> new NotUpdateException("Booking not found"));
             List<BookingKoiDetail> updatedDetails = new ArrayList<>();
@@ -124,6 +125,13 @@ public class BookingKoiDetailService implements IBookingKoiDetailService {
             booking.setTotalAmount(totalAmount);
             booking.setVatAmount(booking.getVat()*(totalAmount-booking.getDiscountAmount()));
             booking.setTotalAmountWithVAT(totalAmount+booking.getVatAmount()-booking.getDiscountAmount());
+
+
+            Deposit deposit = booking.getDeposit();
+            if(deposit != null){
+                deposit.setDepositAmount(booking.getTotalAmountWithVAT()*deposit.getDepositPercentage());
+                deposit.setRemainAmount(booking.getTotalAmountWithVAT()-deposit.getDepositAmount()+deposit.getShippingFee());
+            }
             bookingRepository.save(booking);
             return updatedDetails;
         } catch (Exception exception) {

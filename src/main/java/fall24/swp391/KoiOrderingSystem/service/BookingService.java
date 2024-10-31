@@ -135,7 +135,7 @@ public class BookingService implements IBookingService{
     public List<BookingTourResponse> bookingForTour() {
         Account account = authenticationService.getCurrentAccount();
         List<Bookings> bookingTourResponses = null;
-        if (account.getRole() == Role.MANAGER || account.getRole() == Role.SALES_STAFF){
+        if (account.getRole() == Role.MANAGER || account.getRole() == Role.CONSULTING_STAFF){
             bookingTourResponses = bookingRepository.listBookingForTour();
         } else {
             throw new NotFoundEntity("Account not FOUND");
@@ -505,7 +505,7 @@ public class BookingService implements IBookingService{
     public BookingTourResponse updateKoiBooking(Long id, BookingUpdate bookingUpdate) {
        try{
            Account account =authenticationService.getCurrentAccount();
-           if(account.getRole()!=Role.SALES_STAFF) {
+           if(account.getRole()!=Role.CONSULTING_STAFF) {
                throw new NotUpdateException("Your role cannot access");
            }
                Bookings bookings = bookingRepository.findById(id)
@@ -542,9 +542,12 @@ public class BookingService implements IBookingService{
 
 
     @Override
-    public List<BookingTourResponse> getKoiBookingById(Long accountID) {
+    public List<BookingTourResponse> getKoiBookingById() {
         Account account = authenticationService.getCurrentAccount();
-        List<Bookings> bookingsList = bookingRepository.listKoiBooking(accountID);
+        if(account.getRole() != Role.CONSULTING_STAFF){
+            throw  new GenericException("Account not Access");
+        }
+        List<Bookings> bookingsList = bookingRepository.listKoiBooking(account.getId());
         return bookingsList.stream().map(bookings -> {
             BookingTourResponse bookingTourResponse = modelMapper.map(bookings, BookingTourResponse.class);
             if (bookings.getUpdatedBy() == null) {
@@ -569,7 +572,7 @@ public class BookingService implements IBookingService{
     public List<BookingTourResponse> getKoiBooking() {
         Account account = authenticationService.getCurrentAccount();
         List<Bookings> bookingTourResponses = null;
-       if (account.getRole() == Role.SALES_STAFF || account.getRole() == Role.CUSTOMER){
+       if (account.getRole() == Role.CONSULTING_STAFF ){
             bookingTourResponses = bookingRepository.listBookingForKoi();
       } else {
             throw new NotFoundEntity("Account not FOUND");        }
@@ -598,7 +601,7 @@ public class BookingService implements IBookingService{
     public BookingResponseDetail viewDetailBooking(Long bookingId) {
         try {
             Account account = authenticationService.getCurrentAccount();
-            if (account.getRole() != Role.SALES_STAFF) {
+            if (account.getRole() != Role.CONSULTING_STAFF) {
                 throw new NotUpdateException("Your role cannot access");
             }
             Bookings bookings = bookingRepository.findById(bookingId)
@@ -668,7 +671,7 @@ public class BookingService implements IBookingService{
     public BookingTourResponse updateStatus(Long bookingId) {
         try{
             Account account = authenticationService.getCurrentAccount();
-            if(account.getRole()!= Role.SALES_STAFF){
+            if(account.getRole()!= Role.CONSULTING_STAFF){
                 throw new NotUpdateException("Your Role cannot access");
             }
             Bookings bookings = bookingRepository.findById(bookingId)
