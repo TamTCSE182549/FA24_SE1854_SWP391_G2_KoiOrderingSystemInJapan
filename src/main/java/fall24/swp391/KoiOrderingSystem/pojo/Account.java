@@ -88,6 +88,10 @@ public class Account implements UserDetails {
     @JsonIgnore
     private Set<Bookings> bookings;
 
+    @OneToMany(mappedBy = "customer", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    @JsonIgnore
+    private Set<Feedback> feedbacks;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

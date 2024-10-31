@@ -10,7 +10,7 @@ import java.util.List;
 
 @Repository
 public interface IDepositRepository extends JpaRepository <Deposit,Long> {
-    List<Deposit> findByBookingId(Long bookingId);
+    Deposit findByBookingId(Long bookingId);
 
     @Query(value = "select * from deposit where deposit_status = 'processing' or deposit_status = 'complete'", nativeQuery = true)
     List<Deposit> findAllByStatusActive();

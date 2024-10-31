@@ -14,4 +14,5 @@ public class DeliveryResponse {
     private String staffName;
     private DeliveryStatus status;
     private String reason;
+    private String address;
 }
