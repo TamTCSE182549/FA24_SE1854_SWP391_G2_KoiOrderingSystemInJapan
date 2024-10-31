@@ -45,17 +45,10 @@ public class DepositService implements IDepositService{
             Deposit deposit =modelMapper.map(depositRequest,Deposit.class);
             Bookings booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
-            deposit.setDepositStatus(DepositStatus.complete);
+            deposit.setDepositStatus(DepositStatus.processing);
             deposit.setBooking(booking);
             deposit.setDepositAmount(booking.getTotalAmountWithVAT()*depositRequest.getDepositPercentage());
             deposit.setRemainAmount(booking.getTotalAmountWithVAT()-deposit.getDepositAmount()+deposit.getShippingFee());
-            Bookings relateBooking = deposit.getBooking();
-            if (relateBooking != null) {
-                if (relateBooking.getBookingType() == BookingType.BookingForKoi) {
-                    relateBooking.setPaymentStatus(PaymentStatus.shipping);
-                    bookingRepository.save(relateBooking);
-                }
-            }
             depositRepository.save(deposit);
             DepositRespone depositRespone = modelMapper.map(deposit, DepositRespone.class);
             return depositRespone;
@@ -89,7 +82,7 @@ public class DepositService implements IDepositService{
             throw new NotUpdateException("Cannot update the cancelled deposit");
         }
         else if (deposit.getDepositStatus() == DepositStatus.processing) {
-            deposit.setDepositStatus(DepositStatus.complete);
+            deposit.setDepositStatus(depositRequest.getDepositStatus());
         }
             deposit.setDeliveryExpectedDate(depositRequest.getDeliveryExpectedDate());
 
@@ -106,8 +99,11 @@ public class DepositService implements IDepositService{
             Bookings relateBooking = deposit.getBooking();
             if (relateBooking != null) {
                 if (relateBooking.getBookingType() == BookingType.BookingForKoi) {
-                    relateBooking.setPaymentStatus(PaymentStatus.shipping);
-                    bookingRepository.save(relateBooking);
+
+                    if (deposit.getDepositStatus() == DepositStatus.complete) {
+                        relateBooking.setPaymentStatus(PaymentStatus.shipping);
+                        bookingRepository.save(relateBooking);
+                    }
                 }
             }
             depositRepository.save(deposit);
@@ -119,16 +115,15 @@ public class DepositService implements IDepositService{
     }
 
     @Override
-    public List<DepositRespone> getDepositIsActive() {
-        List<Deposit> depositList = depositRepository.findAllByStatusActive();
-        if(depositList.isEmpty()){
-            throw new GenericException("Not active Deposit found");
-        }
-        return depositList.stream()
-                .map(deposit -> {
-                    DepositRespone depositRespone =modelMapper.map(deposit,DepositRespone.class);
-                    return  depositRespone;
-                }).toList();
+    public List<DepositRespone> getAllDeposit() {
+        List<Deposit> depositRespone =depositRepository.findAll();
+        return depositRespone.stream().map(deposit -> {
+            DepositRespone depositRespone1 = modelMapper.map(deposit,DepositRespone.class);
+
+            return depositRespone1;
+        }).toList();
     }
+
+
 }
 

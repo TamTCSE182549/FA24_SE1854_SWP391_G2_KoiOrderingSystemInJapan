@@ -524,6 +524,10 @@ public class BookingService implements IBookingService{
 
            bookings.setTotalAmount(totalBookingKoiAmount);
            bookings.setTotalAmountWithVAT(bookings.getTotalAmount() + bookings.getVatAmount() - bookings.getDiscountAmount());
+                       Deposit deposit = bookings.getDeposit();
+                       if(deposit != null){
+                           deposit.setRemainAmount(bookings.getTotalAmountWithVAT()-deposit.getDepositAmount()+deposit.getShippingFee());
+                       }
            bookingRepository.save(bookings);
            BookingTourResponse bookingResponse = modelMapper.map(bookings,BookingTourResponse.class);
            bookingResponse.setCreatedBy(account.getFirstName() + " " + account.getLastName());
@@ -542,28 +546,28 @@ public class BookingService implements IBookingService{
 
 
     @Override
-    public List<BookingTourResponse> getKoiBookingById() {
+    public List<BookingResponseDetail> getKoiBookingById() {
         Account account = authenticationService.getCurrentAccount();
-        if(account.getRole() != Role.CONSULTING_STAFF){
+        if(account.getRole() != Role.CUSTOMER){
             throw  new GenericException("Account not Access");
         }
         List<Bookings> bookingsList = bookingRepository.listKoiBooking(account.getId());
         return bookingsList.stream().map(bookings -> {
-            BookingTourResponse bookingTourResponse = modelMapper.map(bookings, BookingTourResponse.class);
+            BookingResponseDetail bookingResponse = modelMapper.map(bookings, BookingResponseDetail.class);
             if (bookings.getUpdatedBy() == null) {
-                bookingTourResponse.setUpdatedBy("");
+                bookingResponse.setUpdatedBy("");
             } else {
-                bookingTourResponse.setUpdatedBy(bookings.getUpdatedBy().getFirstName() + " " + bookings.getUpdatedBy().getLastName());
+                bookingResponse.setUpdatedBy(bookings.getUpdatedBy().getFirstName() + " " + bookings.getUpdatedBy().getLastName());
             }
 
             if (bookings.getCreatedBy() == null) {
-                bookingTourResponse.setCreatedBy("");
+                bookingResponse.setCreatedBy("");
             } else {
-                bookingTourResponse.setCreatedBy(bookings.getCreatedBy().getFirstName() + " " + bookings.getCreatedBy().getLastName());
+                bookingResponse.setCreatedBy(bookings.getCreatedBy().getFirstName() + " " + bookings.getCreatedBy().getLastName());
             }
-            bookingTourResponse.setCustomerID(bookings.getAccount().getId());
-            bookingTourResponse.setNameCus(bookings.getAccount().getFirstName() + " " + bookings.getAccount().getLastName());
-            return bookingTourResponse;
+            bookingResponse.setCustomerID(bookings.getAccount().getId());
+            bookingResponse.setNameCus(bookings.getAccount().getFirstName() + " " + bookings.getAccount().getLastName());
+            return bookingResponse;
         }).toList();
     }
 
@@ -667,7 +671,6 @@ public class BookingService implements IBookingService{
     }
 
     @Override
-
     public BookingTourResponse updateStatus(Long bookingId) {
         try{
             Account account = authenticationService.getCurrentAccount();

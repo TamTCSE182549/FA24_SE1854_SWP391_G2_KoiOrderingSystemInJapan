@@ -129,7 +129,6 @@ public class BookingKoiDetailService implements IBookingKoiDetailService {
 
             Deposit deposit = booking.getDeposit();
             if(deposit != null){
-                deposit.setDepositAmount(booking.getTotalAmountWithVAT()*deposit.getDepositPercentage());
                 deposit.setRemainAmount(booking.getTotalAmountWithVAT()-deposit.getDepositAmount()+deposit.getShippingFee());
             }
             bookingRepository.save(booking);

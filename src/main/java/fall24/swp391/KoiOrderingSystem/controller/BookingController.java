@@ -107,7 +107,7 @@ public class BookingController {
 
     @GetMapping("/koi/list/customer")
     public ResponseEntity<?> getKoiBookings() {
-        List<BookingTourResponse> bookings = bookingService.getKoiBookingById();
+        List<BookingResponseDetail> bookings = bookingService.getKoiBookingById();
         return ResponseEntity.ok(bookings);
     }
 

@@ -107,6 +107,7 @@ public class Bookings {
     @PrePersist
     protected void onCreate(){
         createdDate = LocalDateTime.now();
+        bookingDate=LocalDateTime.now();
     }
 
     @PreUpdate
