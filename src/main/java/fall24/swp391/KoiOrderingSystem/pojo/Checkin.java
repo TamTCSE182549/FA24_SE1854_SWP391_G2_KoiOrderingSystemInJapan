@@ -21,7 +21,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Entity
 @Table(name= "checkin")
-public class Checkin extends BaseEntity{
+public class Checkin {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;

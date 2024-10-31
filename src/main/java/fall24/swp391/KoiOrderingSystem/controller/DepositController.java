@@ -36,7 +36,7 @@ public class DepositController {
 
     @GetMapping("/{bookingId}")
     public ResponseEntity<?>getDeposit(@PathVariable Long bookingId){
-        List<DepositRespone> list = depositService.getDepositByBookingId(bookingId);
+        DepositRespone list = depositService.getDepositByBookingId(bookingId);
         if(list==null){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Booking ID not found");
         }
