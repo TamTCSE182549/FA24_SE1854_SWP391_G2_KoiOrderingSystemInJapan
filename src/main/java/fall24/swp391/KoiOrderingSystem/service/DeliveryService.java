@@ -53,16 +53,13 @@ public class DeliveryService implements IDeliveryService {
             if(oldDelivery != null) {
                 throw new ExistingEntity("Delivery this booking already exists!");
             }
-            List<Deposit> deposits = depositRepository.findByBookingId(bookingId);
+            Deposit deposits = depositRepository.findByBookingId(bookingId);
             if(deposits==null) {
                 throw new NotFoundEntity("Deposit not found!");
             }
             float remainAmount = 0;
-            for (Deposit deposit : deposits) {
-
-                if(deposit.getDepositStatus()== DepositStatus.complete){
-                    remainAmount = deposit.getRemainAmount();
-                }
+            if(deposits.getDepositStatus()== DepositStatus.complete){
+                remainAmount = deposits.getRemainAmount();
             }
 
             //tim account cua staff

@@ -32,12 +32,10 @@ public class DepositService implements IDepositService{
     private ModelMapper modelMapper;
 
     @Override
-    public List<DepositRespone> getDepositByBookingId(Long bookingId) {
-        List<Deposit> depositList = depositRepository.findByBookingId(bookingId);
-        return depositList.stream().map(deposit -> {
-            DepositRespone depositRespone = modelMapper.map(deposit, DepositRespone.class);
-            return depositRespone;
-        }).toList();
+    public DepositRespone getDepositByBookingId(Long bookingId) {
+        Deposit deposit = depositRepository.findByBookingId(bookingId);
+        DepositRespone depositRespone = modelMapper.map(deposit, DepositRespone.class);
+        return depositRespone;
     }
 
 
@@ -101,6 +99,7 @@ public class DepositService implements IDepositService{
             Bookings relateBooking = deposit.getBooking();
             if (relateBooking != null) {
                 if (relateBooking.getBookingType() == BookingType.BookingForKoi) {
+
                     if (deposit.getDepositStatus() == DepositStatus.complete) {
                         relateBooking.setPaymentStatus(PaymentStatus.shipping);
                         bookingRepository.save(relateBooking);
