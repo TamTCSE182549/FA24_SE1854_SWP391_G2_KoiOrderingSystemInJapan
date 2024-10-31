@@ -88,7 +88,7 @@ public class DeliveryService implements IDeliveryService {
                 }
                 if (bookings!= null) {
                     //tim duoc booking
-                    if(bookings.getPaymentStatus()== PaymentStatus.shipped)
+                    if(bookings.getPaymentStatus()== PaymentStatus.shipping)
                     {
                         bookings.setPaymentStatus(PaymentStatus.complete);
                         bookings.setPaymentDate(LocalDateTime.now());

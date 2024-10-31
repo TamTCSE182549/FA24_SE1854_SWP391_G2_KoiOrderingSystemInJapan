@@ -49,4 +49,12 @@ public class DepositController {
         return ResponseEntity.ok(isDeleted);
         }
 
+    @GetMapping("/all")
+    public ResponseEntity<?>getDeposit(){
+        List<DepositRespone> list = depositService.getAllDeposit();
+        if(list==null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Booking ID not found");
+        }
+        return new ResponseEntity<>(list,HttpStatus.OK);
+    }
 }
