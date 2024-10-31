@@ -218,7 +218,19 @@ public class BookingService implements IBookingService{
         }
         List<Bookings> bookingsList = bookingRepository.listBookingForDashBoard();
         return bookingsList.stream().map(bookings -> {
-            BookingTourResponse bookingTourResponse = modelMapper.map(bookings, BookingTourResponse.class);
+            BookingTourResponse bookingTourResponse = new BookingTourResponse();
+            bookingTourResponse.setBookingType(bookings.getBookingType());
+            bookingTourResponse.setPaymentStatus(bookings.getPaymentStatus());
+            bookingTourResponse.setPaymentDate(bookings.getPaymentDate());
+            bookingTourResponse.setTotalAmount(bookings.getTotalAmount());
+            bookingTourResponse.setTotalAmountWithVAT(bookings.getTotalAmountWithVAT());
+            bookingTourResponse.setVat(bookings.getVat());
+            bookingTourResponse.setVatAmount(bookings.getVatAmount());
+            bookingTourResponse.setDiscountAmount(bookings.getDiscountAmount());
+            bookingTourResponse.setPaymentMethod(bookings.getPaymentMethod());
+            bookingTourResponse.setCreatedDate(bookings.getCreatedDate());
+            bookingTourResponse.setUpdatedDate(bookings.getUpdatedDate());
+            bookingTourResponse.setId(bookings.getId());
             if (bookings.getUpdatedBy() == null) {
                 bookingTourResponse.setUpdatedBy("");
             } else {

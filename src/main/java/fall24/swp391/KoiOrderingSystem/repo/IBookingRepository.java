@@ -49,5 +49,11 @@ public interface IBookingRepository extends JpaRepository<Bookings, Long> {
     List<Bookings> listKoiBookingShipping();
 
 
+    @Query("select YEAR(b.paymentDate) as year, MONTH(b.paymentDate) as month, sum(b.totalAmountWithVAT) from Bookings b"+
+            " where b.paymentStatus = 'complete' " +
+            "GROUP BY YEAR(b.paymentDate),MONTH(b.paymentDate)" +
+            "ORDER BY YEAR(b.paymentDate),MONTH(b.paymentDate)")
+    List<Object[]> calculatingTotalAmountWithVAT();
+
     Bookings findBookingsById(Long id);
 }
