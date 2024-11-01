@@ -557,7 +557,7 @@ public class BookingService implements IBookingService{
     public List<BookingTourResponse> getKoiBooking() {
         Account account = authenticationService.getCurrentAccount();
         List<Bookings> bookingTourResponses = null;
-       if (account.getRole() == Role.SALES_STAFF || account.getRole() == Role.CUSTOMER){
+       if (account.getRole() == Role.SALES_STAFF || account.getRole() == Role.CUSTOMER || account.getRole() == Role.MANAGER){
             bookingTourResponses = bookingRepository.listBookingForKoi();
       } else {
             throw new NotFoundEntity("Account not FOUND");        }
@@ -793,6 +793,30 @@ public class BookingService implements IBookingService{
         return List.of();
     }
 
+    @Override
+    public List<BookingTourResponse> getAllBooking() {
+        List<Bookings> bookingsList = bookingRepository.findAll();
+        return bookingTourResponses(bookingsList);
+    }
+
+    @Override
+    public List<BookingTourResponse> showAllBookingStatus(String paymentStatus) {
+        List<Bookings> bookingsList = bookingRepository.findBookingsByPaymentStatus(paymentStatus);
+        return bookingTourResponses(bookingsList);
+    }
+
+    @Override
+    public List<BookingTourResponse> showBookingTourStatus(String paymentStatus) {
+        List<Bookings> bookingsList = bookingRepository.findBookingForTourByPaymentStatus(paymentStatus);
+        return bookingTourResponses(bookingsList);
+    }
+
+    @Override
+    public List<BookingTourResponse> showBookingKoiStatus(String paymentStatus) {
+        List<Bookings> bookingsList = bookingRepository.findBookingForKoiByPaymentStatus(paymentStatus);
+        return bookingTourResponses(bookingsList);
+    }
+
     private String generateHMAC(String secretKey, String signData) throws NoSuchAlgorithmException, InvalidKeyException {
         Mac hmacSha512 = Mac.getInstance("HmacSHA512");
         SecretKeySpec keySpec = new SecretKeySpec(secretKey.getBytes(StandardCharsets.UTF_8), "HmacSHA512");
@@ -806,4 +830,36 @@ public class BookingService implements IBookingService{
         return result.toString();
     }
 
+    private List<BookingTourResponse> bookingTourResponses(List<Bookings> bookingsList){
+        return bookingsList.stream().map(booking -> {
+            BookingTourResponse bookingTourResponse = modelMapper.map(booking, BookingTourResponse.class);
+            bookingTourResponse.setBookingType(booking.getBookingType());
+            bookingTourResponse.setPaymentStatus(booking.getPaymentStatus());
+            bookingTourResponse.setPaymentDate(booking.getPaymentDate());
+            bookingTourResponse.setTotalAmount(booking.getTotalAmount());
+            bookingTourResponse.setTotalAmountWithVAT(booking.getTotalAmountWithVAT());
+            bookingTourResponse.setVat(booking.getVat());
+            bookingTourResponse.setVatAmount(booking.getVatAmount());
+            bookingTourResponse.setDiscountAmount(booking.getDiscountAmount());
+            bookingTourResponse.setPaymentMethod(booking.getPaymentMethod());
+            bookingTourResponse.setCreatedDate(booking.getCreatedDate());
+            bookingTourResponse.setUpdatedDate(booking.getUpdatedDate());
+            bookingTourResponse.setId(booking.getId());
+            if (booking.getUpdatedBy() == null) {
+                bookingTourResponse.setUpdatedBy("");
+            } else {
+                bookingTourResponse.setUpdatedBy(booking.getUpdatedBy().getFirstName() + " " + booking.getUpdatedBy().getLastName());
+            }
+
+            if (booking.getCreatedBy() == null) {
+                bookingTourResponse.setCreatedBy("");
+            } else {
+                bookingTourResponse.setCreatedBy(booking.getCreatedBy().getFirstName() + " " + booking.getCreatedBy().getLastName());
+            }
+            bookingTourResponse.setTourImg("");
+            bookingTourResponse.setCustomerID(booking.getAccount().getId());
+            bookingTourResponse.setNameCus(booking.getAccount().getFirstName() + " " + booking.getAccount().getLastName());
+            return bookingTourResponse;
+        }).toList();
+    }
 }
