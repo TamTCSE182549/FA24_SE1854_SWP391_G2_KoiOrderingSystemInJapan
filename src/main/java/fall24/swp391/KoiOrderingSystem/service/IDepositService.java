@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface IDepositService {
 
-    List<DepositRespone> getDepositByBookingId(Long bookingId);
+    DepositRespone getDepositByBookingId(Long bookingId);
 
     DepositRespone createDeposit(DepositRequest depositRequest, Long bookingId);
 
@@ -16,6 +16,6 @@ public interface IDepositService {
 
     DepositRespone updateDeposit(Long id, DepositRequest depositRequest);
 
-    List<DepositRespone> getDepositIsActive();
+    List<DepositRespone> getAllDeposit();
 
 }

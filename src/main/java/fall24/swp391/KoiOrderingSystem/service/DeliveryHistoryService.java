@@ -41,7 +41,7 @@ public class DeliveryHistoryService implements IDeliveryHistoryService {
             if (bookings.isPresent()) {
                 //tim duoc booking
                 Bookings booking = bookings.get();
-                if(booking.getPaymentStatus()== PaymentStatus.shipped)
+                if(booking.getPaymentStatus()== PaymentStatus.shipping)
                 {
                     deliveryHistory.setBooking(booking);
                 }

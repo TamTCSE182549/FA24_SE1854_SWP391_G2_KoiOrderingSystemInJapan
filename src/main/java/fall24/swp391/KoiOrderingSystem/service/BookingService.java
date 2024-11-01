@@ -135,7 +135,7 @@ public class BookingService implements IBookingService{
     public List<BookingTourResponse> bookingForTour() {
         Account account = authenticationService.getCurrentAccount();
         List<Bookings> bookingTourResponses = null;
-        if (account.getRole() == Role.MANAGER || account.getRole() == Role.SALES_STAFF){
+        if (account.getRole() == Role.MANAGER || account.getRole() == Role.CONSULTING_STAFF){
             bookingTourResponses = bookingRepository.listBookingForTour();
         } else {
             throw new NotFoundEntity("Account not FOUND");
@@ -218,7 +218,19 @@ public class BookingService implements IBookingService{
         }
         List<Bookings> bookingsList = bookingRepository.listBookingForDashBoard();
         return bookingsList.stream().map(bookings -> {
-            BookingTourResponse bookingTourResponse = modelMapper.map(bookings, BookingTourResponse.class);
+            BookingTourResponse bookingTourResponse = new BookingTourResponse();
+            bookingTourResponse.setBookingType(bookings.getBookingType());
+            bookingTourResponse.setPaymentStatus(bookings.getPaymentStatus());
+            bookingTourResponse.setPaymentDate(bookings.getPaymentDate());
+            bookingTourResponse.setTotalAmount(bookings.getTotalAmount());
+            bookingTourResponse.setTotalAmountWithVAT(bookings.getTotalAmountWithVAT());
+            bookingTourResponse.setVat(bookings.getVat());
+            bookingTourResponse.setVatAmount(bookings.getVatAmount());
+            bookingTourResponse.setDiscountAmount(bookings.getDiscountAmount());
+            bookingTourResponse.setPaymentMethod(bookings.getPaymentMethod());
+            bookingTourResponse.setCreatedDate(bookings.getCreatedDate());
+            bookingTourResponse.setUpdatedDate(bookings.getUpdatedDate());
+            bookingTourResponse.setId(bookings.getId());
             if (bookings.getUpdatedBy() == null) {
                 bookingTourResponse.setUpdatedBy("");
             } else {
@@ -493,7 +505,7 @@ public class BookingService implements IBookingService{
     public BookingTourResponse updateKoiBooking(Long id, BookingUpdate bookingUpdate) {
        try{
            Account account =authenticationService.getCurrentAccount();
-           if(account.getRole()!=Role.SALES_STAFF) {
+           if(account.getRole()!=Role.CONSULTING_STAFF) {
                throw new NotUpdateException("Your role cannot access");
            }
                Bookings bookings = bookingRepository.findById(id)
@@ -512,6 +524,10 @@ public class BookingService implements IBookingService{
 
            bookings.setTotalAmount(totalBookingKoiAmount);
            bookings.setTotalAmountWithVAT(bookings.getTotalAmount() + bookings.getVatAmount() - bookings.getDiscountAmount());
+                       Deposit deposit = bookings.getDeposit();
+                       if(deposit != null){
+                           deposit.setRemainAmount(bookings.getTotalAmountWithVAT()-deposit.getDepositAmount()+deposit.getShippingFee());
+                       }
            bookingRepository.save(bookings);
            BookingTourResponse bookingResponse = modelMapper.map(bookings,BookingTourResponse.class);
            bookingResponse.setCreatedBy(account.getFirstName() + " " + account.getLastName());
@@ -530,25 +546,28 @@ public class BookingService implements IBookingService{
 
 
     @Override
-    public List<BookingTourResponse> getKoiBookingById(Long accountID) {
+    public List<BookingResponseDetail> getKoiBookingById() {
         Account account = authenticationService.getCurrentAccount();
-        List<Bookings> bookingsList = bookingRepository.listKoiBooking(accountID);
+        if(account.getRole() != Role.CUSTOMER){
+            throw  new GenericException("Account not Access");
+        }
+        List<Bookings> bookingsList = bookingRepository.listKoiBooking(account.getId());
         return bookingsList.stream().map(bookings -> {
-            BookingTourResponse bookingTourResponse = modelMapper.map(bookings, BookingTourResponse.class);
+            BookingResponseDetail bookingResponse = modelMapper.map(bookings, BookingResponseDetail.class);
             if (bookings.getUpdatedBy() == null) {
-                bookingTourResponse.setUpdatedBy("");
+                bookingResponse.setUpdatedBy("");
             } else {
-                bookingTourResponse.setUpdatedBy(bookings.getUpdatedBy().getFirstName() + " " + bookings.getUpdatedBy().getLastName());
+                bookingResponse.setUpdatedBy(bookings.getUpdatedBy().getFirstName() + " " + bookings.getUpdatedBy().getLastName());
             }
 
             if (bookings.getCreatedBy() == null) {
-                bookingTourResponse.setCreatedBy("");
+                bookingResponse.setCreatedBy("");
             } else {
-                bookingTourResponse.setCreatedBy(bookings.getCreatedBy().getFirstName() + " " + bookings.getCreatedBy().getLastName());
+                bookingResponse.setCreatedBy(bookings.getCreatedBy().getFirstName() + " " + bookings.getCreatedBy().getLastName());
             }
-            bookingTourResponse.setCustomerID(bookings.getAccount().getId());
-            bookingTourResponse.setNameCus(bookings.getAccount().getFirstName() + " " + bookings.getAccount().getLastName());
-            return bookingTourResponse;
+            bookingResponse.setCustomerID(bookings.getAccount().getId());
+            bookingResponse.setNameCus(bookings.getAccount().getFirstName() + " " + bookings.getAccount().getLastName());
+            return bookingResponse;
         }).toList();
     }
 
@@ -586,7 +605,7 @@ public class BookingService implements IBookingService{
     public BookingResponseDetail viewDetailBooking(Long bookingId) {
         try {
             Account account = authenticationService.getCurrentAccount();
-            if (account.getRole() != Role.SALES_STAFF) {
+            if (account.getRole() != Role.CONSULTING_STAFF) {
                 throw new NotUpdateException("Your role cannot access");
             }
             Bookings bookings = bookingRepository.findById(bookingId)
@@ -652,11 +671,10 @@ public class BookingService implements IBookingService{
     }
 
     @Override
-
     public BookingTourResponse updateStatus(Long bookingId) {
         try{
             Account account = authenticationService.getCurrentAccount();
-            if(account.getRole()!= Role.SALES_STAFF){
+            if(account.getRole()!= Role.CONSULTING_STAFF){
                 throw new NotUpdateException("Your Role cannot access");
             }
             Bookings bookings = bookingRepository.findById(bookingId)

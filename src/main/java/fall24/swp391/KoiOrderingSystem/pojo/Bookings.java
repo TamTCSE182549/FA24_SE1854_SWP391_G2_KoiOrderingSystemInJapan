@@ -1,5 +1,6 @@
 package fall24.swp391.KoiOrderingSystem.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import fall24.swp391.KoiOrderingSystem.enums.BookingType;
 import fall24.swp391.KoiOrderingSystem.enums.PaymentMethod;
 import fall24.swp391.KoiOrderingSystem.enums.PaymentStatus;
@@ -73,8 +74,8 @@ public class Bookings {
     @OneToMany(mappedBy = "booking", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     private List<BookingTourDetail> bookingTourDetails;
 
-    @OneToMany(mappedBy = "booking", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
-    private Set<Deposit> deposits;
+    @OneToOne(mappedBy = "booking", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    private Deposit deposit;
 
     @OneToMany(mappedBy = "booking", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     private Set<Checkin> checkins;
@@ -99,9 +100,14 @@ public class Bookings {
     @JoinColumn(name = "updated_by")
     private Account updatedBy;
 
+    @OneToMany(mappedBy = "booking", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    @JsonIgnore
+    private Set<Feedback> feedbacks;
+
     @PrePersist
     protected void onCreate(){
         createdDate = LocalDateTime.now();
+        bookingDate=LocalDateTime.now();
     }
 
     @PreUpdate
