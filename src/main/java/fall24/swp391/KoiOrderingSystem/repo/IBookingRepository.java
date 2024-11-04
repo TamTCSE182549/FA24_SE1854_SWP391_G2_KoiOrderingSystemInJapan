@@ -48,7 +48,6 @@ public interface IBookingRepository extends JpaRepository<Bookings, Long> {
             "where b.booking_type = 'BookingForKoi' and b.payment_status = 'shipped'", nativeQuery = true)
     List<Bookings> listKoiBookingShipping();
 
-
     @Query("select YEAR(b.paymentDate) as year, MONTH(b.paymentDate) as month, sum(b.totalAmountWithVAT) from Bookings b"+
             " where b.paymentStatus = 'complete' " +
             "GROUP BY YEAR(b.paymentDate),MONTH(b.paymentDate)" +
@@ -56,4 +55,19 @@ public interface IBookingRepository extends JpaRepository<Bookings, Long> {
     List<Object[]> calculatingTotalAmountWithVAT();
 
     Bookings findBookingsById(Long id);
+
+    @Query(value = "select b.* " +
+            "from bookings b " +
+            "where b.payment_status = ?1", nativeQuery = true)
+    List<Bookings> findBookingsByPaymentStatus(String paymentStatus);
+
+    @Query(value = "select b.* " +
+            "from bookings b " +
+            "where b.booking_type = 'BookingForTour' and b.payment_status = ?1", nativeQuery = true)
+    List<Bookings> findBookingForTourByPaymentStatus(String paymentStatus);
+
+    @Query(value = "select b.* " +
+            "from bookings b " +
+            "where b.booking_type = 'BookingForKoi' and b.payment_status = ?1", nativeQuery = true)
+    List<Bookings> findBookingForKoiByPaymentStatus(String paymentStatus);
 }

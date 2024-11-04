@@ -140,4 +140,28 @@ public class BookingController {
         List<BookingTourResponse> bookingTourResponses = bookingService.getKoiBookingShipping();
         return ResponseEntity.ok(bookingTourResponses);
     }
+
+    @GetMapping("/AllBooking")
+    public ResponseEntity<?> getAllBooking(){
+        List<BookingTourResponse> bookingTourResponses = bookingService.getAllBooking();
+        return ResponseEntity.ok(bookingTourResponses);
+    }
+
+    @GetMapping("/AllBookingStatus/{paymentStatus}")
+    public ResponseEntity<?> getAllBookingStatus(@PathVariable String paymentStatus){
+        List<BookingTourResponse> bookingTourResponses = bookingService.showAllBookingStatus(paymentStatus);
+        return ResponseEntity.ok(bookingTourResponses);
+    }
+
+    @GetMapping("/BookingForTourStatus/{paymentStatus}")
+    public ResponseEntity<?> getBookingTourStatus(@PathVariable String paymentStatus){
+        List<BookingTourResponse> bookingTourResponses = bookingService.showBookingTourStatus(paymentStatus);
+        return ResponseEntity.ok(bookingTourResponses);
+    }
+
+    @GetMapping("/BookingForKoiStatus/{paymentStatus}")
+    public ResponseEntity<?> getBookingKoiStatus(@PathVariable String paymentStatus){
+        List<BookingTourResponse> bookingTourResponses = bookingService.showBookingKoiStatus(paymentStatus);
+        return ResponseEntity.ok(bookingTourResponses);
+    }
 }

@@ -66,4 +66,11 @@ public interface IBookingService {
 
     List<BookingTourResponse> getKoiBookingShipping();
 
+    List<BookingTourResponse> getAllBooking();
+
+    List<BookingTourResponse> showAllBookingStatus(String paymentStatus);
+
+    List<BookingTourResponse> showBookingTourStatus(String paymentStatus);
+
+    List<BookingTourResponse> showBookingKoiStatus(String paymentStatus);
 }
