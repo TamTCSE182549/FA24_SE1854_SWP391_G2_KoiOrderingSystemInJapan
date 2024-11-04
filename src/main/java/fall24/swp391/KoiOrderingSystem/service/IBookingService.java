@@ -58,7 +58,6 @@ public interface IBookingService {
 
     BookingTourResponse updateStatus(Long bookingId);
 
-
     String createUrl(Long bookingId) throws  Exception;
 
     void updatePayment(PaymentRequest paymentRequest);
