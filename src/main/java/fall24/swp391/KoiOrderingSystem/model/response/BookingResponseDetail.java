@@ -21,6 +21,7 @@ public class BookingResponseDetail {
     BookingType bookingType;
     PaymentMethod paymentMethod;
     PaymentStatus paymentStatus;
+    LocalDateTime bookingDate;
     String createdBy;
     LocalDateTime createdDate;
     String updatedBy;

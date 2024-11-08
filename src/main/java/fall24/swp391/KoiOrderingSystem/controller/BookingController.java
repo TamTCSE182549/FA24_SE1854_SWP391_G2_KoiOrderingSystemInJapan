@@ -105,6 +105,12 @@ public class BookingController {
         return new ResponseEntity<>("Delete booking complete", HttpStatus.OK);
     }
 
+    @PutMapping("/delete/koi/{bookingId}")
+    public ResponseEntity<?> deleteBookingKoi(@PathVariable Long bookingId) {
+        bookingService.deleteBooking(bookingId);
+        return new ResponseEntity<>("Delete booking complete", HttpStatus.OK);
+    }
+
     @GetMapping("/koi/list/customer")
     public ResponseEntity<?> getKoiBookings() {
         List<BookingResponseDetail> bookings = bookingService.getKoiBookingById();
@@ -113,7 +119,7 @@ public class BookingController {
 
     @GetMapping("/BookingForKoi")
     public ResponseEntity<?> showBookingForKoi(){
-        List<BookingTourResponse> bookingTourResponses = bookingService.getKoiBooking();
+        List<BookingResponseDetail> bookingTourResponses = bookingService.getKoiBooking();
         return ResponseEntity.ok(bookingTourResponses);
     }
 

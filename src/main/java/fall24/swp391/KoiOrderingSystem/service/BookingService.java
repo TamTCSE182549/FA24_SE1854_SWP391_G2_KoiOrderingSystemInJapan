@@ -574,7 +574,7 @@ public class BookingService implements IBookingService{
 
 
     @Override
-    public List<BookingTourResponse> getKoiBooking() {
+    public List<BookingResponseDetail> getKoiBooking() {
         Account account = authenticationService.getCurrentAccount();
         List<Bookings> bookingTourResponses = null;
        if (account.getRole() == Role.SALES_STAFF || account.getRole() == Role.CUSTOMER || account.getRole() == Role.MANAGER ||account.getRole() == Role.CONSULTING_STAFF || account.getRole() == Role.DELIVERING_STAFF){
@@ -584,7 +584,7 @@ public class BookingService implements IBookingService{
             throw new NotFoundEntity("Account not FOUND");        }
 
         return bookingTourResponses.stream().map(bookings -> {
-            BookingTourResponse bookingTourResponse = modelMapper.map(bookings, BookingTourResponse.class);
+            BookingResponseDetail bookingTourResponse = modelMapper.map(bookings, BookingResponseDetail.class);
             if (bookings.getUpdatedBy() == null) {
                 bookingTourResponse.setUpdatedBy("");
             } else {
@@ -670,6 +670,39 @@ public class BookingService implements IBookingService{
         bookingTourResponse.setCustomerID(booking.getAccount().getId());
         bookingTourResponse.setNameCus(booking.getAccount().getFirstName() + " " + booking.getAccount().getLastName());
         return bookingTourResponse;
+    }
+
+    public BookingResponseDetail deleteBooking(Long bookingID) {
+        Bookings booking = bookingRepository.findById(bookingID)
+                .orElseThrow(() -> new NotFoundEntity("Booking not exist"));
+        Account account = authenticationService.getCurrentAccount();
+        if (account.getRole() != Role.CONSULTING_STAFF) {
+            throw new NotDeleteException("Your role cannot delete");
+        }
+        if (booking.getPaymentStatus() == PaymentStatus.pending || booking.getPaymentStatus() == PaymentStatus.processing) {
+
+
+            booking.setPaymentStatus(PaymentStatus.cancelled);
+
+            booking.setUpdatedBy(account);
+            }
+            bookingRepository.save(booking);
+            BookingResponseDetail bookingResponseDetail = modelMapper.map(booking, BookingResponseDetail.class);
+            if (booking.getUpdatedBy() == null) {
+                bookingResponseDetail.setUpdatedBy("");
+            } else {
+                bookingResponseDetail.setUpdatedBy(booking.getUpdatedBy().getFirstName() + " " + booking.getUpdatedBy().getLastName());
+            }
+
+            if (booking.getCreatedBy() == null) {
+                bookingResponseDetail.setCreatedBy("");
+            } else {
+                bookingResponseDetail.setCreatedBy(booking.getCreatedBy().getFirstName() + " " + booking.getCreatedBy().getLastName());
+            }
+            bookingResponseDetail.setCustomerID(booking.getAccount().getId());
+            bookingResponseDetail.setNameCus(booking.getAccount().getFirstName() + " " + booking.getAccount().getLastName());
+            return bookingResponseDetail;
+
     }
 
     @Override
