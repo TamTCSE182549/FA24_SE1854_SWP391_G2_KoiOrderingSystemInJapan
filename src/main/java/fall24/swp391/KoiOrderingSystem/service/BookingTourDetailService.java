@@ -54,6 +54,7 @@ public class BookingTourDetailService implements IBookingTourDetailService {
             return bookingTourDetailList.stream().map(bookingTourDetail -> {
                 BookingTourDetailResponse bookingTourDetailResponse = modelMapper.map(bookingTourDetail, BookingTourDetailResponse.class);
                 bookingTourDetailResponse.setBookingTourDetailID(bookingTourDetail.getId());
+                bookingTourDetailResponse.setTourID(bookingTourDetail.getTourId().getId());
                 bookingTourDetailResponse.setBookingID(bookings.getId());
                 bookingTourDetailResponse.setTourName(bookingTourDetail.getTourId().getTourName());
                 return bookingTourDetailResponse;

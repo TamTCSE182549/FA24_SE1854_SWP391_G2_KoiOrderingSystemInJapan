@@ -135,7 +135,8 @@ public class BookingService implements IBookingService{
     public List<BookingTourResponse> bookingForTour() {
         Account account = authenticationService.getCurrentAccount();
         List<Bookings> bookingTourResponses = null;
-        if (account.getRole() == Role.MANAGER || account.getRole() == Role.CONSULTING_STAFF|| account.getRole() == Role.SALES_STAFF){
+      
+        if (account.getRole() == Role.MANAGER || account.getRole() == Role.CONSULTING_STAFF || account.getRole() == Role.SALES_STAFF){
             bookingTourResponses = bookingRepository.listBookingForTour();
         } else {
             throw new NotFoundEntity("Account not FOUND");
@@ -627,9 +628,6 @@ public class BookingService implements IBookingService{
     public BookingTourResponse deleteBookingResponse(Long bookingID) {
         Bookings booking = bookingRepository.findById(bookingID)
                 .orElseThrow(() -> new NotFoundEntity("Booking not exist"));
-        BookingTourDetail bookingTourDetail = iBookingTourDetailRepository.showDetailOfBookingIDOne(booking.getId());
-        Tours tour = iTourRepository.findById(bookingTourDetail.getTourId().getId())
-                .orElseThrow(() -> new NotFoundEntity("Tour not exist"));
         Account account = authenticationService.getCurrentAccount();
         if(account.getRole() != Role.CUSTOMER) {
             throw new NotDeleteException("Your role cannot delete");
@@ -640,9 +638,14 @@ public class BookingService implements IBookingService{
         booking.setPaymentStatus(PaymentStatus.cancelled);
         booking.setUpdatedBy(account);
         bookingRepository.save(booking);
-        tour.setRemaining(tour.getRemaining() + bookingTourDetail.getParticipant());
-        tour.setStatus(TourStatus.active);
-        iTourRepository.save(tour);
+        BookingTourDetail bookingTourDetail = iBookingTourDetailRepository.showDetailOfBookingIDOne(booking.getId());
+        if(bookingTourDetail!=null){
+            Tours tour = iTourRepository.findById(bookingTourDetail.getTourId().getId())
+                    .orElseThrow(() -> new NotFoundEntity("Tour not exist"));
+            tour.setRemaining(tour.getRemaining() + bookingTourDetail.getParticipant());
+            tour.setStatus(TourStatus.active);
+            iTourRepository.save(tour);
+        }
         BookingTourResponse bookingTourResponse = new BookingTourResponse();
         bookingTourResponse.setBookingType(booking.getBookingType());
         bookingTourResponse.setPaymentStatus(booking.getPaymentStatus());
