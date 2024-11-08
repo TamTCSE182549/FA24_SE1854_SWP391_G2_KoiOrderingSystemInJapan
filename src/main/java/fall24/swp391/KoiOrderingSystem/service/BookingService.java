@@ -577,7 +577,6 @@ public class BookingService implements IBookingService{
     public List<BookingTourResponse> getKoiBooking() {
         Account account = authenticationService.getCurrentAccount();
         List<Bookings> bookingTourResponses = null;
-
        if (account.getRole() == Role.SALES_STAFF || account.getRole() == Role.CUSTOMER || account.getRole() == Role.MANAGER ||account.getRole() == Role.CONSULTING_STAFF || account.getRole() == Role.DELIVERING_STAFF){
 
             bookingTourResponses = bookingRepository.listBookingForKoi();
