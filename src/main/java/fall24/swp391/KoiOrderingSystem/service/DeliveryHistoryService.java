@@ -45,7 +45,7 @@ public class DeliveryHistoryService implements IDeliveryHistoryService {
                 {
                     deliveryHistory.setBooking(booking);
                 }
-                else throw new NotFoundEntity("Booking isn't shipped");
+                else throw new NotFoundEntity("Booking isn't shipping");
             } else {
                 throw new NotFoundEntity("Booking not found");
             }

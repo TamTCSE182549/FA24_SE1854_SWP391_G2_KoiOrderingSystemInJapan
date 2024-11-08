@@ -7,6 +7,7 @@ import lombok.Data;
 @Data
 public class BookingUpdateRequestStaff {
     Long bookingID;
+    float amount;
     float vat;
     PaymentMethod paymentMethod;
     PaymentStatus paymentStatus;

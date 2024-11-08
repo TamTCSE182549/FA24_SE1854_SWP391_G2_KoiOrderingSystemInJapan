@@ -135,7 +135,7 @@ public class BookingService implements IBookingService{
     public List<BookingTourResponse> bookingForTour() {
         Account account = authenticationService.getCurrentAccount();
         List<Bookings> bookingTourResponses = null;
-        if (account.getRole() == Role.MANAGER || account.getRole() == Role.CONSULTING_STAFF){
+        if (account.getRole() == Role.MANAGER || account.getRole() == Role.CONSULTING_STAFF|| account.getRole() == Role.SALES_STAFF){
             bookingTourResponses = bookingRepository.listBookingForTour();
         } else {
             throw new NotFoundEntity("Account not FOUND");
@@ -386,7 +386,7 @@ public class BookingService implements IBookingService{
         try {
             Account account = authenticationService.getCurrentAccount();
 
-            if (account.getRole() == Role.SALES_STAFF){
+            if (account.getRole() != Role.SALES_STAFF){
                 throw new NotUpdateException("Your Role cannot access");
             }
 
@@ -397,6 +397,7 @@ public class BookingService implements IBookingService{
             if(bookings.getPaymentStatus() == PaymentStatus.complete){
                 bookings.setPaymentDate(LocalDateTime.now());
             }
+            bookings.setTotalAmount(bookingUpdateRequestStaff.getAmount());
             bookings.setVat(bookingUpdateRequestStaff.getVat());
             bookings.setDiscountAmount(bookingUpdateRequestStaff.getDiscountAmount());
             bookings.setUpdatedBy(account);
@@ -576,7 +577,8 @@ public class BookingService implements IBookingService{
     public List<BookingTourResponse> getKoiBooking() {
         Account account = authenticationService.getCurrentAccount();
         List<Bookings> bookingTourResponses = null;
-       if (account.getRole() == Role.CONSULTING_STAFF|| account.getRole() == Role.CUSTOMER || account.getRole() == Role.MANAGER){
+       if (account.getRole() == Role.SALES_STAFF || account.getRole() == Role.CUSTOMER || account.getRole() == Role.MANAGER ||account.getRole() == Role.CONSULTING_STAFF || account.getRole() == Role.DELIVERING_STAFF){
+
             bookingTourResponses = bookingRepository.listBookingForKoi();
       } else {
             throw new NotFoundEntity("Account not FOUND");        }
