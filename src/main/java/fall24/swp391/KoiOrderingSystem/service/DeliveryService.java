@@ -92,7 +92,7 @@ public class DeliveryService implements IDeliveryService {
                         bookingRepository.save(bookings);
                         delivery.setBooking(bookings);
                     }
-                    else throw new NotFoundEntity("Booking isn't shipped");
+                    else throw new NotFoundEntity("Booking isn't shipping");
                 } else {
                     throw new NotFoundEntity("Booking not found");
                 }

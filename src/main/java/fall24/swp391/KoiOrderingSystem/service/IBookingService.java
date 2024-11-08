@@ -49,15 +49,15 @@ public interface IBookingService {
 
     List<BookingResponseDetail> getKoiBookingById();
 
-    List<BookingTourResponse> getKoiBooking();
+    List<BookingResponseDetail> getKoiBooking();
 
     BookingResponseDetail viewDetailBooking(Long bookingId);
 
     BookingTourResponse deleteBookingResponse(Long bookingID);
 
+    BookingResponseDetail deleteBooking(Long bookingId);
 
     BookingTourResponse updateStatus(Long bookingId);
-
 
     String createUrl(Long bookingId) throws  Exception;
 

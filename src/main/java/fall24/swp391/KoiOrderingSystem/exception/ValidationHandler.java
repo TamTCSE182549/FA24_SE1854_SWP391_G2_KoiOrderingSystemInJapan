@@ -30,6 +30,11 @@ public class ValidationHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
     }
 
+    @ExceptionHandler(ExistingEntity.class)
+    public ResponseEntity<String> handleExistingEntity(ExistingEntity ex) {
+        return new ResponseEntity<>("Error Create: " + ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(NotUpdateException.class)
     public ResponseEntity<?> handleUpdateException(NotUpdateException exception){
         return new ResponseEntity<>("Error Update: " + exception.getMessage(), HttpStatus.BAD_REQUEST);
