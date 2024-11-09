@@ -55,4 +55,7 @@ public class KoiFarms {
     @JsonIgnore
     private List<KoiOfFarm> koiOfFarms;
 
+    @OneToMany(mappedBy = "koiFarm",  cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    @JsonIgnore
+    private List<BookingKoiDetail> bookingKoiDetails;
 }
