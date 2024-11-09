@@ -29,6 +29,8 @@ public class Bookings {
     @JoinColumn(name = "account_id")
     private Account account;
 
+
+
     @Enumerated(EnumType.STRING)
     @Column(name = "booking_type")
     private BookingType bookingType;
@@ -80,8 +82,13 @@ public class Bookings {
     @OneToMany(mappedBy = "booking", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     private Set<Checkin> checkins;
 
+    @OneToOne(mappedBy = "booking", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    private Checkin buy;
+
+
+
     @OneToMany(mappedBy = "booking", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
-    private Set<DeliveryHistory> deliveryHistory;
+    private List<DeliveryHistory> deliveryHistory;
 
     @OneToOne(mappedBy = "booking",cascade = CascadeType.ALL)
     private Delivery delivery;

@@ -46,7 +46,12 @@ public class Checkin {
     @JsonBackReference
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "booking_id") //name same foreign key mapping
-    private Bookings booking;
+    private Bookings bookingTour;
+
+    @JsonBackReference
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    @JoinColumn(name = "booking_id") //name same foreign key mapping
+    private Bookings bookingKoi;
 
     @Column(name = "created_at")
     private LocalDateTime createdDate;

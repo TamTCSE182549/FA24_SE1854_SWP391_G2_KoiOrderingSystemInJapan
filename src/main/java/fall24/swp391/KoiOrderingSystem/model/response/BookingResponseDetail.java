@@ -27,4 +27,5 @@ public class BookingResponseDetail {
     String updatedBy;
     LocalDateTime updatedDate;
     List<BookingKoiDetail> koiDetails;
+
 }
