@@ -1,6 +1,5 @@
 package fall24.swp391.KoiOrderingSystem.model.response;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import fall24.swp391.KoiOrderingSystem.enums.TourStatus;
 import lombok.Data;
 
@@ -18,9 +17,9 @@ public class TourResponse {
     LocalDateTime startTime;
     LocalDateTime endTime;
     String tourImg;
-    TourStatus tourStatus;
-    String createdBy;
+    TourStatus status;
     LocalDateTime createdDate;
-    String updatedBy;
     LocalDateTime updatedDate;
+    String createdBy;
+    String updatedBy;
 }

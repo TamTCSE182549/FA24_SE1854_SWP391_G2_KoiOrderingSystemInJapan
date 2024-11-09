@@ -113,72 +113,123 @@ public interface ITourRepository extends JpaRepository<Tours, Long> {
     Page<Tours> findTourByPriceAndDatePageable(Float minPrice, Float maxPrice, String startDate, String endDate, Pageable pageable);
 
     default Page<Tours> findTourByKoiNameAndByFarmName(Long koiId, Long farmId, Pageable pageable){
-        Set<Tours> results = new HashSet<>();
-        results.addAll(findTourByKoiName(koiId));
-        results.addAll(findTourByFarmName(farmId));
+        Map<Long, Tours> uniqueToursMap = new HashMap<>();
 
-        // Chuyển đổi Set thành List
-        List<Tours> uniqueTours = new ArrayList<>(results);
+        if (koiId != null) {
+            List<Tours> toursListByKoi = findTourByKoiName(koiId);
+            for (Tours tour : toursListByKoi) {
+                uniqueToursMap.putIfAbsent(tour.getId(), tour); // Chỉ thêm nếu chưa tồn tại id trong map
+            }
+        }
 
-        // Tính toán chỉ số bắt đầu và kết thúc để phân trang
+        if (farmId != null) {
+            List<Tours> toursListByFarm = findTourByFarmName(farmId);
+            for (Tours tour : toursListByFarm) {
+                uniqueToursMap.putIfAbsent(tour.getId(), tour); // Chỉ thêm nếu chưa tồn tại id trong map
+            }
+        }
+
+        // Lấy các giá trị từ Map để tạo danh sách duy nhất
+        List<Tours> uniqueTours = new ArrayList<>(uniqueToursMap.values());
+
+        // Phân trang kết quả
         int start = (int) pageable.getOffset();
         int end = Math.min(start + pageable.getPageSize(), uniqueTours.size());
         return new PageImpl<>(uniqueTours.subList(start, end), pageable, uniqueTours.size());
     }
 
-    default Page<Tours> findTourByKoiNameAndByFarmNameWithUnitPrice(Long koiId, Long farmId, Float minPrice, Float maxPrice, Pageable pageable){
-        Set<Tours> results = new HashSet<>();
-        results.addAll(findTourByKoiNameWithPrice(koiId, minPrice, maxPrice));
-        results.addAll(findTourByFarmNameWithPrice(farmId, minPrice, maxPrice));
+    default Page<Tours> findTourByKoiNameAndByFarmNameWithUnitPrice(Long koiId, Long farmId, Float minPrice, Float maxPrice, Pageable pageable) {
+        Map<Long, Tours> uniqueToursMap = new HashMap<>();
 
-        // Chuyển đổi Set thành List
-        List<Tours> uniqueTours = new ArrayList<>(results);
+        List<Tours> toursByKoi = findTourByKoiNameWithPrice(koiId, minPrice, maxPrice);
+        List<Tours> toursByFarm = findTourByFarmNameWithPrice(farmId, minPrice, maxPrice);
 
-        // Tính toán chỉ số bắt đầu và kết thúc để phân trang
+        for (Tours tour : toursByKoi) {
+            uniqueToursMap.putIfAbsent(tour.getId(), tour);
+        }
+
+        for (Tours tour : toursByFarm) {
+            uniqueToursMap.putIfAbsent(tour.getId(), tour);
+        }
+
+        // Lấy các giá trị duy nhất từ Map để tạo danh sách
+        List<Tours> uniqueTours = new ArrayList<>(uniqueToursMap.values());
+
+        // Phân trang kết quả
         int start = (int) pageable.getOffset();
         int end = Math.min(start + pageable.getPageSize(), uniqueTours.size());
         return new PageImpl<>(uniqueTours.subList(start, end), pageable, uniqueTours.size());
     }
 
-    default Page<Tours> findTourByKoiNameAndByFarmNameWithDate(Long koiId, Long farmId, String startDate, String endDate, Pageable pageable){
-        Set<Tours> results = new HashSet<>();
-        results.addAll(findTourByKoiNameWithDate(koiId, startDate, endDate));
-        results.addAll(findTourByFarmNameWithDate(farmId, startDate, endDate));
+    default Page<Tours> findTourByKoiNameAndByFarmNameWithDate(Long koiId, Long farmId, String startDate, String endDate, Pageable pageable) {
+        Map<Long, Tours> uniqueToursMap = new HashMap<>();
 
-        // Chuyển đổi Set thành List
-        List<Tours> uniqueTours = new ArrayList<>(results);
+        List<Tours> toursByKoi = findTourByKoiNameWithDate(koiId, startDate, endDate);
+        List<Tours> toursByFarm = findTourByFarmNameWithDate(farmId, startDate, endDate);
 
-        // Tính toán chỉ số bắt đầu và kết thúc để phân trang
+        for (Tours tour : toursByKoi) {
+            uniqueToursMap.putIfAbsent(tour.getId(), tour);
+        }
+
+        for (Tours tour : toursByFarm) {
+            uniqueToursMap.putIfAbsent(tour.getId(), tour);
+        }
+
+        // Lấy các giá trị duy nhất từ Map để tạo danh sách
+        List<Tours> uniqueTours = new ArrayList<>(uniqueToursMap.values());
+
+        // Phân trang kết quả
         int start = (int) pageable.getOffset();
         int end = Math.min(start + pageable.getPageSize(), uniqueTours.size());
         return new PageImpl<>(uniqueTours.subList(start, end), pageable, uniqueTours.size());
     }
 
-    default Page<Tours> findTourByKoiNameAndByFarmNameWithAllCondition(Long koiId, Long farmId, Float minPrice, Float maxPrice, String startDate, String endDate, Pageable pageable){
-        Set<Tours> results = new HashSet<>();
-        results.addAll(findTourByKoiNameWithAllCondition(koiId, minPrice, maxPrice, startDate, endDate));
-        results.addAll(findTourByFarmNameWithAllCondition(farmId, minPrice, maxPrice, startDate, endDate));
+    default Page<Tours> findTourByKoiNameAndByFarmNameWithAllCondition(Long koiId, Long farmId, Float minPrice, Float maxPrice, String startDate, String endDate, Pageable pageable) {
+        Map<Long, Tours> uniqueToursMap = new HashMap<>();
 
-        // Chuyển đổi Set thành List
-        List<Tours> uniqueTours = new ArrayList<>(results);
+        List<Tours> toursByKoi = findTourByKoiNameWithAllCondition(koiId, minPrice, maxPrice, startDate, endDate);
+        List<Tours> toursByFarm = findTourByFarmNameWithAllCondition(farmId, minPrice, maxPrice, startDate, endDate);
 
-        // Tính toán chỉ số bắt đầu và kết thúc để phân trang
+        for (Tours tour : toursByKoi) {
+            uniqueToursMap.putIfAbsent(tour.getId(), tour);
+        }
+
+        for (Tours tour : toursByFarm) {
+            uniqueToursMap.putIfAbsent(tour.getId(), tour);
+        }
+
+        // Lấy các giá trị duy nhất từ Map để tạo danh sách
+        List<Tours> uniqueTours = new ArrayList<>(uniqueToursMap.values());
+
+        // Phân trang kết quả
         int start = (int) pageable.getOffset();
         int end = Math.min(start + pageable.getPageSize(), uniqueTours.size());
         return new PageImpl<>(uniqueTours.subList(start, end), pageable, uniqueTours.size());
     }
 
-    default Page<Tours> findTourByUnitPriceAndDate(Float minPrice, Float maxPrice, String startDate, String endDate, Pageable pageable){
-        Set<Tours> results = new HashSet<>();
-        results.addAll(findTourByPrice(minPrice, maxPrice));
-        results.addAll(findTourByDate(startDate, endDate));
 
-        // Chuyển đổi Set thành List
-        List<Tours> uniqueTours = new ArrayList<>(results);
+    default Page<Tours> findTourByUnitPriceAndDate(Float minPrice, Float maxPrice, String startDate, String endDate, Pageable pageable) {
+        Map<Long, Tours> uniqueToursMap = new HashMap<>();
 
-        // Tính toán chỉ số bắt đầu và kết thúc để phân trang
+        // Thêm các tour theo giá vào Map, sử dụng id làm khóa để loại trừ trùng lặp
+        List<Tours> toursByPrice = findTourByPrice(minPrice, maxPrice);
+        for (Tours tour : toursByPrice) {
+            uniqueToursMap.putIfAbsent(tour.getId(), tour);
+        }
+
+        // Thêm các tour theo ngày vào Map, tránh trùng lặp với các tour đã thêm
+        List<Tours> toursByDate = findTourByDate(startDate, endDate);
+        for (Tours tour : toursByDate) {
+            uniqueToursMap.putIfAbsent(tour.getId(), tour);
+        }
+
+        // Lấy các giá trị duy nhất từ Map để tạo danh sách
+        List<Tours> uniqueTours = new ArrayList<>(uniqueToursMap.values());
+
+        // Phân trang kết quả
         int start = (int) pageable.getOffset();
         int end = Math.min(start + pageable.getPageSize(), uniqueTours.size());
         return new PageImpl<>(uniqueTours.subList(start, end), pageable, uniqueTours.size());
     }
+
 }
