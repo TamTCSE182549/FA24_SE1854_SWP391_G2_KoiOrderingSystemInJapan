@@ -34,7 +34,9 @@ public class CheckinService implements ICheckinService {
 
     @Override
     public List<CheckinResponse> getChekinByBookingId(Long Id) {
-        List<Checkin> checkinList = checkinRepository.findByBookingId(Id);
+        Bookings booking = bookingRepository.findById(Id)
+                .orElseThrow(() -> new RuntimeException("Booking not found"));
+        List<Checkin> checkinList = checkinRepository.findByBookingTour(booking);
         if (checkinList.isEmpty()) {
             throw new GenericException("Not Found Checkin");
         }
@@ -71,7 +73,7 @@ public class CheckinService implements ICheckinService {
                 Bookings booking = bookingRepository.findById(bookingId)
                         .orElseThrow(() -> new RuntimeException("Booking not found"));
                 Checkin checkin = modelMapper.map(checkinRequest, Checkin.class);
-                checkin.setBooking(booking);
+//                checkin.(booking);
                 checkin.setStatus(CheckinStatus.NOTCHECKEDIN);
                 checkin.setCreatedBy(account);
                 checkin.setCustomerId(booking.getAccount());
