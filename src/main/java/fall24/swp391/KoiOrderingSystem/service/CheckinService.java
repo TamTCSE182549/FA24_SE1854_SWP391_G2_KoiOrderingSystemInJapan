@@ -44,43 +44,42 @@ public class CheckinService implements ICheckinService {
     }
 
     @Override
-    public List<CheckinResponse> getCheckinByAccount() {
+    public List<Checkin> getCheckinByAccount() {
         Account account = authenticationService.getCurrentAccount();
         List<Checkin> checkinList = checkinRepository.findByCustomerId(account.getId());
         if (checkinList.isEmpty()) {
             throw new GenericException("No check-ins found for this account");
         }
         return checkinList.stream()
-                .map(checkin -> modelMapper.map(checkin, CheckinResponse.class))
+                .map(checkin -> modelMapper.map(checkin, Checkin.class))
                 .toList();
     }
 
     @Override
-    public List<CheckinResponse> getAllCheckin() {
+    public List<Checkin> getAllCheckin() {
         List<Checkin> checkinList = checkinRepository.findAll();
         if (checkinList.isEmpty()) {
             throw new GenericException("Not Found Checkin");
         }
-        return checkinList.stream().map(checkin -> modelMapper.map(checkin, CheckinResponse.class)).toList();
+        return checkinList.stream().map(checkin -> modelMapper.map(checkin, Checkin.class)).toList();
     }
 
     @Override
-    public CheckinResponse createCheckin(CheckinRequest checkinRequest, Long bookingId) {
+    public Checkin createCheckin(CheckinRequest checkinRequest, Long bookingId) {
         try {
 
             Account account = authenticationService.getCurrentAccount();
-            if (account.getRole() == Role.SALES_STAFF) {
+            if (account.getRole() == Role.SALES_STAFF || account.getRole() == Role.CUSTOMER) {
                 Bookings booking = bookingRepository.findById(bookingId)
                         .orElseThrow(() -> new RuntimeException("Booking not found"));
                 Checkin checkin = modelMapper.map(checkinRequest, Checkin.class);
 //                checkin.(booking);
+//                checkin.setBooking(booking.getId());
                 checkin.setStatus(CheckinStatus.NOTCHECKEDIN);
                 checkin.setCreatedBy(account);
                 checkin.setCustomerId(booking.getAccount());
                 checkinRepository.save(checkin);
-                CheckinResponse checkinResponse = modelMapper.map(checkin, CheckinResponse.class);
-                checkinResponse.setCreateBy(account.getFirstName() + " " + account.getLastName());
-                return checkinResponse;
+                return checkin;
             } else {
                 throw new NotCreateException("Only staff can create");
             }
@@ -93,7 +92,7 @@ public class CheckinService implements ICheckinService {
     public CheckinResponse updateCheckin(Long Id, CheckinRequest checkinRequest) {
         try {
             Account account = authenticationService.getCurrentAccount();
-            if (account.getRole() == Role.SALES_STAFF) {
+            if (account.getRole() == Role.SALES_STAFF  || account.getRole() == Role.CUSTOMER) {
                 Checkin checkin = checkinRepository.findById(Id)
                         .orElseThrow(() -> new RuntimeException("Checkin Id not found"));
 
@@ -120,7 +119,7 @@ public class CheckinService implements ICheckinService {
     public CheckinResponse updateCheckinStatus(Long Id) {
         try{
             Account account = authenticationService.getCurrentAccount();
-            if(account.getRole() == Role.SALES_STAFF){
+            if(account.getRole() == Role.SALES_STAFF  || account.getRole() == Role.CUSTOMER){
                 Checkin checkin = checkinRepository.findById(Id)
                         .orElseThrow(() -> new RuntimeException("Checkin Not Found"));
                 if(checkin.getStatus() == CheckinStatus.NOTCHECKEDIN){
@@ -145,7 +144,7 @@ public class CheckinService implements ICheckinService {
     public CheckinResponse deleteCheckin(Long Id) {
         try {
             Account account = authenticationService.getCurrentAccount();
-            if (account.getRole() == Role.SALES_STAFF) {
+            if (account.getRole() == Role.SALES_STAFF  || account.getRole() == Role.CUSTOMER) {
                 Checkin deleteCheckin = checkinRepository.findById(Id)
                         .orElseThrow(() -> new RuntimeException("Checkin Id not found"));
                 deleteCheckin.setStatus(CheckinStatus.CANCELLED);

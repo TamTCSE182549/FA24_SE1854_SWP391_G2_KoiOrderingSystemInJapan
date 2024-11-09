@@ -10,7 +10,7 @@ public interface ICheckinService {
 
     List<CheckinResponse> getChekinByBookingId(Long Id);
 
-    CheckinResponse createCheckin(CheckinRequest checkinUserRequest, Long bookingId);
+    Checkin createCheckin(CheckinRequest checkinUserRequest, Long bookingId);
 
     CheckinResponse updateCheckin(Long Id, CheckinRequest checkinRequest);
 
@@ -18,7 +18,7 @@ public interface ICheckinService {
 
     CheckinResponse deleteCheckin(Long Id);
 
-    List<CheckinResponse> getAllCheckin();
+    List<Checkin> getAllCheckin();
 
-    List<CheckinResponse> getCheckinByAccount();
+    List<Checkin> getCheckinByAccount();
 }
