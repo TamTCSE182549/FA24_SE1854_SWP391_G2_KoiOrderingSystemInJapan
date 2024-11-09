@@ -318,7 +318,7 @@ public class TourService implements ITourService{
         Pageable pageable = PageRequest.of(page, size);
         Page<Tours> tourResponses = null;
         try {
-            if((findTourRequest.getKoiId()!=null||findTourRequest.getFarmId()!=null) && findTourRequest.getMinPrice() != null && findTourRequest.getMaxPrice() != null && findTourRequest.getStartDate() != null && findTourRequest.getEndDate() != null){
+            if((findTourRequest.getKoiId()!=null || findTourRequest.getFarmId()!=null) && findTourRequest.getMinPrice() != null && findTourRequest.getMaxPrice() != null && findTourRequest.getStartDate() != null && findTourRequest.getEndDate() != null){
                 tourResponses = iTourRepository.findTourByKoiNameAndByFarmNameWithAllCondition(findTourRequest.getKoiId(), findTourRequest.getFarmId(), findTourRequest.getMinPrice(), findTourRequest.getMaxPrice(), findTourRequest.getStartDate(), findTourRequest.getEndDate(), pageable);
             } else if((findTourRequest.getKoiId()!=null||findTourRequest.getFarmId()!=null) && findTourRequest.getMinPrice() != null && findTourRequest.getMaxPrice() != null){
                 tourResponses = iTourRepository.findTourByKoiNameAndByFarmNameWithUnitPrice(findTourRequest.getKoiId(), findTourRequest.getFarmId(), findTourRequest.getMinPrice(), findTourRequest.getMaxPrice(), pageable);
@@ -337,7 +337,16 @@ public class TourService implements ITourService{
             }
 
             return tourResponses.map(tours -> {
-                TourResponse tourResponse = modelMapper.map(tours, TourResponse.class);
+                TourResponse tourResponse = new TourResponse();
+                tourResponse.setId(tours.getId());
+                tourResponse.setTourName(tours.getTourName());
+                tourResponse.setTourImg(tours.getTourImg());
+                tourResponse.setDescription(tours.getDescription());
+                tourResponse.setUnitPrice(tours.getUnitPrice());
+                tourResponse.setMaxParticipants(tours.getMaxParticipants());
+                tourResponse.setRemaining(tours.getRemaining());
+                tourResponse.setStartTime(tours.getStartTime());
+                tourResponse.setEndTime(tours.getEndTime());
                 if (tours.getCreatedBy()!=null){
                     tourResponse.setCreatedBy(tours.getCreatedBy().getFirstName() + " " + tours.getCreatedBy().getLastName());
                 } else {
