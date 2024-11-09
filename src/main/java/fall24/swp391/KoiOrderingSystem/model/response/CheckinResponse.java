@@ -15,6 +15,8 @@ public class CheckinResponse {
 
         private String lastName;
 
+        private String passport;
+
         private String airline;
 
         private String airport;
