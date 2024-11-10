@@ -52,7 +52,7 @@ public class CheckinService implements ICheckinService {
             checkinResponse.setCheckinDate(checkin.getCheckinDate());
             checkinResponse.setAirline(checkin.getAirline());
             checkinResponse.setAirport(checkin.getAirport());
-            checkin.setPassport(checkin.getPassport());
+            checkinResponse.setPassport(checkin.getPassport());
             checkinResponse.setStatus(checkin.getStatus());
             checkinResponse.setPhoneNumber(checkin.getPhoneNumber());
             checkinResponse.setEmail(checkin.getEmail());
@@ -85,7 +85,7 @@ public class CheckinService implements ICheckinService {
                 checkinResponse.setCheckinDate(checkin.getCheckinDate());
                 checkinResponse.setAirline(checkin.getAirline());
                 checkinResponse.setAirport(checkin.getAirport());
-                checkin.setPassport(checkin.getPassport());
+                checkinResponse.setPassport(checkin.getPassport());
                 checkinResponse.setStatus(checkin.getStatus());
                 checkinResponse.setPhoneNumber(checkin.getPhoneNumber());
                 checkinResponse.setEmail(checkin.getEmail());
@@ -142,6 +142,7 @@ public class CheckinService implements ICheckinService {
                 checkin.setCheckinDate(checkinRequest.getCheckinDate());
                 checkin.setAirline(checkinRequest.getAirline());
                 checkin.setAirport(checkinRequest.getAirport());
+                checkin.setPassport(checkin.getPassport());
                 checkin.setEmail(checkinRequest.getEmail());
                 checkin.setPhoneNumber(checkinRequest.getPhoneNumber());
 
@@ -164,6 +165,7 @@ public class CheckinService implements ICheckinService {
                 checkinResponse.setCheckinDate(checkin.getCheckinDate());
                 checkinResponse.setAirline(checkin.getAirline());
                 checkinResponse.setAirport(checkin.getAirport());
+                checkinResponse.setPassport(checkin.getPassport());
                 checkinResponse.setStatus(checkin.getStatus());
                 checkinResponse.setEmail(checkin.getEmail());
                 checkinResponse.setPhoneNumber(checkinRequest.getPhoneNumber());
