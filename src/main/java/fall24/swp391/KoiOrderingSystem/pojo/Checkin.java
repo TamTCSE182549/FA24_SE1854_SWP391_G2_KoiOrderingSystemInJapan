@@ -46,8 +46,6 @@ public class Checkin {
 
     private String phoneNumber;
 
-    private String passport;
-
     @Enumerated(EnumType.STRING)
     private CheckinStatus status;
 
