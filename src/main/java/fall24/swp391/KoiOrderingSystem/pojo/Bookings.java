@@ -83,7 +83,7 @@ public class Bookings {
     private Set<Checkin> checkins;
 
     @OneToOne(mappedBy = "bookingKoi", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
-    private Checkin buyer;
+    private Checkin buy;
 
     @OneToMany(mappedBy = "booking", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     private List<DeliveryHistory> deliveryHistory;
