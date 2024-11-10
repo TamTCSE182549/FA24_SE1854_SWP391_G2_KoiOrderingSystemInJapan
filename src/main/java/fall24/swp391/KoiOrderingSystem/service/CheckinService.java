@@ -66,7 +66,7 @@ public class CheckinService implements ICheckinService {
 
 
     @Override
-    public List<CheckinResponse> getChekínstatusByBookingId(Long Id) {
+    public List<CheckinResponse> getChekinstatusByBookingId(Long Id) {
         Bookings booking = bookingRepository.findById(Id)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
         List<Checkin> checkinList = checkinRepository.findByBookingTour(booking);

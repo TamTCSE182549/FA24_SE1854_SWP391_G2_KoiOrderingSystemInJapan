@@ -22,7 +22,7 @@ public interface ICheckinService {
 
 
 
-    List<CheckinResponse> getChekínstatusByBookingId(Long Id);
+    List<CheckinResponse> getChekinstatusByBookingId(Long Id);
 
     List<Checkin> getCheckinByAccount();
 
