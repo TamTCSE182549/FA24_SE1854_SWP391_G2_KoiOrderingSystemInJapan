@@ -36,6 +36,8 @@ public class Checkin {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate checkinDate;
 
+    private String passport;
+
     private String airline;
 
     private String airport;
@@ -48,6 +50,11 @@ public class Checkin {
 
     @Enumerated(EnumType.STRING)
     private CheckinStatus status;
+
+//    @JsonBackReference
+//    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+//    @JoinColumn(name = "booking_id") //name same foreign key mapping
+//    private Bookings booking;
 
     @JsonBackReference
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})

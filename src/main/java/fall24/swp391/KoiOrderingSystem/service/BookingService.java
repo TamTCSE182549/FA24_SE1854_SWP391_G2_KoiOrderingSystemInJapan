@@ -896,7 +896,7 @@ public class BookingService implements IBookingService{
 
     private List<BookingTourResponse> bookingTourResponses(List<Bookings> bookingsList){
         return bookingsList.stream().map(booking -> {
-            BookingTourResponse bookingTourResponse = modelMapper.map(booking, BookingTourResponse.class);
+            BookingTourResponse bookingTourResponse = new BookingTourResponse();
             bookingTourResponse.setBookingType(booking.getBookingType());
             bookingTourResponse.setPaymentStatus(booking.getPaymentStatus());
             bookingTourResponse.setPaymentDate(booking.getPaymentDate());

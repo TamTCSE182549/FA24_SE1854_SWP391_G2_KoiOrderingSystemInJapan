@@ -39,20 +39,20 @@ public class CheckinController {
     }
 
     @GetMapping("/account")
-    public ResponseEntity<List<CheckinResponse>> getCheckinByAccount() {
+    public ResponseEntity<List<Checkin>> getCheckinByAccount() {
         return ResponseEntity.ok(checkinService.getCheckinByAccount());
     }
 
     @GetMapping("/all")
     public ResponseEntity<?> getCheckin() {
-        List<CheckinResponse> checkins = checkinService.getAllCheckin();
+        List<Checkin> checkins = checkinService.getAllCheckin();
         return ResponseEntity.ok(checkins);
     }
 
 
     @PostMapping("/{bookingId}")
     public ResponseEntity<?> createCheckin(@RequestBody CheckinRequest checkinRequest, @PathVariable Long bookingId) {
-        CheckinResponse createdCheckin = checkinService.createCheckin(checkinRequest,bookingId);
+        Checkin createdCheckin = checkinService.createCheckin(checkinRequest,bookingId);
         return new ResponseEntity<>(createdCheckin, HttpStatus.OK);
     }
 
