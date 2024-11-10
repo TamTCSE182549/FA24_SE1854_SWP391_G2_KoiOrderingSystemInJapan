@@ -16,5 +16,7 @@ public class DeliveryRequest {
 
     private DeliveryStatus status;
 
+    private String address;
+
 //    private float remainAmount;
 }

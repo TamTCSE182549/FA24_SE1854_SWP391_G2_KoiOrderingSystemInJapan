@@ -1,6 +1,7 @@
 package fall24.swp391.KoiOrderingSystem.service;
 
 import fall24.swp391.KoiOrderingSystem.enums.PaymentStatus;
+import fall24.swp391.KoiOrderingSystem.enums.Route;
 import fall24.swp391.KoiOrderingSystem.exception.AccountNotFoundException;
 import fall24.swp391.KoiOrderingSystem.exception.NotFoundEntity;
 import fall24.swp391.KoiOrderingSystem.model.request.DeliveryHistoryRequest;
@@ -37,6 +38,7 @@ public class DeliveryHistoryService implements IDeliveryHistoryService {
     public DeliveryHistoryResponse addDeliveryHistory(DeliveryHistoryRequest deliveryHistoryRequest, Long bookingId) throws Exception {
         try {
             DeliveryHistory deliveryHistory = modelMapper.map(deliveryHistoryRequest, DeliveryHistory.class);
+
             Optional<Bookings> bookings = bookingRepository.findById(bookingId);
             if (bookings.isPresent()) {
                 //tim duoc booking
@@ -46,6 +48,12 @@ public class DeliveryHistoryService implements IDeliveryHistoryService {
                     deliveryHistory.setBooking(booking);
                 }
                 else throw new NotFoundEntity("Booking isn't shipping");
+                List<DeliveryHistory> existingDeliveryHistory = deliveryHistoryRepository.findDeliveryHistoryByBooking(booking);
+                for (DeliveryHistory history : existingDeliveryHistory) {
+                    if (history.getRoute() == deliveryHistory.getRoute()) {
+                        throw new NotFoundEntity("Route already exists for this booking");
+                    }
+                }
             } else {
                 throw new NotFoundEntity("Booking not found");
             }
@@ -77,7 +85,8 @@ public class DeliveryHistoryService implements IDeliveryHistoryService {
         if (deliveryHistory == null) {
             throw new NotFoundEntity("Delivery History not found");
         }
-        deliveryHistory.setRoute(deliveryHistoryRequest.getRoute());
+
+//        deliveryHistory.setRoute(deliveryHistoryRequest.getRoute());
         deliveryHistory.setHealthKoiDescription(deliveryHistoryRequest.getHealthKoiDescription());
         deliveryHistoryRepository.save(deliveryHistory);
         DeliveryHistoryResponse deliveryHistoryResponse = new DeliveryHistoryResponse();
@@ -126,5 +135,6 @@ public class DeliveryHistoryService implements IDeliveryHistoryService {
         }
         return deliveryHistoryResponses;
     }
+
 }
 

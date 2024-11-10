@@ -616,9 +616,9 @@ public class BookingService implements IBookingService{
     public BookingResponseDetail viewDetailBooking(Long bookingId) {
         try {
             Account account = authenticationService.getCurrentAccount();
-            if (account.getRole() != Role.CONSULTING_STAFF) {
-                throw new NotUpdateException("Your role cannot access");
-            }
+//            if (account.getRole() != Role.CONSULTING_STAFF) {
+//                throw new NotUpdateException("Your role cannot access");
+//            }
             Bookings bookings = bookingRepository.findById(bookingId)
                     .orElseThrow(() -> new NotFoundEntity("Not Found Booking"));
             BookingResponseDetail bookingResponse = modelMapper.map(bookings, BookingResponseDetail.class);

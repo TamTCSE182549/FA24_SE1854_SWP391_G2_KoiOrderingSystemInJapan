@@ -31,6 +31,9 @@ public class Delivery {
     @Column(name = "remain_amount")
     private float remainAmount;
 
+    @Column(name = "shipping_address")
+    private String address;
+
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private DeliveryStatus status;

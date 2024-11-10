@@ -13,4 +13,6 @@ import java.util.List;
 public interface IFeedbackRepository extends JpaRepository<Feedback,Long> {
     List<Feedback> findFeedbacksByBooking(Bookings booking);
     List<Feedback> findFeedbacksByCustomer(Account account);
+
+    boolean existsByCustomerAndBooking(Account account, Bookings booking);
 }

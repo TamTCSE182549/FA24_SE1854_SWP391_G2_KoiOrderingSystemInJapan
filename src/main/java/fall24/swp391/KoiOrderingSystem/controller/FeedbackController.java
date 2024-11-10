@@ -29,7 +29,7 @@ public class FeedbackController {
     }
 
     @GetMapping("/booking/{bookingId}")
-    public ResponseEntity<?> getFeedbackByBookingId(@RequestParam Long bookingId){
+    public ResponseEntity<?> getFeedbackByBookingId(@PathVariable Long bookingId){
         return ResponseEntity.ok(feedbackService.getFeedbackByBooking(bookingId));
     }
 
