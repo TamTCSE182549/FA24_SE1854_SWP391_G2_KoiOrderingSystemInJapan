@@ -120,7 +120,7 @@ public class CheckinService implements ICheckinService {
     }
 
     @Override
-    public Checkin createCheckin(CheckinRequest checkinRequest, Long bookingId) {
+    public CheckinResponse createCheckin(CheckinRequest checkinRequest, Long bookingId) {
         try {
 
             Account account = authenticationService.getCurrentAccount();

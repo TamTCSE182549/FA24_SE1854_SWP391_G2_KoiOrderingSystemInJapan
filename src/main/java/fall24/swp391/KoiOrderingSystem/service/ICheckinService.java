@@ -10,7 +10,7 @@ public interface ICheckinService {
 
     List<CheckinResponse> getChekinByBookingId(Long Id);
 
-    Checkin createCheckin(CheckinRequest checkinUserRequest, Long bookingId);
+    CheckinResponse createCheckin(CheckinRequest checkinUserRequest, Long bookingId);
 
     CheckinResponse updateCheckin(Long Id, CheckinRequest checkinRequest);
 

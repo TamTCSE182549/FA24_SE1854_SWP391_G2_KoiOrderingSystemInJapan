@@ -40,6 +40,5 @@ public class CheckinResponse {
         private String email;
 
         private String phoneNumber;
-
-        private String passport;
+        
 }

@@ -52,7 +52,7 @@ public class CheckinController {
 
     @PostMapping("/{bookingId}")
     public ResponseEntity<?> createCheckin(@RequestBody CheckinRequest checkinRequest, @PathVariable Long bookingId) {
-        Checkin createdCheckin = checkinService.createCheckin(checkinRequest,bookingId);
+        CheckinResponse createdCheckin = checkinService.createCheckin(checkinRequest,bookingId);
         return new ResponseEntity<>(createdCheckin, HttpStatus.OK);
     }
 
