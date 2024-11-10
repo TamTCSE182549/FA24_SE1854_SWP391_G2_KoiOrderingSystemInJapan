@@ -558,7 +558,7 @@ public class BookingService implements IBookingService{
     @Override
     public List<BookingResponseDetail> getKoiBookingById() {
         Account account = authenticationService.getCurrentAccount();
-        if(account.getRole() != Role.CUSTOMER){
+        if(account.getRole() != Role.CUSTOMER && account.getRole()!=Role.CONSULTING_STAFF){
             throw  new GenericException("Account not Access");
         }
         List<Bookings> bookingsList = bookingRepository.listKoiBooking(account.getId());
