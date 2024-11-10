@@ -16,6 +16,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -40,7 +41,61 @@ public class CheckinService implements ICheckinService {
         if (checkinList.isEmpty()) {
             throw new GenericException("Not Found Checkin");
         }
-        return checkinList.stream().map(checkin -> modelMapper.map(checkin, CheckinResponse.class)).toList();
+        List<CheckinResponse> checkinResponseList = new ArrayList<>();
+        for (Checkin checkin : checkinList) {
+            CheckinResponse checkinResponse = new CheckinResponse();
+
+            // Set giá trị cho checkinResponse từ checkin
+            checkinResponse.setId(checkin.getId());
+            checkinResponse.setFirstName(checkin.getFirstName());
+            checkinResponse.setLastName(checkin.getLastName());
+            checkinResponse.setCheckinDate(checkin.getCheckinDate());
+            checkinResponse.setAirline(checkin.getAirline());
+            checkinResponse.setAirport(checkin.getAirport());
+            checkin.setPassport(checkin.getPassport());
+            checkinResponse.setStatus(checkin.getStatus());
+            checkinResponse.setPhoneNumber(checkin.getPhoneNumber());
+            checkinResponse.setEmail(checkin.getEmail());
+            checkinResponse.setCreateBy(checkin.getCreatedBy().getFirstName() + " " + checkin.getCreatedBy().getLastName());
+            checkinResponse.setUpdateBy(checkin.getUpdatedBy() != null ? checkin.getUpdatedBy().getFirstName() + " " + checkin.getUpdatedBy().getLastName() : null);
+            checkinResponse.setBookingId(checkin.getBookingTour() != null ? checkin.getBookingTour().getId() : null);
+            checkinResponseList.add(checkinResponse);
+        }
+            return checkinResponseList;
+    }
+
+
+    @Override
+    public List<CheckinResponse> getChekínstatusByBookingId(Long Id) {
+        Bookings booking = bookingRepository.findById(Id)
+                .orElseThrow(() -> new RuntimeException("Booking not found"));
+        List<Checkin> checkinList = checkinRepository.findByBookingTour(booking);
+        if (checkinList.isEmpty()) {
+            throw new GenericException("Not Found Checkin");
+        }
+        List<CheckinResponse> checkinResponseList = new ArrayList<>();
+        for (Checkin checkin : checkinList) {
+            if (checkin.getStatus() == CheckinStatus.CHECKED) {
+                CheckinResponse checkinResponse = new CheckinResponse();
+
+                // Set giá trị cho checkinResponse từ checkin
+                checkinResponse.setId(checkin.getId());
+                checkinResponse.setFirstName(checkin.getFirstName());
+                checkinResponse.setLastName(checkin.getLastName());
+                checkinResponse.setCheckinDate(checkin.getCheckinDate());
+                checkinResponse.setAirline(checkin.getAirline());
+                checkinResponse.setAirport(checkin.getAirport());
+                checkin.setPassport(checkin.getPassport());
+                checkinResponse.setStatus(checkin.getStatus());
+                checkinResponse.setPhoneNumber(checkin.getPhoneNumber());
+                checkinResponse.setEmail(checkin.getEmail());
+                checkinResponse.setCreateBy(checkin.getCreatedBy().getFirstName() + " " + checkin.getCreatedBy().getLastName());
+                checkinResponse.setUpdateBy(checkin.getUpdatedBy() != null ? checkin.getUpdatedBy().getFirstName() + " " + checkin.getUpdatedBy().getLastName() : null);
+                checkinResponse.setBookingId(checkin.getBookingTour() != null ? checkin.getBookingTour().getId() : null);
+                checkinResponseList.add(checkinResponse);
+            }
+        }
+        return checkinResponseList;
     }
 
     @Override
@@ -72,14 +127,50 @@ public class CheckinService implements ICheckinService {
             if (account.getRole() == Role.SALES_STAFF || account.getRole() == Role.CUSTOMER) {
                 Bookings booking = bookingRepository.findById(bookingId)
                         .orElseThrow(() -> new RuntimeException("Booking not found"));
-                Checkin checkin = modelMapper.map(checkinRequest, Checkin.class);
-//                checkin.(booking);
-//                checkin.setBooking(booking.getId());
+
+//                Checkin checkin = modelMapper.map(checkinRequest, Checkin.class);
+//                checkin.setBooking(booking);
+//                checkin.setStatus(CheckinStatus.NOTCHECKEDIN);
+//                checkin.setCreatedBy(account);
+//                checkin.setCustomerId(booking.getAccount());
+//                checkinRepository.save(checkin);
+//                CheckinResponse checkinResponse = modelMapper.map(checkin, CheckinResponse.class);
+//                checkinResponse.setCreateBy(account.getFirstName() + " " + account.getLastName());
+                Checkin checkin = new Checkin();
+                checkin.setFirstName(checkinRequest.getFirstName());
+                checkin.setLastName(checkinRequest.getLastName());
+                checkin.setCheckinDate(checkinRequest.getCheckinDate());
+                checkin.setAirline(checkinRequest.getAirline());
+                checkin.setAirport(checkinRequest.getAirport());
+                checkin.setEmail(checkinRequest.getEmail());
+                checkin.setPhoneNumber(checkinRequest.getPhoneNumber());
+
                 checkin.setStatus(CheckinStatus.NOTCHECKEDIN);
                 checkin.setCreatedBy(account);
+                checkin.setPassport(checkin.getPassport());
                 checkin.setCustomerId(booking.getAccount());
+
+                // Thiết lập booking vào checkin
+                checkin.setBookingTour(booking);  // Hoặc setBookingKoi(booking) nếu sử dụng quan hệ bookingKoi
+
                 checkinRepository.save(checkin);
-                return checkin;
+
+
+                // Tạo CheckinResponse và thiết lập thủ công các giá trị
+                CheckinResponse checkinResponse = new CheckinResponse();
+                checkinResponse.setId(checkin.getId());
+                checkinResponse.setFirstName(checkin.getFirstName());
+                checkinResponse.setLastName(checkin.getLastName());
+                checkinResponse.setCheckinDate(checkin.getCheckinDate());
+                checkinResponse.setAirline(checkin.getAirline());
+                checkinResponse.setAirport(checkin.getAirport());
+                checkinResponse.setStatus(checkin.getStatus());
+                checkinResponse.setEmail(checkin.getEmail());
+                checkinResponse.setPhoneNumber(checkinRequest.getPhoneNumber());
+                checkinResponse.setCreateBy(account.getFirstName() + " " + account.getLastName());
+                checkinResponse.setCustomerId(booking.getAccount().getId());
+
+                return checkinResponse;
             } else {
                 throw new NotCreateException("Only staff can create");
             }

@@ -42,6 +42,12 @@ public class Checkin {
 
     private String airport;
 
+    private String email;
+
+    private String phoneNumber;
+
+    private String passport;
+
     @Enumerated(EnumType.STRING)
     private CheckinStatus status;
 

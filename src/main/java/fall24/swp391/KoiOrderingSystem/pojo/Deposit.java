@@ -3,6 +3,7 @@ package fall24.swp391.KoiOrderingSystem.pojo;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.google.api.client.util.DateTime;
 import fall24.swp391.KoiOrderingSystem.enums.DepositStatus;
+import fall24.swp391.KoiOrderingSystem.enums.PaymentMethod;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -51,13 +52,15 @@ public class Deposit {
     @Column(name = "shipping_fee")
     private float shippingFee;
 
+    @Column(name = "payment_method")
+    private PaymentMethod paymentMethod;
 
     @OneToOne(cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "booking_id")
     private Bookings booking;
 
-    @PrePersist
-    protected void onCreate(){
-        depositDate = LocalDateTime.now();
-    }
+//    @PrePersist
+//    protected void onCreate(){
+//        depositDate = LocalDateTime.now();
+//    }
 }

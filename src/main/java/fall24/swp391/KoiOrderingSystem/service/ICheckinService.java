@@ -20,5 +20,10 @@ public interface ICheckinService {
 
     List<Checkin> getAllCheckin();
 
+
+
+    List<CheckinResponse> getChekínstatusByBookingId(Long Id);
+
     List<Checkin> getCheckinByAccount();
+
 }

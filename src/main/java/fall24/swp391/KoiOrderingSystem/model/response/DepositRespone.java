@@ -1,6 +1,7 @@
 package fall24.swp391.KoiOrderingSystem.model.response;
 
 import fall24.swp391.KoiOrderingSystem.enums.DepositStatus;
+import fall24.swp391.KoiOrderingSystem.enums.PaymentMethod;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -18,6 +19,8 @@ public class DepositRespone {
     private float shippingFee;
 
     private LocalDate depositDate;
+
+    private PaymentMethod paymentMethod;
 
     private LocalDate deliveryExpectedDate;
 

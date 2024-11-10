@@ -7,6 +7,7 @@ public class BookingKoiDetailResponse {
     Long bookingKoiDetailId;
     Long bookingId;
     Long koiId;
+    Long farmId;
     int quantity;
     float totalAmount;
     float unitPrice;

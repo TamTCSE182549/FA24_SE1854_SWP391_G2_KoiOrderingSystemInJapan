@@ -36,4 +36,10 @@ public class CheckinResponse {
         private String updateBy;
 
         private CheckinStatus status;
+
+        private String email;
+
+        private String phoneNumber;
+
+        private String passport;
 }

@@ -24,6 +24,14 @@ public class CheckinController {
     private ICheckinService checkinService;
 
 
+    @GetMapping("/status/{bookingId}")
+    public ResponseEntity<?> getCheckinStatusByBookingId(@PathVariable Long bookingId){
+        List<CheckinResponse> checkins = checkinService.getChekínstatusByBookingId(bookingId);
+        return ResponseEntity.ok(checkins);
+    }
+
+
+
     @GetMapping("/{bookingId}")
     public ResponseEntity<?> getChekinByBookingId(@PathVariable Long bookingId) {
         List<CheckinResponse> checkins = checkinService.getChekinByBookingId(bookingId);

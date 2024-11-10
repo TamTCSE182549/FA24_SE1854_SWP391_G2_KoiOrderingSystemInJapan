@@ -11,6 +11,12 @@ public class CheckinRequest {
 
     private String lastName;
 
+    private String email;
+
+    private String phoneNumber;
+
+    private String passport;
+
     private LocalDate checkinDate;
 
     private String passport;
