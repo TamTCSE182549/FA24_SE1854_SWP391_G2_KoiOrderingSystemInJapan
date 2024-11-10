@@ -18,8 +18,7 @@ public class CheckinRequest {
     private String passport;
 
     private LocalDate checkinDate;
-
-
+  
     private String airline;
 
     private String airport;
