@@ -64,6 +64,9 @@ public class BookingService implements IBookingService{
     private AuthenticationService authenticationService;
 
     @Autowired
+    private ICheckinRepository checkinRepository;
+
+    @Autowired
     private ModelMapper modelMapper;
 
     @Autowired
@@ -452,12 +455,11 @@ public class BookingService implements IBookingService{
         try{
             Account account = authenticationService.getCurrentAccount();
            if(account.getRole() ==Role.CONSULTING_STAFF){
-                KoiFarms koiFarms = iKoiFarmsRepository.findById(bookingKoiRequest.getFarmId())
-                        .orElseThrow(() -> new NotFoundEntity("Koi farm not found"));
 
                 Bookings bookingTour = bookingRepository.findById(bookingId)
                         .orElseThrow(() -> new NotFoundEntity("Booking Tour not found"));
-
+                Checkin checkin = checkinRepository.findById(bookingKoiRequest.getChekinId())
+                        .orElseThrow(() -> new NotFoundEntity("ChekinNot found"));
                 Bookings booking = new Bookings();
                 booking.setPaymentMethod(bookingKoiRequest.getPaymentMethod());
                 booking.setCreatedBy(account);
@@ -472,9 +474,12 @@ public class BookingService implements IBookingService{
 //                    Kois kois = iKoisRepository.findByFarmIdAndKoiId(detailRequest.getKoiId(),bookingKoiRequest.getFarmId());
                     Kois kois =iKoisRepository.findById(detailRequest.getKoiId())
                             .orElseThrow(() -> new NotFoundEntity("Not found Koi"));
+                    KoiFarms koiFarms=iKoiFarmsRepository.findById(detailRequest.getFarmId())
+                            .orElseThrow(() -> new NotFoundEntity("Not found Farm"));
                     BookingKoiDetail bookingKoiDetail = new BookingKoiDetail(booking, kois, detailRequest.getQuantity(), detailRequest.getUnitPrice());
                     float totalAmount = detailRequest.getUnitPrice() * detailRequest.getQuantity();
                     bookingKoiDetail.setTotalAmount(totalAmount);
+                    bookingKoiDetail.setKoiFarm(koiFarms);
                     iBookingKoiDetailRepository.save(bookingKoiDetail);
 
                     totalBookingAmount += totalAmount;
@@ -484,6 +489,9 @@ public class BookingService implements IBookingService{
                     booking.setVatAmount(bookingKoiRequest.getVat()*(booking.getTotalAmount()-bookingKoiRequest.getDiscountAmount()));
                     booking.setTotalAmountWithVAT(booking.getTotalAmount() + booking.getVatAmount() - booking.getDiscountAmount());
                     booking.setAccount(bookingTour.getAccount());
+                    booking.setBuy(checkin);
+                    checkin.setBookingKoi(booking);
+                    checkinRepository.save(checkin);
                     bookingRepository.save(booking);
 
                     BookingTourResponse bookingResponse = modelMapper.map(booking, BookingTourResponse.class);

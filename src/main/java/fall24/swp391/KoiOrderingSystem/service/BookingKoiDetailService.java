@@ -8,6 +8,7 @@ import fall24.swp391.KoiOrderingSystem.model.response.BookingKoiDetailResponse;
 import fall24.swp391.KoiOrderingSystem.pojo.*;
 import fall24.swp391.KoiOrderingSystem.repo.IBookingKoiDetailRepository;
 import fall24.swp391.KoiOrderingSystem.repo.IBookingRepository;
+import fall24.swp391.KoiOrderingSystem.repo.IKoiFarmsRepository;
 import fall24.swp391.KoiOrderingSystem.repo.IKoisRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,9 @@ public class BookingKoiDetailService implements IBookingKoiDetailService {
 
     @Autowired
     private IKoisRepository iKoisRepository;
+
+    @Autowired
+    private IKoiFarmsRepository iKoiFarmsRepository;
 
     @Autowired
     private IBookingRepository bookingRepository;
@@ -44,12 +48,19 @@ public class BookingKoiDetailService implements IBookingKoiDetailService {
             if (account.getRole() != Role.CONSULTING_STAFF) {
                 throw new NotCreateException("Your role cannot access");
             }
+
             Bookings bookings = iBookingRepository.findById(bookingId)
                     .orElseThrow(() -> new NotFoundEntity("Booking Not Found"));
             Kois kois = iKoisRepository.findById(bookingKoiDetailRequest.getKoiId())
                     .orElseThrow(() -> new NotFoundEntity("Not Found Koi Id"));
-            BookingKoiDetail bookingKoiDetail = modelMapper.map(bookingKoiDetailRequest, BookingKoiDetail.class);
+            KoiFarms koiFarms = iKoiFarmsRepository.findKoiFarmsById(bookingKoiDetailRequest.getFarmId());
+            BookingKoiDetail bookingKoiDetail = new BookingKoiDetail();
+            bookingKoiDetail.setKoi(kois);
+
+
+            bookingKoiDetail.setKoiFarm(koiFarms);
             bookingKoiDetail.setTotalAmount(bookingKoiDetailRequest.getUnitPrice() * bookingKoiDetailRequest.getQuantity());
+            bookingKoiDetail.setBooking(bookings);
             bookingKoiDetailRepository.save(bookingKoiDetail);
 
             float totalBookingAmount = 0;
@@ -59,10 +70,14 @@ public class BookingKoiDetailService implements IBookingKoiDetailService {
             }
             bookings.setTotalAmount(totalBookingAmount);
             bookings.setTotalAmountWithVAT(bookings.getTotalAmount() + bookings.getVatAmount() - bookings.getDiscountAmount());
+
             iBookingRepository.save(bookings);
 
-            BookingKoiDetailResponse bookingKoiDetailResponse = modelMapper.map(bookingKoiDetail, BookingKoiDetailResponse.class);
+            BookingKoiDetailResponse bookingKoiDetailResponse = new BookingKoiDetailResponse();
             bookingKoiDetailResponse.setBookingKoiDetailId(bookingKoiDetail.getId());
+            bookingKoiDetailResponse.setBookingId(bookingKoiDetail.getBooking().getId());
+            bookingKoiDetailResponse.setKoiId(bookingKoiDetail.getKoi().getId());
+            bookingKoiDetailResponse.setFarmId(bookingKoiDetail.getKoiFarm().getId());
             return bookingKoiDetailResponse;
         } catch (Exception e) {
             throw new GenericException(e.getMessage());

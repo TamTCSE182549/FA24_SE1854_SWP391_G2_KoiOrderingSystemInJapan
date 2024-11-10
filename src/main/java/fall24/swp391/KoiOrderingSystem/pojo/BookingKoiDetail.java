@@ -30,7 +30,6 @@ public class BookingKoiDetail {
     private KoiFarms koiFarm;
 
 
-
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JsonBackReference
     @JoinColumn(name = "booking_id")

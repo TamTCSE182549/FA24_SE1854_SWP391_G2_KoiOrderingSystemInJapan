@@ -10,7 +10,8 @@ import java.util.List;
 
 @Data
 public class BookingKoiRequest {
-    Long farmId;
+//    Long farmId;
+    Long chekinId;
     PaymentMethod paymentMethod;
     private List<BookingKoiDetailRequest> details;
     float vat;
