@@ -177,6 +177,60 @@ public class BookingService implements IBookingService{
     }
 
     @Override
+    public List<BookingTourResponse> bookingForTourAccepted() {
+        Account account = authenticationService.getCurrentAccount();
+        List<Bookings> bookingTourResponses = null;
+
+        if (account.getRole() == Role.MANAGER || account.getRole() == Role.CONSULTING_STAFF || account.getRole() == Role.SALES_STAFF){
+            bookingTourResponses = bookingRepository.listBookingForTourAccepted(account.getId());
+        } else {
+            throw new NotFoundEntity("Account not FOUND");
+        }
+
+        return bookingTourResponses.stream().map(bookings -> {
+
+//            BookingTourResponse bookingTourResponse = modelMapper.map(bookings, BookingTourResponse.class);
+            BookingTourResponse bookingTourResponse = new BookingTourResponse();
+            bookingTourResponse.setBookingType(bookings.getBookingType());
+            bookingTourResponse.setPaymentStatus(bookings.getPaymentStatus());
+            bookingTourResponse.setPaymentDate(bookings.getPaymentDate());
+            bookingTourResponse.setTotalAmount(bookings.getTotalAmount());
+            bookingTourResponse.setTotalAmountWithVAT(bookings.getTotalAmountWithVAT());
+            bookingTourResponse.setVat(bookings.getVat());
+            bookingTourResponse.setVatAmount(bookings.getVatAmount());
+            bookingTourResponse.setDiscountAmount(bookings.getDiscountAmount());
+            bookingTourResponse.setPaymentMethod(bookings.getPaymentMethod());
+            bookingTourResponse.setCreatedDate(bookings.getCreatedDate());
+            bookingTourResponse.setUpdatedDate(bookings.getUpdatedDate());
+            bookingTourResponse.setId(bookings.getId());
+//            bookingTourResponse.set
+            if (bookings.getUpdatedBy() == null) {
+                bookingTourResponse.setUpdatedBy("");
+            } else {
+                bookingTourResponse.setUpdatedBy(bookings.getUpdatedBy().getFirstName() + " " + bookings.getUpdatedBy().getLastName());
+            }
+
+            if (bookings.getCreatedBy() == null) {
+                bookingTourResponse.setCreatedBy("");
+            } else {
+                bookingTourResponse.setCreatedBy(bookings.getCreatedBy().getFirstName() + " " + bookings.getCreatedBy().getLastName());
+            }
+            bookingTourResponse.setCustomerID(bookings.getAccount().getId());
+            bookingTourResponse.setNameCus(bookings.getAccount().getFirstName() + " " + bookings.getAccount().getLastName());
+            return bookingTourResponse;
+        }).toList();
+    }
+
+    @Override
+    public void acceptBooking(Long bookingID) {
+        Account account = authenticationService.getCurrentAccount();
+        Bookings bookings = bookingRepository.findById(bookingID)
+                .orElseThrow(() -> new NotFoundEntity("Booking ID not FOUND"));
+        bookings.setUpdatedBy(account);
+        bookingRepository.save(bookings);
+    }
+
+    @Override
     public List<BookingTourResponse> getTourBookingResponse() {
         Account account = authenticationService.getCurrentAccount();
         List<Bookings> bookingsList = bookingRepository.listTourBookingByID(account.getId());

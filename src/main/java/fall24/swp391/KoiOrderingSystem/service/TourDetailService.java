@@ -55,7 +55,10 @@ public class TourDetailService implements ITourDetailService{
         List<TourDetail> tourDetails = iTourDetailRepository.findByTour_Id(tours.getId());
         return tourDetails.stream().map(tourDetail -> {
             TourDetailResponse tourDetailResponse = modelMapper.map(tourDetail, TourDetailResponse.class);
-            tourDetailResponse.setTourName(tourDetailResponse.getTourName());
+            tourDetailResponse.setTourName(tourDetail.getTour().getTourName());
+            tourDetailResponse.setWebsite(tourDetail.getFarm().getWebsite());
+            tourDetailResponse.setPhone(tourDetail.getFarm().getFarmPhoneNumber());
+            tourDetailResponse.setDescription(tourDetail.getDescription());
             tourDetailResponse.setFarmName(tourDetailResponse.getFarmName());
             return tourDetailResponse;
         }).toList();

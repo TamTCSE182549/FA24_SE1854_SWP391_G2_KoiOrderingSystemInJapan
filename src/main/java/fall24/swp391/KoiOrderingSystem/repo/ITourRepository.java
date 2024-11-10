@@ -64,7 +64,7 @@ public interface ITourRepository extends JpaRepository<Tours, Long> {
 
     @Query(value = "select distinct t.* " +
             "from tours t, koi_farms kf, tour_detail td " +
-            "where kf.id = ?1 and kf.id = td.farm_id and td.tour_id = t.id and t.unit_price >= ?2 and t.unit_price <= ?3 and t.status = 'active'", nativeQuery = true)
+            "where kf.id = ?1 and kf.id = td.farm_id and td.tour_id = t.id and t.unit_price >= ?2 and t.unit_price <= ?3 and t.status = 'active' and date(t.start_time) > CURRENT_DATE", nativeQuery = true)
     List<Tours> findTourByFarmNameWithPrice(Long farmId, Float minPrice, Float maxPrice);
 
     @Query(value = "select distinct t.* " +
@@ -99,7 +99,7 @@ public interface ITourRepository extends JpaRepository<Tours, Long> {
 
     @Query(value = "select * " +
             "from tours t " +
-            "where t.unit_price >= ?1 and t.unit_price <= ?2 and t.status = 'active'", nativeQuery = true)
+            "where t.unit_price >= ?1 and t.unit_price <= ?2 and t.status = 'active' and date(t.start_time) > CURRENT_DATE", nativeQuery = true)
     Page<Tours> findTourByPricePageable(Float minPrice, Float maxPrice, Pageable pageable);
 
     @Query(value = "select * " +
@@ -109,7 +109,7 @@ public interface ITourRepository extends JpaRepository<Tours, Long> {
 
     @Query(value = "select * " +
             "from tours t " +
-            "where t.unit_price >= ?1 and t.unit_price <= ?2 and date(t.start_time) >= ?3 and date(t.end_time) <= ?4 and t.status = 'active'", nativeQuery = true)
+            "where t.unit_price >= ?1 and t.unit_price <= ?2 and date(t.start_time) >= ?3 and date(t.end_time) <= ?4 and t.status = 'active' and date(t.start_time) > CURRENT_DATE", nativeQuery = true)
     Page<Tours> findTourByPriceAndDatePageable(Float minPrice, Float maxPrice, String startDate, String endDate, Pageable pageable);
 
     default Page<Tours> findTourByKoiNameAndByFarmName(Long koiId, Long farmId, Pageable pageable){

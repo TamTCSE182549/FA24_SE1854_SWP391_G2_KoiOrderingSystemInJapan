@@ -24,6 +24,10 @@ public interface IBookingService {
     //View booking of tour for STAFF
     List<BookingTourResponse> bookingForTour();
 
+    List<BookingTourResponse> bookingForTourAccepted();
+
+    void acceptBooking(Long bookingID);
+
     //Get tour booking response by accountID for customer
     List<BookingTourResponse> getTourBookingResponse();
 

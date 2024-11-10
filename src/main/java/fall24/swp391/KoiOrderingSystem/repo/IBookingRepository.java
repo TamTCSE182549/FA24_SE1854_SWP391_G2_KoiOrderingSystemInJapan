@@ -28,6 +28,11 @@ public interface IBookingRepository extends JpaRepository<Bookings, Long> {
 
     @Query(value = "select b.* " +
             "from bookings b " +
+            "where b.booking_type = 'BookingForTour' and updated_by = ?1", nativeQuery = true)
+    List<Bookings> listBookingForTourAccepted(Long updateBy);
+
+    @Query(value = "select b.* " +
+            "from bookings b " +
             "where b.payment_status = 'complete'", nativeQuery = true)
     List<Bookings> listBookingForDashBoard();
 

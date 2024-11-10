@@ -41,6 +41,12 @@ public class BookingController {
         return ResponseEntity.ok(bookingTourResponses);
     }
 
+    @GetMapping("/BookingForTourAccepted")
+    public ResponseEntity<?> showBookingForTourAccept(){
+        List<BookingTourResponse> bookingTourResponses = bookingService.bookingForTourAccepted();
+        return ResponseEntity.ok(bookingTourResponses);
+    }
+
     @GetMapping("/paymentUrl/{bookingId}")
     public ResponseEntity<?> getPaymentUrl(@PathVariable Long bookingId) throws Exception {
         String url = bookingService.createUrl(bookingId);
@@ -56,6 +62,12 @@ public class BookingController {
     public ResponseEntity<?> getBookingById(@PathVariable Long bookingId){
         BookingTourRes bookingTourResponses = bookingService.getBookingById(bookingId);
         return ResponseEntity.ok(bookingTourResponses);
+    }
+
+    @GetMapping("/BookingForTourUpdateAccept/{bookingId}")
+    public ResponseEntity<?> updateBookingAcceptById(@PathVariable Long bookingId){
+        bookingService.acceptBooking(bookingId);
+        return new ResponseEntity<>("Accepted success", HttpStatus.OK);
     }
 
     @GetMapping("/listBookingTourResponse")
