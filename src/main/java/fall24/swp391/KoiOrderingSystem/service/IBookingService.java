@@ -9,6 +9,7 @@ import fall24.swp391.KoiOrderingSystem.model.response.BookingResponseDetail;
 
 import fall24.swp391.KoiOrderingSystem.model.response.BookingTourRes;
 import fall24.swp391.KoiOrderingSystem.model.response.BookingTourResponse;
+import fall24.swp391.KoiOrderingSystem.model.response.KoiDetailResponseInBoooking;
 import fall24.swp391.KoiOrderingSystem.pojo.Bookings;
 
 import java.util.List;
@@ -53,9 +54,11 @@ public interface IBookingService {
 
     List<BookingResponseDetail> getKoiBookingById();
 
+    List<BookingResponseDetail> getKoiBookingByCreateBy();
+
     List<BookingResponseDetail> getKoiBooking();
 
-    BookingResponseDetail viewDetailBooking(Long bookingId);
+    KoiDetailResponseInBoooking viewDetailBooking(Long bookingId);
 
     BookingTourResponse deleteBookingResponse(Long bookingID);
 

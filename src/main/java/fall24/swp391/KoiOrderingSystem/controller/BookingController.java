@@ -5,6 +5,7 @@ import fall24.swp391.KoiOrderingSystem.model.request.*;
 import fall24.swp391.KoiOrderingSystem.model.response.BookingResponseDetail;
 import fall24.swp391.KoiOrderingSystem.model.response.BookingTourRes;
 import fall24.swp391.KoiOrderingSystem.model.response.BookingTourResponse;
+import fall24.swp391.KoiOrderingSystem.model.response.KoiDetailResponseInBoooking;
 import fall24.swp391.KoiOrderingSystem.service.IBookingService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.modelmapper.ModelMapper;
@@ -129,6 +130,13 @@ public class BookingController {
         return ResponseEntity.ok(bookings);
     }
 
+    @GetMapping("/koi/list/staff")
+    public ResponseEntity<?> getKoiBookingsByCreateBy() {
+        List<BookingResponseDetail> bookings = bookingService.getKoiBookingByCreateBy();
+        return ResponseEntity.ok(bookings);
+    }
+
+
     @GetMapping("/BookingForKoi")
     public ResponseEntity<?> showBookingForKoi(){
         List<BookingResponseDetail> bookingTourResponses = bookingService.getKoiBooking();
@@ -137,7 +145,7 @@ public class BookingController {
 
     @GetMapping("/ViewDetail/{bookingId}")
     public ResponseEntity<?> viewDetail(@PathVariable Long bookingId){
-        BookingResponseDetail bookingResponse = bookingService.viewDetailBooking(bookingId);
+        KoiDetailResponseInBoooking bookingResponse = bookingService.viewDetailBooking(bookingId);
         return ResponseEntity.ok(bookingResponse);
     }
 

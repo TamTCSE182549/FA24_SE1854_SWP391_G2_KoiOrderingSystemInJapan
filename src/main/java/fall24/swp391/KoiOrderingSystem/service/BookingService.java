@@ -7,12 +7,10 @@ import fall24.swp391.KoiOrderingSystem.enums.TourStatus;
 import fall24.swp391.KoiOrderingSystem.exception.*;
 import fall24.swp391.KoiOrderingSystem.model.request.*;
 
-import fall24.swp391.KoiOrderingSystem.model.response.BookingResponseDetail;
+import fall24.swp391.KoiOrderingSystem.model.response.*;
 
-import fall24.swp391.KoiOrderingSystem.model.response.BookingTourRes;
 import fall24.swp391.KoiOrderingSystem.pojo.*;
 import fall24.swp391.KoiOrderingSystem.repo.*;
-import fall24.swp391.KoiOrderingSystem.model.response.BookingTourResponse;
 import fall24.swp391.KoiOrderingSystem.pojo.Account;
 import fall24.swp391.KoiOrderingSystem.pojo.BookingTourDetail;
 import fall24.swp391.KoiOrderingSystem.pojo.Bookings;
@@ -608,11 +606,37 @@ public class BookingService implements IBookingService{
        }
     }
 
+    @Override
+    public List<BookingResponseDetail> getKoiBookingByCreateBy() {
+        Account account = authenticationService.getCurrentAccount();
+        if(account.getRole() != Role.CONSULTING_STAFF ){
+            throw  new GenericException("Account not Access");
+        }
+        List<Bookings> bookingsList = bookingRepository.findByCreatedBy_Id(account.getId());
+        return bookingsList.stream().map(bookings -> {
+            BookingResponseDetail bookingResponse = modelMapper.map(bookings, BookingResponseDetail.class);
+            if (bookings.getUpdatedBy() == null) {
+                bookingResponse.setUpdatedBy("");
+            } else {
+                bookingResponse.setUpdatedBy(bookings.getUpdatedBy().getFirstName() + " " + bookings.getUpdatedBy().getLastName());
+            }
+
+            if (bookings.getCreatedBy() == null) {
+                bookingResponse.setCreatedBy("");
+            } else {
+                bookingResponse.setCreatedBy(bookings.getCreatedBy().getFirstName() + " " + bookings.getCreatedBy().getLastName());
+            }
+            bookingResponse.setCustomerID(bookings.getAccount().getId());
+            bookingResponse.setNameCus(bookings.getAccount().getFirstName() + " " + bookings.getAccount().getLastName());
+            return bookingResponse;
+        }).toList();
+    }
+
 
     @Override
     public List<BookingResponseDetail> getKoiBookingById() {
         Account account = authenticationService.getCurrentAccount();
-        if(account.getRole() != Role.CUSTOMER && account.getRole()!=Role.CONSULTING_STAFF){
+        if(account.getRole() != Role.CUSTOMER ){
             throw  new GenericException("Account not Access");
         }
         List<Bookings> bookingsList = bookingRepository.listKoiBooking(account.getId());
@@ -667,7 +691,7 @@ public class BookingService implements IBookingService{
 
 
     @Override
-    public BookingResponseDetail viewDetailBooking(Long bookingId) {
+    public KoiDetailResponseInBoooking viewDetailBooking(Long bookingId) {
         try {
             Account account = authenticationService.getCurrentAccount();
 //            if (account.getRole() != Role.CONSULTING_STAFF) {
@@ -675,11 +699,47 @@ public class BookingService implements IBookingService{
 //            }
             Bookings bookings = bookingRepository.findById(bookingId)
                     .orElseThrow(() -> new NotFoundEntity("Not Found Booking"));
-            BookingResponseDetail bookingResponse = modelMapper.map(bookings, BookingResponseDetail.class);
+
+
+            KoiDetailResponseInBoooking bookingResponse = new KoiDetailResponseInBoooking();
+
+            List<BookingKoiDetail> koiDetails = bookings.getBookingKoiDetails();
+            List<BookingKoiDetailResponse> bookingKoiDetailResponses = new ArrayList<>();
+            for(BookingKoiDetail b: koiDetails){
+                BookingKoiDetailResponse bookingKoiDetailResponse = new BookingKoiDetailResponse();
+                 bookingKoiDetailResponse.setBookingId(b.getBooking().getId());
+                 bookingKoiDetailResponse.setBookingKoiDetailId(b.getId());
+                 bookingKoiDetailResponse.setKoiId(b.getKoi().getId());
+                 bookingKoiDetailResponse.setKoiName(b.getKoi().getKoiName());
+                 bookingKoiDetailResponse.setOrigin(b.getKoi().getOrigin());
+                 bookingKoiDetailResponse.setDescription(b.getKoi().getDescription());
+                 bookingKoiDetailResponse.setFarmId(b.getKoiFarm().getId());
+                 bookingKoiDetailResponse.setQuantity(b.getQuantity());
+                 bookingKoiDetailResponse.setUnitPrice(b.getUnitPrice());
+                 bookingKoiDetailResponse.setTotalAmount(b.getTotalAmount());
+                 bookingKoiDetailResponse.setColor(b.getKoi().getColor());
+                 bookingKoiDetailResponses.add(bookingKoiDetailResponse);
+            }
+            // Gán các giá trị cho bookingResponse
+            bookingResponse.setId(bookings.getId());
+            bookingResponse.setKoiDetails(bookingKoiDetailResponses);
+
+// Thêm các trường còn lại vào bookingResponse
             bookingResponse.setCreatedBy(account.getFirstName() + " " + account.getLastName());
             bookingResponse.setCustomerID(bookings.getAccount().getId());
             bookingResponse.setUpdatedBy(account.getFirstName() + " " + account.getLastName());
-            bookingResponse.setNameCus(bookings.getAccount().getFirstName() + " " + bookings.getAccount().getLastName());
+            bookingResponse.setNameCus(bookings.getBuy().getFirstName() + " " + bookings.getBuy().getLastName());
+
+// Gán các trường giá trị từ Booking
+            bookingResponse.setTotalAmount(bookings.getTotalAmount());
+            bookingResponse.setVat(bookings.getVat());
+            bookingResponse.setVatAmount(bookings.getVatAmount());
+            bookingResponse.setDiscountAmount(bookings.getDiscountAmount());
+            bookingResponse.setTotalAmountWithVAT(bookings.getTotalAmountWithVAT());
+            bookingResponse.setBookingType(bookings.getBookingType());
+            bookingResponse.setPaymentMethod(bookings.getPaymentMethod());
+            bookingResponse.setPaymentStatus(bookings.getPaymentStatus());
+            bookingResponse.setBookingDate(bookings.getBookingDate());
             return bookingResponse;
         }catch (Exception e){
             throw new NotFoundEntity(e.getMessage());

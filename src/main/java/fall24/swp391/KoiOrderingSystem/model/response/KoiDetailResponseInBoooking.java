@@ -3,15 +3,12 @@ package fall24.swp391.KoiOrderingSystem.model.response;
 import fall24.swp391.KoiOrderingSystem.enums.BookingType;
 import fall24.swp391.KoiOrderingSystem.enums.PaymentMethod;
 import fall24.swp391.KoiOrderingSystem.enums.PaymentStatus;
-import fall24.swp391.KoiOrderingSystem.pojo.BookingKoiDetail;
-import fall24.swp391.KoiOrderingSystem.pojo.Checkin;
-import fall24.swp391.KoiOrderingSystem.pojo.Kois;
 import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.List;
 @Data
-public class BookingResponseDetail {
+public class KoiDetailResponseInBoooking {
     Long id;
     Long customerID;
     String nameCus;
@@ -28,6 +25,5 @@ public class BookingResponseDetail {
     LocalDateTime createdDate;
     String updatedBy;
     LocalDateTime updatedDate;
-    List<BookingKoiDetail> koiDetails;
-//    List<Kois> koisList;
+    List<BookingKoiDetailResponse> koiDetails;
 }
