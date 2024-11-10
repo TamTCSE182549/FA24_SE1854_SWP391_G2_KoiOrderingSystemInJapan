@@ -142,7 +142,7 @@ public class CheckinService implements ICheckinService {
                 checkin.setCheckinDate(checkinRequest.getCheckinDate());
                 checkin.setAirline(checkinRequest.getAirline());
                 checkin.setAirport(checkinRequest.getAirport());
-                checkin.setPassport(checkin.getPassport());
+                checkin.setPassport(checkinRequest.getPassport());
                 checkin.setEmail(checkinRequest.getEmail());
                 checkin.setPhoneNumber(checkinRequest.getPhoneNumber());
 
