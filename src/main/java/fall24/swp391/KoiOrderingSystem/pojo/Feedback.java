@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Data
+@Table(name = "feedback")
 public class Feedback {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,7 +24,7 @@ public class Feedback {
     @JoinColumn(name = "customer_id")
     private Account customer;
 
-    @ManyToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JsonIgnore
     @JoinColumn(name = "booking_id")
     private Bookings booking;
@@ -34,10 +35,26 @@ public class Feedback {
     @Column(name = "updated_at")
     private LocalDateTime updatedDate;
 
+    @Column(name = "tour_name_snapshot")
+    private String tourNameSnapshot;
+
+    @Column(name = "tour_start_time_snapshot")
+    private LocalDateTime tourStartTimeSnapshot;
+
+    @Column(name = "tour_end_time_snapshot")
+    private LocalDateTime tourEndTimeSnapshot;
+
     @PrePersist
     protected void onCreate(){
         createdDate = LocalDateTime.now();
         updatedDate = LocalDateTime.now();
+        if (booking != null && booking.getBookingTourDetails().getFirst() != null
+                && booking.getBookingTourDetails().getFirst().getTourId() != null) {
+            Tours tour = booking.getBookingTourDetails().getFirst().getTourId();
+            this.tourNameSnapshot = tour.getTourName();
+            this.tourStartTimeSnapshot = tour.getStartTime();
+            this.tourEndTimeSnapshot = tour.getEndTime();
+        }
     }
 
     @PreUpdate

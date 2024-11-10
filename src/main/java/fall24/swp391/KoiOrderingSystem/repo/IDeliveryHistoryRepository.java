@@ -11,5 +11,5 @@
     public interface IDeliveryHistoryRepository extends JpaRepository<DeliveryHistory, Long> {
         DeliveryHistory findDeliveryHistoryById(Long id);
         List<DeliveryHistory> findDeliveryHistoryByBooking(Bookings booking);
-
+        DeliveryHistory findFirstByBookingOrderByCreatedDateDesc(Bookings booking);
     }

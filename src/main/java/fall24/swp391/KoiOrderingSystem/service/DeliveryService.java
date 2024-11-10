@@ -56,7 +56,11 @@ public class DeliveryService implements IDeliveryService {
             Deposit deposits = depositRepository.findByBookingId(bookingId);
             if(deposits==null) {
                 throw new NotFoundEntity("Deposit not found!");
+            } else {
+                delivery.setAddress(deposits.getShippingAddress());
             }
+
+
             float remainAmount = 0;
             if(deposits.getDepositStatus()== DepositStatus.complete){
                 remainAmount = deposits.getRemainAmount();
@@ -87,8 +91,13 @@ public class DeliveryService implements IDeliveryService {
                     //tim duoc booking
                     if(bookings.getPaymentStatus()== PaymentStatus.shipping)
                     {
-                        bookings.setPaymentStatus(PaymentStatus.complete);
-                        bookings.setPaymentDate(LocalDateTime.now());
+                        if(deliveryRequest.getStatus()== DeliveryStatus.CANCELLED)
+                        {
+                            bookings.setPaymentStatus(PaymentStatus.cancelled);
+                        } else {
+                            bookings.setPaymentStatus(PaymentStatus.complete);
+                            bookings.setPaymentDate(LocalDateTime.now());
+                        }
                         bookingRepository.save(bookings);
                         delivery.setBooking(bookings);
                     }
@@ -133,9 +142,14 @@ public class DeliveryService implements IDeliveryService {
         if(deliveryRequest.getStatus()== DeliveryStatus.CANCELLED){
             if(deliveryRequest.getReason().isEmpty())
                 throw new NotFoundEntity("CANCELLED must have a reason!");
+            bookings.setPaymentStatus(PaymentStatus.cancelled);
+        } else {
+            bookings.setPaymentStatus(PaymentStatus.complete);
+            bookings.setPaymentDate(LocalDateTime.now());
         }
         delivery.setReason(deliveryRequest.getReason());
         delivery.setStatus(deliveryRequest.getStatus());
+        delivery.setAddress(deliveryRequest.getAddress());
         deliveriesRepository.save(delivery);
         DeliveryResponse deliveryResponse = new DeliveryResponse();
         deliveryResponse.setCustomerName(deliveryRequest.getCustomerName());
@@ -145,6 +159,8 @@ public class DeliveryService implements IDeliveryService {
         deliveryResponse.setHealthKoiDescription(deliveryRequest.getHealthKoiDescription());
         deliveryResponse.setBookingId(delivery.getBooking().getId());
         deliveryResponse.setStatus(deliveryRequest.getStatus());
+        deliveryResponse.setReason(deliveryRequest.getReason());
+        deliveryResponse.setAddress(delivery.getAddress());
         return deliveryResponse;
 
     }
@@ -174,6 +190,7 @@ public class DeliveryService implements IDeliveryService {
         deliveryResponse.setHealthKoiDescription(delivery.getHealthKoiDescription());
         deliveryResponse.setBookingId(delivery.getBooking().getId());
         deliveryResponse.setStatus(delivery.getStatus());
+        deliveryResponse.setAddress(delivery.getAddress());
         return deliveryResponse;
     }
 
@@ -191,6 +208,7 @@ public class DeliveryService implements IDeliveryService {
             deliveryResponse.setStaffName(delivery.getDeliveryStaff().getFirstName() + " " + delivery.getDeliveryStaff().getLastName());
             deliveryResponse.setStatus(delivery.getStatus());
             deliveryResponse.setReason(delivery.getReason());
+            deliveryResponse.setAddress(delivery.getAddress());
             deliveryResponses.add(deliveryResponse);
         }
         return deliveryResponses;

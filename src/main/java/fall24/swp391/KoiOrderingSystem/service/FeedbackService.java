@@ -1,17 +1,22 @@
 package fall24.swp391.KoiOrderingSystem.service;
 
+import fall24.swp391.KoiOrderingSystem.enums.BookingType;
 import fall24.swp391.KoiOrderingSystem.exception.AccountNotFoundException;
+import fall24.swp391.KoiOrderingSystem.exception.ExistingEntity;
 import fall24.swp391.KoiOrderingSystem.exception.NotFoundEntity;
 import fall24.swp391.KoiOrderingSystem.model.request.FeedbackRequest;
 import fall24.swp391.KoiOrderingSystem.model.response.FeedbackResponse;
 import fall24.swp391.KoiOrderingSystem.pojo.Account;
 import fall24.swp391.KoiOrderingSystem.pojo.Bookings;
 import fall24.swp391.KoiOrderingSystem.pojo.Feedback;
+import fall24.swp391.KoiOrderingSystem.pojo.Tours;
 import fall24.swp391.KoiOrderingSystem.repo.IBookingRepository;
 import fall24.swp391.KoiOrderingSystem.repo.IFeedbackRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +38,14 @@ public class FeedbackService implements IFeedbackService{
         if(account == null) throw new AccountNotFoundException("Account not found");
         Bookings booking = bookingRepository.findBookingsById(feedbackrequest.getBookingId());
         if(booking == null) throw new NotFoundEntity("Booking not found");
+        if(booking.getBookingType()== BookingType.BookingForKoi) throw new ExistingEntity("Feedback booking tour includes booing fish");
+        if (feedbackRepository.existsByCustomerAndBooking(account, booking)) {
+            throw new ExistingEntity("Feedback to this booking already exists");
+        }
+        Tours tour = booking.getBookingTourDetails().getFirst().getTourId();
+        if (tour.getEndTime().isAfter(LocalDateTime.now())) {
+            throw new ExistingEntity("You can only provide feedback after the tour has ended");
+        }
         feedback.setRating(feedbackrequest.getRating());
         feedback.setContent(feedbackrequest.getContent());
         feedback.setBooking(booking);
@@ -122,13 +135,15 @@ public class FeedbackService implements IFeedbackService{
         }
         return feedbackResponses;
     }
-
+    @Transactional
     @Override
     public void deleteFeedback(Long id) {
-        Feedback feedback = feedbackRepository.findById(id).orElseThrow(() ->
-                new NotFoundEntity("Feedback not found")
-        );
-        feedbackRepository.delete(feedback);
+        // Kiểm tra xem feedback có tồn tại không
+        if (!feedbackRepository.existsById(id)) {
+            throw new NotFoundEntity("Feedback not found");
+        }
+        // Xóa trực tiếp
+        feedbackRepository.deleteById(id);
     }
 
     @Override

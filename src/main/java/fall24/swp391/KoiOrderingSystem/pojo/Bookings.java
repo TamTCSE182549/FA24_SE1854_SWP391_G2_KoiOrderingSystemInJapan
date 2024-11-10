@@ -83,7 +83,7 @@ public class Bookings {
     private Set<Checkin> checkins;
 
     @OneToOne(mappedBy = "bookingKoi", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
-    private Checkin buy;
+    private Checkin buyer;
 
     @OneToMany(mappedBy = "booking", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     private List<DeliveryHistory> deliveryHistory;
@@ -105,9 +105,9 @@ public class Bookings {
     @JoinColumn(name = "updated_by")
     private Account updatedBy;
 
-    @OneToMany(mappedBy = "booking", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    @OneToOne(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
-    private Set<Feedback> feedbacks;
+    private Feedback feedbacks;
 
     @PrePersist
     protected void onCreate(){
