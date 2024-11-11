@@ -14,4 +14,5 @@ public class TourDetailResponse {
     String website;
     String phone;
     String description;
+    Long farmId;
 }

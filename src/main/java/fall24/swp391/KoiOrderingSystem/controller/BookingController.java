@@ -136,6 +136,12 @@ public class BookingController {
         return ResponseEntity.ok(bookings);
     }
 
+    @GetMapping("/koi/list/delivery")
+    public ResponseEntity<?> getAllBookingKoiForDelivery() {
+        List<BookingResponseDetail> bookings = bookingService.getKoiBookingForDelivery();
+        return ResponseEntity.ok(bookings);
+    }
+
 
     @GetMapping("/BookingForKoi")
     public ResponseEntity<?> showBookingForKoi(){

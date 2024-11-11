@@ -56,6 +56,8 @@ public interface IBookingService {
 
     List<BookingResponseDetail> getKoiBookingByCreateBy();
 
+    List<BookingResponseDetail> getKoiBookingForDelivery();
+
     List<BookingResponseDetail> getKoiBooking();
 
     KoiDetailResponseInBoooking viewDetailBooking(Long bookingId);
