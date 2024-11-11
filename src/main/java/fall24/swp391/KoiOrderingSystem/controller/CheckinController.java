@@ -64,7 +64,7 @@ public class CheckinController {
     }
     @PutMapping("/status/{checkinId}")
     public ResponseEntity<?> updateCheckinStatus(@PathVariable Long checkinId) {
-        CheckinResponse checkin = checkinService.updateCheckinStatus(checkinId);
+        Checkin checkin = checkinService.updateCheckinStatus(checkinId);
         return new ResponseEntity<>(checkin,HttpStatus.OK);
     }
 

@@ -36,6 +36,7 @@ public class Checkin {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate checkinDate;
 
+    @Column(unique = true)
     private String passport;
 
     private String airline;

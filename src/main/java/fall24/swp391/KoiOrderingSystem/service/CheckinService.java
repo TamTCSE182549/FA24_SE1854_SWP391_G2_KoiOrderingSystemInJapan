@@ -209,10 +209,10 @@ public class CheckinService implements ICheckinService {
     }
 
     @Override
-    public CheckinResponse updateCheckinStatus(Long Id) {
+    public Checkin updateCheckinStatus(Long Id) {
         try{
             Account account = authenticationService.getCurrentAccount();
-            if(account.getRole() == Role.SALES_STAFF  || account.getRole() == Role.CUSTOMER){
+            if(account.getRole() == Role.SALES_STAFF){
                 Checkin checkin = checkinRepository.findById(Id)
                         .orElseThrow(() -> new RuntimeException("Checkin Not Found"));
                 if(checkin.getStatus() == CheckinStatus.NOTCHECKEDIN){
@@ -221,9 +221,10 @@ public class CheckinService implements ICheckinService {
                 checkin.setUpdatedBy(account);
                 checkinRepository.save(checkin);
 
-                CheckinResponse checkinResponse =modelMapper.map(checkin,CheckinResponse.class);
-                checkinResponse.setUpdateBy(account.getFirstName()+" "+account.getLastName());
-                return checkinResponse;
+//                CheckinResponse checkinResponse =modelMapper.map(checkin,CheckinResponse.class);
+//                checkinResponse.setUpdateBy(account.getFirstName()+" "+account.getLastName());
+//                return checkinResponse;
+                return checkin;
             }else{
                 throw new NotUpdateException("Only staff can update status");
             }
