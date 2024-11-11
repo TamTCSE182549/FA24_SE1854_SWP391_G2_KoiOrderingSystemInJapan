@@ -60,6 +60,7 @@ public class TourDetailService implements ITourDetailService{
             tourDetailResponse.setPhone(tourDetail.getFarm().getFarmPhoneNumber());
             tourDetailResponse.setDescription(tourDetail.getDescription());
             tourDetailResponse.setFarmName(tourDetailResponse.getFarmName());
+            tourDetailResponse.setFarmId(tourDetail.getFarm().getId());
             return tourDetailResponse;
         }).toList();
     }

@@ -632,6 +632,29 @@ public class BookingService implements IBookingService{
         }).toList();
     }
 
+    @Override
+    public List<BookingResponseDetail> getKoiBookingForDelivery() {
+//        Account account = authenticationService.getCurrentAccount();
+        List<Bookings> bookingsList = bookingRepository.listBookingForKoi();
+        return bookingsList.stream().map(bookings -> {
+            BookingResponseDetail bookingResponse = modelMapper.map(bookings, BookingResponseDetail.class);
+            if (bookings.getUpdatedBy() == null) {
+                bookingResponse.setUpdatedBy("");
+            } else {
+                bookingResponse.setUpdatedBy(bookings.getUpdatedBy().getFirstName() + " " + bookings.getUpdatedBy().getLastName());
+            }
+
+            if (bookings.getCreatedBy() == null) {
+                bookingResponse.setCreatedBy("");
+            } else {
+                bookingResponse.setCreatedBy(bookings.getCreatedBy().getFirstName() + " " + bookings.getCreatedBy().getLastName());
+            }
+            bookingResponse.setCustomerID(bookings.getAccount().getId());
+            bookingResponse.setNameCus(bookings.getAccount().getFirstName() + " " + bookings.getAccount().getLastName());
+            return bookingResponse;
+        }).toList();
+    }
+
 
     @Override
     public List<BookingResponseDetail> getKoiBookingById() {
@@ -863,7 +886,7 @@ public class BookingService implements IBookingService{
         String formattedCreateDate = createDate.format(formatter);
 
         Bookings booking = bookingRepository.findBookingsById(bookingId);
-        float money = currencyConversionService.convertUsdToVnd(booking.getTotalAmountWithVAT()) *100;
+        float money = booking.getTotalAmountWithVAT() *100;
         String amount = String.valueOf((int) money);
 
         String tmnCode = "JH4XT293";
