@@ -212,7 +212,7 @@ public class CheckinService implements ICheckinService {
     public Checkin updateCheckinStatus(Long Id) {
         try{
             Account account = authenticationService.getCurrentAccount();
-            if(account.getRole() == Role.SALES_STAFF){
+            if(account.getRole() == Role.CONSULTING_STAFF){
                 Checkin checkin = checkinRepository.findById(Id)
                         .orElseThrow(() -> new RuntimeException("Checkin Not Found"));
                 if(checkin.getStatus() == CheckinStatus.NOTCHECKEDIN){
