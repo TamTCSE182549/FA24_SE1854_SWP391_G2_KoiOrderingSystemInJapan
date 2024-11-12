@@ -124,6 +124,7 @@ public class QuotationService implements IQuotationService{
             quotation.setIsApprove(ApproveStatus.PROCESS);
             Account account = authenticationService.getCurrentAccount();
             quotation.setCreatedBy(account);
+            quotation.setSend(false);
             //create initialization status
             quotationRepository.save(quotation);
             QuotationResponse quotationResponse = modelMapper.map(quotation, QuotationResponse.class);

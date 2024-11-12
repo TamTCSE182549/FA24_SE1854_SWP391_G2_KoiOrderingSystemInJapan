@@ -48,4 +48,6 @@ public class Quotations {
     @Column(name = "approve_time")
     private LocalDateTime approveTime;
 
+    @Column(name = "isSend")
+    private boolean isSend;
 }

@@ -12,4 +12,5 @@ public class BookingUpdateRequestStaff {
     PaymentMethod paymentMethod;
     PaymentStatus paymentStatus;
     float discountAmount;
+    long quoId;
 }

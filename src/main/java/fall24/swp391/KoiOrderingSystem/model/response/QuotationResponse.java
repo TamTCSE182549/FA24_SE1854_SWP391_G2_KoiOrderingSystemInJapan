@@ -15,4 +15,5 @@ public class QuotationResponse {
     String managerName;
     ApproveStatus isApprove;
     LocalDateTime approveTime;
+    boolean isSend;
 }
