@@ -674,6 +674,7 @@ public class BookingService implements IBookingService{
         List<Bookings> bookingsList = bookingRepository.listKoiBooking(account.getId());
         return bookingsList.stream().map(bookings -> {
             BookingResponseDetail bookingResponse = modelMapper.map(bookings, BookingResponseDetail.class);
+//            bookingResponse.setNameCus(bookings.getBuy().getFirstName()+" "+bookings.getBuy().getLastName());
             if (bookings.getUpdatedBy() == null) {
                 bookingResponse.setUpdatedBy("");
             } else {
@@ -746,6 +747,7 @@ public class BookingService implements IBookingService{
                  bookingKoiDetailResponse.setOrigin(b.getKoi().getOrigin());
                  bookingKoiDetailResponse.setDescription(b.getKoi().getDescription());
                  bookingKoiDetailResponse.setFarmId(b.getKoiFarm().getId());
+                bookingKoiDetailResponse.setFarmName(b.getKoiFarm().getFarmName());
                  bookingKoiDetailResponse.setQuantity(b.getQuantity());
                  bookingKoiDetailResponse.setUnitPrice(b.getUnitPrice());
                  bookingKoiDetailResponse.setTotalAmount(b.getTotalAmount());

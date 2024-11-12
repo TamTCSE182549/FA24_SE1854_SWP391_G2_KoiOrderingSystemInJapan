@@ -11,6 +11,7 @@ public class BookingKoiDetailResponse {
     int quantity;
     float totalAmount;
     float unitPrice;
+    String farmName;
     String koiName;
     String origin;
     String description;
