@@ -56,6 +56,9 @@ public class BookingService implements IBookingService{
     private IBookingKoiDetailRepository iBookingKoiDetailRepository;
 
     @Autowired
+    private IQuotationRepository quotationRepository;
+
+    @Autowired
     private IKoiOfFarmRepository iKoiOfFarmRepository;
 
     @Autowired
@@ -445,6 +448,12 @@ public class BookingService implements IBookingService{
             if (account.getRole() != Role.SALES_STAFF){
                 throw new NotUpdateException("Your Role cannot access");
             }
+            Quotations quotations = quotationRepository.findQuotationsById(bookingUpdateRequestStaff.getQuoId());
+            if(quotations==null){
+                throw new NotFoundEntity("Quotation not found");
+            }
+            quotations.setSend(true);
+            quotationRepository.save(quotations);
 
             Bookings bookings = bookingRepository.findById(bookingUpdateRequestStaff.getBookingID())
                     .orElseThrow(() -> new NotFoundEntity("Booking ID not FOUND"));
