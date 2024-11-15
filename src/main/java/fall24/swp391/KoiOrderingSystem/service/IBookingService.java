@@ -5,11 +5,8 @@ import fall24.swp391.KoiOrderingSystem.model.request.*;
 //import fall24.swp391.KoiOrderingSystem.model.request.BookingRequest;
 //import fall24.swp391.KoiOrderingSystem.model.response.BookingResponse;
 
-import fall24.swp391.KoiOrderingSystem.model.response.BookingResponseDetail;
+import fall24.swp391.KoiOrderingSystem.model.response.*;
 
-import fall24.swp391.KoiOrderingSystem.model.response.BookingTourRes;
-import fall24.swp391.KoiOrderingSystem.model.response.BookingTourResponse;
-import fall24.swp391.KoiOrderingSystem.model.response.KoiDetailResponseInBoooking;
 import fall24.swp391.KoiOrderingSystem.pojo.Bookings;
 
 import java.util.List;
@@ -67,6 +64,8 @@ public interface IBookingService {
     BookingResponseDetail deleteBooking(Long bookingId);
 
     BookingTourResponse updateStatus(Long bookingId);
+
+    BookingTourCustomResponse createBookingCustom(BookingTourCustomRequest bookingTourCustomRequest);
 
     String createUrl(Long bookingId) throws  Exception;
 

@@ -56,6 +56,9 @@ public class BookingService implements IBookingService{
     private IBookingKoiDetailRepository iBookingKoiDetailRepository;
 
     @Autowired
+    private ITourDetailRepository iTourDetailRepository;
+
+    @Autowired
     private IQuotationRepository quotationRepository;
 
     @Autowired
@@ -129,6 +132,60 @@ public class BookingService implements IBookingService{
             throw new GenericException(e.getMessage());
         }
     }
+
+    public BookingTourCustomResponse createBookingCustom(BookingTourCustomRequest bookingTourCustomRequest){
+        try{
+            Account account = authenticationService.getCurrentAccount();
+            if(account.getRole()== Role.CUSTOMER){
+                Tours tour = new Tours();
+                tour.setStartTime(bookingTourCustomRequest.getStartDate());
+                tour.setEndTime(bookingTourCustomRequest.getEndDate());
+                tour.setUnitPrice(0);
+                tour.setMaxParticipants(bookingTourCustomRequest.getParticipant());
+                tour.setDescription(bookingTourCustomRequest.getDescription());
+                tour.setRemaining(0);
+                tour.setTourImg("");
+                tour.setTourName("Tour customize by "+account.getFirstName()+" "+account.getLastName());
+                tour.setStatus(TourStatus.customer);
+                tour.setCreatedBy(account);
+                iTourRepository.save(tour);
+
+                for (Long farmId : bookingTourCustomRequest.getFarmId()) {
+                    KoiFarms koiFarms = iKoiFarmsRepository.findById(farmId)
+                            .orElseThrow(() -> new NotFoundEntity("Not Found KoiFarm"));
+                    TourDetail tourDetail = new TourDetail();
+                    tourDetail.setTour(tour);
+                    tourDetail.setFarm(koiFarms);
+                    tourDetail.setDescription(bookingTourCustomRequest.getDescription());
+                    iTourDetailRepository.save(tourDetail);
+                }
+
+                Bookings booking = new Bookings();
+                booking.setPaymentMethod(bookingTourCustomRequest.getPaymentMethod());
+                booking.setAccount(account);
+                booking.setPaymentStatus(PaymentStatus.pending);// Set default status to pending
+                booking.setBookingType(BookingType.BookingForTour);
+                bookingRepository.save(booking);
+                //Save booking
+                BookingTourDetail bookingTourDetail = new BookingTourDetail(booking, tour, bookingTourCustomRequest.getParticipant());
+                bookingTourDetail.setTotalAmount(tour.getUnitPrice() * bookingTourDetail.getParticipant());
+                iBookingTourDetailRepository.save(bookingTourDetail);
+                float totalBookingAmount = 0;
+                List<BookingTourDetail> tourDetailOfBookingID = iBookingTourDetailRepository.showDetailOfBookingID(booking.getId());
+                for(BookingTourDetail b : tourDetailOfBookingID){
+                    totalBookingAmount += b.getTotalAmount();
+                }
+                booking.setTotalAmount(totalBookingAmount);
+                booking.setTotalAmountWithVAT(booking.getTotalAmount() + booking.getVatAmount() - booking.getDiscountAmount());
+                bookingRepository.save(booking);
+
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
+
 
 //    @Override
 //    public List<Bookings> getTourBooking(Long accountID) {
