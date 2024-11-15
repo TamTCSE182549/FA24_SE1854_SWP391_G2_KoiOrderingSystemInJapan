@@ -2,10 +2,7 @@ package fall24.swp391.KoiOrderingSystem.controller;
 
 
 import fall24.swp391.KoiOrderingSystem.model.request.*;
-import fall24.swp391.KoiOrderingSystem.model.response.BookingResponseDetail;
-import fall24.swp391.KoiOrderingSystem.model.response.BookingTourRes;
-import fall24.swp391.KoiOrderingSystem.model.response.BookingTourResponse;
-import fall24.swp391.KoiOrderingSystem.model.response.KoiDetailResponseInBoooking;
+import fall24.swp391.KoiOrderingSystem.model.response.*;
 import fall24.swp391.KoiOrderingSystem.service.IBookingService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.modelmapper.ModelMapper;
@@ -32,6 +29,13 @@ public class BookingController {
     @PostMapping("/CreateForTour")
     public ResponseEntity<?> createBooking(@RequestBody BookingTourRequest bookingTourRequest) {
         BookingTourResponse bookingTourResponse = bookingService.createTourBooking(bookingTourRequest);
+        return ResponseEntity.ok(bookingTourResponse);
+    }
+
+
+    @PostMapping("/CreateForTour/customer")
+    public ResponseEntity<?> createBooking(@RequestBody BookingTourCustomRequest bookingTourCustomRequest) {
+        BookingTourCustomResponse bookingTourResponse = bookingService.createBookingCustom(bookingTourCustomRequest);
         return ResponseEntity.ok(bookingTourResponse);
     }
 
