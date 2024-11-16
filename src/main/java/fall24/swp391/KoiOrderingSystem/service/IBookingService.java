@@ -82,4 +82,6 @@ public interface IBookingService {
     List<BookingTourResponse> showBookingTourStatus(String paymentStatus);
 
     List<BookingTourResponse> showBookingKoiStatus(String paymentStatus);
+
+    BookingTourResponse responseUpdateCusForStaff(BookingUpdateRequestStaff bookingUpdateRequestStaff);
 }

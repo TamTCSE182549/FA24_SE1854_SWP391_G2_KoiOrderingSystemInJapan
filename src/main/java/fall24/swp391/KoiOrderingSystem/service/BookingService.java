@@ -87,7 +87,7 @@ public class BookingService implements IBookingService{
                 Bookings booking = new Bookings();
                 booking.setPaymentMethod(bookingTourRequest.getPaymentMethod());
                 booking.setAccount(account);
-                booking.setPaymentStatus(PaymentStatus.pending);// Set default status to pending
+                booking.setPaymentStatus(PaymentStatus.processing);// Set default status to pending
                 booking.setBookingType(BookingType.BookingForTour);
                 bookingRepository.save(booking);
                 //Save booking
@@ -100,6 +100,8 @@ public class BookingService implements IBookingService{
                     totalBookingAmount += b.getTotalAmount();
                 }
                 booking.setTotalAmount(totalBookingAmount);
+                booking.setVat(0.1f);
+                booking.setVatAmount(booking.getTotalAmount() * booking.getVat());
                 booking.setTotalAmountWithVAT(booking.getTotalAmount() + booking.getVatAmount() - booking.getDiscountAmount());
                 bookingRepository.save(booking);
                 tours.setRemaining(tours.getRemaining() - bookingTourRequest.getParticipants());
@@ -1130,5 +1132,59 @@ public class BookingService implements IBookingService{
             bookingTourResponse.setNameCus(booking.getAccount().getFirstName() + " " + booking.getAccount().getLastName());
             return bookingTourResponse;
         }).toList();
+    }
+
+    @Override
+    public BookingTourResponse responseUpdateCusForStaff(BookingUpdateRequestStaff bookingUpdateRequestStaff) {
+        try {
+            Account account = authenticationService.getCurrentAccount();
+
+            if (account.getRole() != Role.SALES_STAFF){
+                throw new NotUpdateException("Your Role cannot access");
+            }
+            Quotations quotations = quotationRepository.findQuotationsById(bookingUpdateRequestStaff.getQuoId());
+            if(quotations==null){
+                throw new NotFoundEntity("Quotation not found");
+            }
+            quotations.setSend(true);
+            quotationRepository.save(quotations);
+
+
+            Bookings bookings = bookingRepository.findById(bookingUpdateRequestStaff.getBookingID())
+                    .orElseThrow(() -> new NotFoundEntity("Booking ID not FOUND"));
+            bookings.setPaymentMethod(bookingUpdateRequestStaff.getPaymentMethod());
+            bookings.setPaymentStatus(bookingUpdateRequestStaff.getPaymentStatus());
+            if(bookings.getPaymentStatus() == PaymentStatus.pending){
+                bookings.setPaymentDate(LocalDateTime.now());
+            }
+//            Tours tours = iTourRepository.findById()
+            bookings.setTotalAmount(bookingUpdateRequestStaff.getAmount());
+            bookings.setVat(bookingUpdateRequestStaff.getVat());
+            bookings.setDiscountAmount(bookingUpdateRequestStaff.getDiscountAmount());
+            bookings.setUpdatedBy(account);
+            bookings.setDiscountAmount(bookingUpdateRequestStaff.getDiscountAmount());
+            bookings.setVatAmount(bookingUpdateRequestStaff.getVat() * (bookings.getTotalAmount() - bookingUpdateRequestStaff.getDiscountAmount()));
+            bookings.setTotalAmountWithVAT(bookings.getTotalAmount() + bookings.getVatAmount() - bookings.getDiscountAmount());
+            bookingRepository.save(bookings);
+            BookingTourResponse bookingTourResponse = new BookingTourResponse();
+            bookingTourResponse.setBookingType(bookings.getBookingType());
+            bookingTourResponse.setPaymentStatus(bookings.getPaymentStatus());
+            bookingTourResponse.setPaymentDate(bookings.getPaymentDate());
+            bookingTourResponse.setTotalAmount(bookings.getTotalAmount());
+            bookingTourResponse.setTotalAmountWithVAT(bookings.getTotalAmountWithVAT());
+            bookingTourResponse.setVat(bookings.getVat());
+            bookingTourResponse.setVatAmount(bookings.getVatAmount());
+            bookingTourResponse.setDiscountAmount(bookings.getDiscountAmount());
+            bookingTourResponse.setPaymentMethod(bookings.getPaymentMethod());
+            bookingTourResponse.setCreatedDate(bookings.getCreatedDate());
+            bookingTourResponse.setUpdatedDate(bookings.getUpdatedDate());
+            bookingTourResponse.setId(bookings.getId());
+            bookingTourResponse.setUpdatedBy(account.getFirstName() + " " + account.getLastName());
+            bookingTourResponse.setCustomerID(bookings.getAccount().getId());
+            bookingTourResponse.setNameCus(bookings.getAccount().getFirstName() + " " + bookings.getAccount().getLastName());
+            return bookingTourResponse;
+        } catch (Exception e){
+            throw new GenericException(e.getMessage());
+        }
     }
 }

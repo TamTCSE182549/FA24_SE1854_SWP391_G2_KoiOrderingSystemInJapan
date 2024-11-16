@@ -99,6 +99,12 @@ public class BookingController {
         return new ResponseEntity<>(bookingTourResponse, HttpStatus.OK);
     }
 
+    @PutMapping("/admin/updateResponseCusFormStaff/Customize")
+    public ResponseEntity<?> updateBookingAndResponseCus(@RequestBody BookingUpdateRequestStaff bookingUpdateRequestStaff) {
+        BookingTourResponse bookingTourResponse = bookingService.responseUpdateCusForStaff(bookingUpdateRequestStaff);
+        return new ResponseEntity<>(bookingTourResponse, HttpStatus.OK);
+    }
+
     @PutMapping("/updateResponseFormCustomer")
     public ResponseEntity<?> updateBookingAndResponseCus(@RequestBody BookingUpdateRequestCus bookingUpdateRequestCus) {
         BookingTourResponse bookingTourResponse = bookingService.bookingUpdatePaymentMethod(bookingUpdateRequestCus);
