@@ -35,7 +35,13 @@ public class BookingController {
 
     @PostMapping("/CreateForTour/customer")
     public ResponseEntity<?> createBooking(@RequestBody BookingTourCustomRequest bookingTourCustomRequest) {
-        BookingTourCustomResponse bookingTourResponse = bookingService.createBookingCustom(bookingTourCustomRequest);
+        BookingTourCustomResponse bookingTourResponse= bookingService.createBookingCustom(bookingTourCustomRequest);
+        return ResponseEntity.ok(bookingTourResponse);
+    }
+
+    @PutMapping("/updateCustom/{bookingId}")
+    public ResponseEntity<?>updateBooking(@RequestBody BookingTourCustomRequest bookingTourCustomRequest, @PathVariable Long bookingId){
+        BookingTourCustomResponse bookingTourResponse=bookingService.updateBookingCustom(bookingTourCustomRequest,bookingId);
         return ResponseEntity.ok(bookingTourResponse);
     }
 

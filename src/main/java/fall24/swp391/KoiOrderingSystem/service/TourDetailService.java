@@ -90,7 +90,7 @@ public class TourDetailService implements ITourDetailService{
     @Override
     public void DELETE_TOUR_DETAIL(Long tourDetailID) {
         Account account = authenticationService.getCurrentAccount();
-        if (account.getRole()!= Role.MANAGER){
+        if (account.getRole()!= Role.MANAGER && account.getRole()!= Role.CUSTOMER){
             throw new NotFoundEntity("Your ROLE cannot access");
         }
         TourDetail tourDetail = iTourDetailRepository.findById(tourDetailID)

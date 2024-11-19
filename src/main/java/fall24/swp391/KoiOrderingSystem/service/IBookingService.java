@@ -45,7 +45,7 @@ public interface IBookingService {
     // Delete a booking by ID (update status to 'cancelled' and return a boolean)
     void deleteBookingForManager(Long id);
 
-    BookingTourResponse createKoiBooking(BookingKoiRequest bookingKoiRequest,Long bookingId) ;
+    BookingTourResponse createKoiBooking(BookingKoiRequest bookingKoiRequest,Long bookingId);
 
     BookingTourResponse updateKoiBooking(Long id, BookingUpdate bookingUpdate);
 
@@ -66,6 +66,8 @@ public interface IBookingService {
     BookingTourResponse updateStatus(Long bookingId);
 
     BookingTourCustomResponse createBookingCustom(BookingTourCustomRequest bookingTourCustomRequest);
+
+    BookingTourCustomResponse updateBookingCustom(BookingTourCustomRequest bookingTourCustomRequest,Long bookingId);
 
     String createUrl(Long bookingId) throws  Exception;
 
