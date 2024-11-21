@@ -908,7 +908,10 @@ public class BookingService implements IBookingService{
             Tours tour = iTourRepository.findById(bookingTourDetail.getTourId().getId())
                     .orElseThrow(() -> new NotFoundEntity("Tour not exist"));
             tour.setRemaining(tour.getRemaining() + bookingTourDetail.getParticipant());
-            tour.setStatus(TourStatus.active);
+            if (tour.getStatus() != TourStatus.customer) {
+                tour.setStatus(TourStatus.active);
+                iTourRepository.save(tour);
+            }
             iTourRepository.save(tour);
         }
         BookingTourResponse bookingTourResponse = new BookingTourResponse();
@@ -1196,7 +1199,7 @@ public class BookingService implements IBookingService{
             if(quotations==null){
                 throw new NotFoundEntity("Quotation not found");
             }
-            quotations.setSend(true);
+            quotations.setSend(false);
             quotationRepository.save(quotations);
 
 
@@ -1208,7 +1211,7 @@ public class BookingService implements IBookingService{
                 bookings.setPaymentDate(LocalDateTime.now());
             }
 //            Tours tours = iTourRepository.findById()
-            bookings.setTotalAmount(bookingUpdateRequestStaff.getAmount());
+            bookings.setTotalAmount(quotations.getAmount());
             bookings.setVat(bookingUpdateRequestStaff.getVat());
             bookings.setDiscountAmount(bookingUpdateRequestStaff.getDiscountAmount());
             bookings.setUpdatedBy(account);
