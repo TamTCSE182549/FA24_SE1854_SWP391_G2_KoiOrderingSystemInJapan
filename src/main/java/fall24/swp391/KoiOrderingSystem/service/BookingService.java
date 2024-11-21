@@ -908,7 +908,10 @@ public class BookingService implements IBookingService{
             Tours tour = iTourRepository.findById(bookingTourDetail.getTourId().getId())
                     .orElseThrow(() -> new NotFoundEntity("Tour not exist"));
             tour.setRemaining(tour.getRemaining() + bookingTourDetail.getParticipant());
-            tour.setStatus(TourStatus.active);
+            if (tour.getStatus() != TourStatus.customer) {
+                tour.setStatus(TourStatus.active);
+                iTourRepository.save(tour);
+            }
             iTourRepository.save(tour);
         }
         BookingTourResponse bookingTourResponse = new BookingTourResponse();
