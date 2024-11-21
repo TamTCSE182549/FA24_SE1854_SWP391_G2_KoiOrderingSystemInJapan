@@ -1199,7 +1199,7 @@ public class BookingService implements IBookingService{
             if(quotations==null){
                 throw new NotFoundEntity("Quotation not found");
             }
-            quotations.setSend(true);
+            quotations.setSend(false);
             quotationRepository.save(quotations);
 
 
@@ -1211,7 +1211,7 @@ public class BookingService implements IBookingService{
                 bookings.setPaymentDate(LocalDateTime.now());
             }
 //            Tours tours = iTourRepository.findById()
-            bookings.setTotalAmount(bookingUpdateRequestStaff.getAmount());
+            bookings.setTotalAmount(quotations.getAmount());
             bookings.setVat(bookingUpdateRequestStaff.getVat());
             bookings.setDiscountAmount(bookingUpdateRequestStaff.getDiscountAmount());
             bookings.setUpdatedBy(account);
