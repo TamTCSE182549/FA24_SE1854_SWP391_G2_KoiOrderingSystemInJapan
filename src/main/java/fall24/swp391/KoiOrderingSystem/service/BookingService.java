@@ -572,12 +572,12 @@ public class BookingService implements IBookingService{
                 bookings.setPaymentDate(LocalDateTime.now());
             }
             bookings.setTotalAmount(bookingUpdateRequestStaff.getAmount());
-            bookings.setVat(bookingUpdateRequestStaff.getVat());
+//            bookings.setVat(bookingUpdateRequestStaff.getVat());
             bookings.setDiscountAmount(bookingUpdateRequestStaff.getDiscountAmount());
             bookings.setUpdatedBy(account);
             bookings.setDiscountAmount(bookingUpdateRequestStaff.getDiscountAmount());
-            bookings.setVatAmount(bookingUpdateRequestStaff.getVat() * (bookings.getTotalAmount() - bookingUpdateRequestStaff.getDiscountAmount()));
-            bookings.setTotalAmountWithVAT(bookings.getTotalAmount() + bookings.getVatAmount() - bookings.getDiscountAmount());
+//            bookings.setVatAmount(bookingUpdateRequestStaff.getVat() * (bookings.getTotalAmount() - bookingUpdateRequestStaff.getDiscountAmount()));
+//            bookings.setTotalAmountWithVAT(bookings.getTotalAmount() + bookings.getVatAmount() - bookings.getDiscountAmount());
             bookingRepository.save(bookings);
             BookingTourResponse bookingTourResponse = new BookingTourResponse();
             bookingTourResponse.setBookingType(bookings.getBookingType());
@@ -1210,7 +1210,6 @@ public class BookingService implements IBookingService{
             if(bookings.getPaymentStatus() == PaymentStatus.pending){
                 bookings.setPaymentDate(LocalDateTime.now());
             }
-//            Tours tours = iTourRepository.findById()
             bookings.setTotalAmount(quotations.getAmount());
             bookings.setVat(bookingUpdateRequestStaff.getVat());
             bookings.setDiscountAmount(bookingUpdateRequestStaff.getDiscountAmount());
